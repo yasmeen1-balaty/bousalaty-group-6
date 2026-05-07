@@ -8,7 +8,8 @@ module.exports = {
       optionID: {
         type: Sequelize.INTEGER,
         allowNull : false,
-        primaryKey: true
+        primaryKey: true,
+        autoIncrement: true
       },
       questionID: {
         type: Sequelize.INTEGER,

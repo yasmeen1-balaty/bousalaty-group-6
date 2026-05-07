@@ -15,9 +15,6 @@ module.exports = (sequelize, DataTypes) => {
       
       result.belongsTo(models.student, { foreignKey: 'studentID' })
       models.student.hasOne(result, { foreignKey: 'studentID' })
-
-      result.hasMany(models.interest, { foreignKey: 'resultID' })
-      models.interest.belongsTo(result, { foreignKey: 'resultID' })
     }
   }
   result.init({
@@ -28,7 +25,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     studentID: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      unique: true, // Ensure one result per student
+    },
+    resultText: {
+      type: DataTypes.JSON 
     }
   }, {
     sequelize,

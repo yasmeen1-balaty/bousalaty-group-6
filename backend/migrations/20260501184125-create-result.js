@@ -14,12 +14,16 @@ module.exports = {
       studentID: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        unique: true, // Ensure one result per student
         references: {
           model: 'students',
           key: 'studentID'
         },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
+      },
+      resultText: {
+        type: Sequelize.JSON
       },
       createdAt: {
         allowNull: false,
