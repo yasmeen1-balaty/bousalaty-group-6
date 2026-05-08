@@ -64,10 +64,7 @@ const MajorDetails = () => {
             <div className="card-body C2">
               <h5 className="card-title">المواد الاساسية 📚</h5>
               <p className="card-text">
-                <ul>
-                  <li>مقدمة في علوم الحاسوب</li>
-                  <li>هندسة البرمجيات</li>
-                </ul>
+               للاطلاع على خطة التخصص والمواد الاساسية اضغط على زر عرض التفاصيل.
               </p>
               <div className="mt-3">
                 <button className="btn btn-primary">عرض تفاصيل</button>
