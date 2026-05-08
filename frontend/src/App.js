@@ -11,25 +11,58 @@ import SuggestMajors from './pages/suggest-majors/SuggestMajors';
 import About from './pages/suggest-majors/About';
 import MajorDetails from './pages/explore-major/Major';
 import { Dashboard } from './pages/student-dashboard/dashboard';
+import { useState, useEffect } from 'react';
 
      
 function App() {
+  const [items, setItems] = useState([]);
+  const [dataIsLoaded, setDataIsLoaded] = useState(false);
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    fetch("http://localhost:3001/students/1")
+      .then((res) => res.json())
+      .then((data) => {
+        setItems(data);
+        setDataIsLoaded(true);
+      });
+  }, []);
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+  }, []);
+
+  function login(userData) {
+    localStorage.setItem("user", JSON.stringify(userData));
+    setUser(userData);
+  }
+
+  function logout() {
+    localStorage.removeItem("user");
+    setUser(null);
+  }
+
+  if (!dataIsLoaded) return <div>Loading...</div>;
+
   return (
     <>
-      <Navbar />
+      <Navbar user={user} logout={logout} />
+
       <Routes>
-        
         <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<AuthPage />} />
-        <Route path="/details" element={<MajorDetails /> } />
+        <Route path="/login" element={<AuthPage login={login} />} />
+        <Route path="/details" element={<MajorDetails />} />
         <Route path="/suggestions" element={<SuggestMajors />} />
         <Route path="/about" element={<About />} />
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
-      
-      <ChatBot />
 
+      <ChatBot />
     </>
   );
 }

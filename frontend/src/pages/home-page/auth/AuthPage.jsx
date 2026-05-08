@@ -1,8 +1,10 @@
 import React, { useState, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './AuthPage.css';
+import { useNavigate } from 'react-router-dom';
 
-const AuthPage = () => {
+const AuthPage = ({ login }) => {
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
@@ -78,12 +80,7 @@ const AuthPage = () => {
 
     if (validateForm()) {
       try {
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        if (isLogin) {
-          alert('Login successful! (Demo)');
-        } else {
-          alert('Sign up successful! (Demo)');
-        }
+        await handleAuth();
         setFormData({
           name: '',
           email: '',
@@ -101,6 +98,29 @@ const AuthPage = () => {
 
   const toggleForm = () => {
     setIsLogin(!isLogin);
+  };
+
+  const handleAuth = async () => {
+    const url = isLogin ? "http://localhost:3001/login" : "http://localhost:3001/register";
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          name: formData.name
+        }),
+      });
+
+      const data = await response.json();
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        login(data);
+        navigate('/about');
+      }
+      console.log(data);
   };
 
   return (
@@ -220,11 +240,7 @@ const AuthPage = () => {
                 </div>
               )}
 
-              <button
-                type="submit"
-                className="btn btn-primary mb-4 mt-3"
-                disabled={isSubmitting}
-              >
+              <button type="submit" className="btn btn-primary mb-4 mt-3" disabled={isSubmitting} >
                 {isSubmitting ? (
                   <>
                     <span className="spinner-border spinner-border-sm me-2" role="status"></span>

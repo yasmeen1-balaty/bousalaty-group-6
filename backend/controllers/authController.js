@@ -34,8 +34,18 @@ const register = async (req, res) => {
             studyTrack
         });
 
+        const token = jwt.sign(
+            {
+                studentID: student.studentID,
+                email: student.email
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+
         res.status(201).json({
             message: "Student registered successfully",
+            token,
             student
         });
 
@@ -78,7 +88,7 @@ const login = async (req, res) => {
                 email: student.email
             },
             process.env.JWT_SECRET,
-            { expiresIn: '7d' }
+            { expiresIn: '1h' }
         );
 
         res.json({
