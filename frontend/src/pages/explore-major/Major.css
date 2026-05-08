@@ -77,7 +77,9 @@
   font-weight: bold;
   width: 100%;
 }
-
+ .btn {
+    width: auto;
+  }
 
 @media (max-width: 768px) {
 
