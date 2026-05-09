@@ -4,7 +4,7 @@ import './Major.css';
 
 const MajorDetails = () => {
   return (
-    <Container>
+    <Container className="pb-5 pt-5">
 
       <div className="card w-100 mb-3 mt-3">
         <div className="card-body">

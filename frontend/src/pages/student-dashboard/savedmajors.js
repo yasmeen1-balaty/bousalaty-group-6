@@ -22,6 +22,7 @@ export function SavedMajors({ majors }) {
               </div>
             ))}
           </div>
+          <Link to={"/suggestions"} className="btn btn-primary mt-3" style={{ width: "100%" }}>استكشف تخصصات أخرى</Link>
         </div>
       </div>
     </div>

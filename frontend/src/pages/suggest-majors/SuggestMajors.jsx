@@ -3,6 +3,7 @@ import { useState } from "react";
 import "./SuggestMajors.css";
 import heroBg from "../../background-img/img3.png";
 import img1 from "./imges/img2.png";
+import { Link } from "react-router-dom";
 
 
 const majors = [
@@ -130,17 +131,15 @@ export default function SuggestMajors() {
                   <div className="sm-card-emoji mb-3">{major.emoji}</div>
                   <h5 className="sm-card-title mb-2">{major.title}</h5>
                   <p className="sm-card-desc flex-grow-1">{major.desc}</p>
-                  <button
-                    className="sm-card-btn w-100 mt-3"
-                    onClick={() => setSelectedMajor(major)}
-                  >
+                  <Link to={"/details"} className="sm-card-btn w-100 mt-3" onClick={() => setSelectedMajor(major)}>
                     عرض التفاصيل
-                  </button>
+                  </Link>
                   <button
-                    className="sm-card-btnfa w-50 mt-3"
+                    className="btn btn-outline-primary mt-3"
+                    style={{ width: "100%" }}
                     onClick={() => addToFavorite(majors)}
                   >
-                    المفضلة
+                    اضافة الى التخصصات المحفوظة
                   </button>
                 </div>
               </div>
