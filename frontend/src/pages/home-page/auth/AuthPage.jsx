@@ -122,6 +122,7 @@ const AuthPage = ({ login }) => {
     if (data.token) {
       setMessageType('success');
       localStorage.setItem("token", data.token);
+      
       login(data);
       navigate('/about');
     } else {

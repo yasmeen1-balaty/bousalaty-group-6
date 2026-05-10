@@ -21,7 +21,7 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:3001/students/1")
+    fetch("http://localhost:3001/faculties/1")
       .then((res) => res.json())
       .then((data) => {
         setItems(data);
@@ -43,6 +43,7 @@ function App() {
 
   function logout() {
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
     setUser(null);
   }
 

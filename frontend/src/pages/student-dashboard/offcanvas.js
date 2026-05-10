@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom"
 export function Offcanvas() {
+    const savedUser = JSON.parse(localStorage.getItem("user"));
+    const student = savedUser?.student;
     return <>
         <button className="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#sidebar">
             ☰
@@ -19,8 +21,9 @@ export function Offcanvas() {
                     style={{ width: "120px", height: "120px" }}
                     alt="personal"
                 />
-                <p className="mb-0 fw-bold">سودوكو</p>
-                <p className="text-muted mb-3">soso@123.example</p>
+                <p className="mb-0 fw-bold"> {student?.name || "Student"} </p>
+
+                <p className="text-muted mb-3"> {student?.email || "No email"} </p>
             </div>
 
             <div className="offcanvas-body ">
@@ -28,19 +31,19 @@ export function Offcanvas() {
 
                     <li className="list-group-item list-group-item-action">
                         <Link to="/dashboard" className="text-decoration-none d-block">
-                            <div  data-bs-dismiss="offcanvas"> تخصصاتي المحفوظة</div>
+                            <div data-bs-dismiss="offcanvas"> تخصصاتي المحفوظة</div>
                         </Link>
                     </li>
 
                     <li className="list-group-item list-group-item-action">
                         <Link to="/dashboard" className="text-decoration-none d-block">
-                               <div data-bs-dismiss="offcanvas"> حاسبة المعدل الجامعي</div>
+                            <div data-bs-dismiss="offcanvas"> حاسبة المعدل الجامعي</div>
                         </Link>
                     </li>
 
                     <li className="list-group-item list-group-item-action">
                         <Link to="/dashboard" className="text-decoration-none d-block">
-                           <div  data-bs-dismiss="offcanvas"> نصائح الدراسة</div>
+                            <div data-bs-dismiss="offcanvas"> نصائح الدراسة</div>
                         </Link>
                     </li>
 
