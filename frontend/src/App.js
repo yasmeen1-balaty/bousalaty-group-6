@@ -21,7 +21,7 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:3001/faculties/1")
+    fetch("http://localhost:3001/faculties/1") // this is only to cxheck thaat we are connected to the data base
       .then((res) => res.json())
       .then((data) => {
         setItems(data);

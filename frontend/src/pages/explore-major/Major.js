@@ -1,8 +1,23 @@
 import { Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Major.css';
+import { useState, useEffect } from 'react';
 
 const MajorDetails = () => {
+  const [faculty, setFaculty] = useState(null);
+
+  useEffect(() => {
+    fetch("http://localhost:3001/faculties/1")
+      .then((res) => res.json())
+      .then((data) => {
+        setFaculty(data);
+      });
+  }, []);
+
+  if (!faculty) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <Container className="pb-5 pt-5">
 
