@@ -19,6 +19,9 @@ const AuthPage = ({ login }) => {
 
   const [focusedInputs, setFocusedInputs] = useState({});
 
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('');
+
   const handleFocus = (inputName) => {
     setFocusedInputs(prev => ({ ...prev, [inputName]: true }));
   };
@@ -101,26 +104,33 @@ const AuthPage = ({ login }) => {
   };
 
   const handleAuth = async () => {
+    setMessage('');
     const url = isLogin ? "http://localhost:3001/login" : "http://localhost:3001/register";
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-          name: formData.name
-        }),
-      });
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: formData.email,
+        password: formData.password,
+        name: formData.name
+      }),
+    });
 
-      const data = await response.json();
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-        login(data);
-        navigate('/about');
-      }
-      console.log(data);
+    const data = await response.json();
+    if (data.token) {
+      setMessageType('success');
+      localStorage.setItem("token", data.token);
+      login(data);
+      navigate('/about');
+    } else {
+      setMessageType('danger');
+    }
+    setMessage(data.message);
+    setTimeout(() => {
+      setMessage('');
+    }, 3000);
   };
 
   return (
@@ -250,6 +260,12 @@ const AuthPage = ({ login }) => {
                   isLogin ? 'Sign In' : 'Sign Up'
                 )}
               </button>
+
+              {message && (
+                <div className={`alert alert-${messageType} text-center mt-3`} role="alert">
+                  {message}
+                </div>
+              )}
 
               <div className="text-center">
                 <a href="#" className="link-secondary text-decoration-none" onClick={toggleForm}>
