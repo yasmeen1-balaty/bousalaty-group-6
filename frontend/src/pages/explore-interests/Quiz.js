@@ -55,6 +55,7 @@ function Quiz() {
   const handleSubmit = async () => {
     if (!studentID) {
       alert("لازم تسجل دخول أولاً");
+      navigate("/login");
       return;
     }
 
@@ -199,7 +200,7 @@ export default Quiz;
 const questions = [
   {
     questionID: 1,
-    text: "تخيّل أن أمامك يوم كامل حر، أي من هذه الأنشطة تجذبك أكثر؟",
+    text: "تخيّل أن أمامك يوم كامل حر، أي من هذه الأنشطة تجذبك أكثر ؟",
     options: [
       { label: "A", text: "تفكيك جهاز أو إصلاح شيء بيدك" },
       { label: "B", text: "رسم أو كتابة قصة أو تأليف موسيقى" },
