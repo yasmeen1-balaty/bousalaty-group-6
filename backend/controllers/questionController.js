@@ -72,10 +72,25 @@ const getOptionsForQuestion = async (req, res) => {
     }
 };
 
+const getAllQuestions = async (req, res) => {
+    try {
+        const questions = await db.question.findAll({
+            include: [{
+                model: db.option,
+                as: 'options'
+            }]
+        });
+        res.json(questions);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     getQuestionText,
     deleteQuestion,
     createQuestion,
     updateQuestion,
-    getOptionsForQuestion
+    getOptionsForQuestion,
+    getAllQuestions
 };

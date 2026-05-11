@@ -33,7 +33,7 @@ module.exports = {
       },
 
       optionID: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allowNull: false,
         references: {
           model: 'options',

@@ -6,10 +6,9 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('options', {
       optionID: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allowNull : false,
-        primaryKey: true,
-        autoIncrement: true
+        primaryKey: true
       },
       questionID: {
         type: Sequelize.INTEGER,

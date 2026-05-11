@@ -2,35 +2,72 @@ const db = require('../models');
 
 const createResponse = async (req, res) => {
     try {
+
         const { studentID, questionID, optionID } = req.body;
 
         if (!studentID) {
-            return res.status(400).json({ message: "studentID is required" });
+            return res.status(400).json({
+                message: "studentID is required"
+            });
         }
+
         if (!questionID) {
-            return res.status(400).json({ message: "questionID is required" });
+            return res.status(400).json({
+                message: "questionID is required"
+            });
         }
+
         if (!optionID) {
-            return res.status(400).json({ message: "optionID is required" });
+            return res.status(400).json({
+                message: "optionID is required"
+            });
         }
 
         const student = await db.student.findByPk(studentID);
+
         if (!student) {
-            return res.status(404).json({ message: "Student not found" });
+            return res.status(404).json({
+                message: "Student not found"
+            });
         }
 
         const question = await db.question.findByPk(questionID);
+
         if (!question) {
-            return res.status(404).json({ message: "Question not found" });
+            return res.status(404).json({
+                message: "Question not found"
+            });
         }
 
         const option = await db.option.findOne({
-            where: { optionID, questionID }
+            where: {
+                optionID,
+                questionID
+            }
         });
 
         if (!option) {
             return res.status(404).json({
                 message: "Option not found or does not belong to this question"
+            });
+        }
+
+        const existingResponse = await db.response.findOne({
+            where: {
+                studentID,
+                questionID
+            }
+        });
+
+        if (existingResponse) {
+
+            existingResponse.optionID = optionID;
+
+            await existingResponse.save();
+
+            return res.status(200).json({
+                message: "Response updated successfully",
+                response: existingResponse
             });
         }
 
@@ -43,7 +80,11 @@ const createResponse = async (req, res) => {
         res.status(201).json(newResponse);
 
     } catch (error) {
-        res.status(500).json({ message: error.message });
+
+        res.status(500).json({
+            message: error.message
+        });
+
     }
 };
 
