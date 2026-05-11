@@ -131,13 +131,13 @@ export default function SuggestMajors() {
                   <div className="sm-card-emoji mb-3">{major.emoji}</div>
                   <h5 className="sm-card-title mb-2">{major.title}</h5>
                   <p className="sm-card-desc flex-grow-1">{major.desc}</p>
-                  <Link to={"/details"} className="sm-card-btn w-100 mt-3" onClick={() => setSelectedMajor(major)}>
+                  <Link to={`/majors/${major.id}`} className="sm-card-btn w-100 mt-3" onClick={() => setSelectedMajor(major)}>
                     عرض التفاصيل
                   </Link>
                   <button
                     className="btn btn-outline-primary mt-3"
                     style={{ width: "100%" }}
-                    onClick={() => addToFavorite(majors)}
+                    onClick={() => addToFavorite(major)}
                   >
                     اضافة الى التخصصات المحفوظة
                   </button>

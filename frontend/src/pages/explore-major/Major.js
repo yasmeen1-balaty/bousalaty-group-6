@@ -2,19 +2,43 @@ import { Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Major.css';
 import { useState, useEffect } from 'react';
+import { useParams } from "react-router-dom";
 
 const MajorDetails = () => {
-  const [faculty, setFaculty] = useState(null);
+  const [major, setMajor] = useState(null);
+  const { majorID } = useParams();
+
+  const [skills, setSkills] = useState([]);
+  const [opportunities, setOpportunities] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3001/faculties/1")
+    fetch(`http://localhost:3001/majors/${majorID}`)
       .then((res) => res.json())
       .then((data) => {
-        setFaculty(data);
+        setMajor(data);
       });
-  }, []);
 
-  if (!faculty) {
+    fetch(`http://localhost:3001/majors/${majorID}/skills`)
+      .then((res) => res.json())
+      .then((data) => {
+        setSkills(data.skills || []);
+      })
+      .catch((error) => {
+        console.error('Error fetching skills:', error);
+      });
+
+    fetch(`http://localhost:3001/majors/${majorID}/opportunities`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('Fetched opportunities:', data.jobOpportuneties);
+        setOpportunities(data.jobOpportuneties || []);
+      })
+      .catch((error) => {
+        console.error('Error fetching opportunities:', error);
+      });
+  }, [majorID]);
+
+  if (!major) {
     return <div>Loading...</div>;
   }
 
@@ -22,26 +46,35 @@ const MajorDetails = () => {
     <Container className="pb-5 pt-5">
 
       <div className="card w-100 mb-3 mt-3">
-        <div className="card-body">
+        <div className="card-body ms-5 me-5">
           <div className="HC mb-3">
-            <span
-              className="badge text-bg-primary"
-              style={{ fontSize: '20px', fontWeight: 10, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-            >
-              85.5% - 98.5%
-            </span>
 
-            <h5
-              className="card-title"
-              style={{ fontSize: '30px', fontWeight: 'bold' }}
-            >
-              علوم الحاسوب 💻
+            <h5 className="card-title" style={{ fontSize: '30px', fontWeight: 'bold' }} >
+              {major?.majorName}
             </h5>
           </div>
 
-          <p className="card-text">
-            تخصص علوم الحاسوب يركز على تصميم وتطوير البرمجيات، فهم الخوارزميات، وهندسة النظم. يمنحك المهارات لبناء تطبيقات وحلول تقنية مبتكرة تخدم مختلف المجالات. يعد هذا التخصص من أكثر التخصصات طلباً في سوق العمل المحلي والعالمي.
-          </p>
+          <h4 className="card-title">
+            المهارات المكتسبة
+          </h4>
+          <ul>
+            {skills.map((skill, index) => (
+              <li key={index}>
+                {skill.skill}
+              </li>
+            ))}
+          </ul>
+
+          <h4 className="card-title">
+            فرص العمل 💼
+          </h4>
+          <ul>
+            {opportunities.map((job, index) => (
+              <li key={index}>
+                {job.opportunity}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
 
@@ -53,7 +86,7 @@ const MajorDetails = () => {
               <h5 className="card-title pb-3">معدل القبول 🎓</h5>
               <p className="card-text grade pt-2 pb-5">
                 <span className="badge rounded-pill text-black">
-                  85.5% - 98.5%
+                  {major?.acceptanceGrade}
                 </span>
               </p>
             </div>
@@ -64,12 +97,12 @@ const MajorDetails = () => {
           <div className="card h-100">
             <div className="card-body C4">
               <h5 className="card-title">عدد وسعر ساعات التخصص ⏳</h5>
-              <p className="card-text">
+              <div className="card-text">
                 <ul>
-                  <li>عدد الساعات: 132 ساعة</li>
-                  <li>سعر الساعة: 45 دينار</li>
+                  <li>عدد الساعات: {major?.creditHours} ساعة</li>
+                  <li>سعر الساعة: {major?.costPerHour} دينار</li>
                 </ul>
-              </p>
+              </div>
             </div>
           </div>
         </div>
@@ -79,7 +112,7 @@ const MajorDetails = () => {
             <div className="card-body C2">
               <h5 className="card-title">المواد الاساسية 📚</h5>
               <p className="card-text">
-               للاطلاع على خطة التخصص والمواد الاساسية اضغط على زر عرض التفاصيل.
+                للاطلاع على خطة التخصص والمواد الاساسية اضغط على زر عرض التفاصيل.
               </p>
               <div className="mt-3">
                 <button className="btn btn-primary">عرض تفاصيل</button>

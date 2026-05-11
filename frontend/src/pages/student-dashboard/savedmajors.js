@@ -21,7 +21,7 @@ export function SavedMajors({ majors = [] }) {
                   <div className="card-body d-flex flex-column text-center">
                     <h5 className="card-title">{major.majorName}</h5>
                     <p className="card-text text-muted">عدد الساعات:{major.creditHours}</p>
-                    <Link to={`/details/${major.majorID}`} className="btn  btn-primary mt-auto">عرض التفاصيل</Link>
+                    <Link to={`/majors/${major.majorID}`} className="btn  btn-primary mt-auto">عرض التفاصيل</Link>
                   </div>
                 </div>
               </div>

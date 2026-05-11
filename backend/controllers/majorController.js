@@ -31,7 +31,7 @@ const getMajorsJobOpportuneties = async (req, res) => {
         const majorID = req.params.majorID;
         const major = await db.major.findByPk(majorID, {
             include: [
-                { model: db.jobOpportuneties }
+                { model: db.jobOpportuneties , attributes: ['opportunity'] }
             ]
         });
         if (!major) {
