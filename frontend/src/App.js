@@ -12,6 +12,7 @@ import About from './pages/suggest-majors/About';
 import MajorDetails from './pages/explore-major/Major';
 import { Dashboard } from './pages/student-dashboard/dashboard';
 import { useState, useEffect } from 'react';
+import AdminAuthPage from './pages/home-page/auth/adminLogin';
 
      
 function App() {
@@ -56,6 +57,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<AuthPage login={login} />} />
+        <Route path='/adminLogin' element={ <AdminAuthPage />} />
         <Route path="/majors/:majorID" element={<MajorDetails />} />
         <Route path="/suggestions" element={<SuggestMajors />} />
         <Route path="/about" element={<About />} />

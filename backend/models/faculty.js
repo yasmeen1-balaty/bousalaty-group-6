@@ -16,6 +16,9 @@ module.exports = (sequelize, DataTypes) => {
 
         faculty.hasMany(models.major, { foreignKey: 'facultyID' })
         models.major.belongsTo(faculty, { foreignKey: 'facultyID' })
+
+        faculty.belongsTo(models.admin, { foreignKey: 'adminID' })
+        models.admin.hasMany(faculty, { foreignKey: 'adminID' })
   }
 }
   faculty.init({
@@ -28,7 +31,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
        allowNull: false ,
         unique: true
-      }
+      },
+      adminID: {
+        type: DataTypes.INTEGER
+    }
   }, {
     sequelize,
     modelName: 'faculty',

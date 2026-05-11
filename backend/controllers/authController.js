@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const Student = db.student;
+const Admin = db.admin;
 //register
 const register = async (req, res) => {
     try {
@@ -37,7 +38,9 @@ const register = async (req, res) => {
         const token = jwt.sign(
             {
                 studentID: student.studentID,
-                email: student.email
+                email: student.email,
+                role: 'student'
+
             },
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
@@ -85,7 +88,8 @@ const login = async (req, res) => {
         const token = jwt.sign(
             {
                 studentID: student.studentID,
-                email: student.email
+                email: student.email,
+                role: 'student'
             },
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
@@ -102,7 +106,77 @@ const login = async (req, res) => {
     }
 };
 
+const registerAdmin = async (req, res) => {
+    const { name, email, password, role } = req.body;
+
+    if (!name || !email || !password) {
+        return res.status(400).json({ message: "Name, email, password required" });
+    }
+
+    const existingAdmin = await Admin.findOne({ where: { email } });
+    if (existingAdmin) return res.status(400).json({ message: "Email already exists" });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const admin = await Admin.create({ name, email, password: hashedPassword, role: role || 'admin' });
+
+    const token = jwt.sign(
+        { adminID: admin.adminID, email: admin.email, role: admin.role },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+    );
+
+    res.status(201).json({ message: "Admin registered", token, admin });
+};
+
+const loginAdmin = async (req, res) => {
+    const { email, password } = req.body;
+    console.log('Login attempt for email:', email);
+
+    const admin = await Admin.findOne({ where: { email } });
+    console.log('Admin found:', admin ? admin.email : 'none');
+    if (!admin) return res.status(404).json({ message: "Admin not found" });
+
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) return res.status(401).json({ message: "Invalid password" });
+
+    const token = jwt.sign(
+        { adminID: admin.adminID, email: admin.email, role: admin.role },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+    );
+
+    res.json({ message: "Login successful", token, admin });
+};
+
+const verifyToken = (req, res, next) => {
+    const authHeader = req.headers.authorization; 
+    if (!authHeader) return res.status(401).json({ message: "No token provided" });
+
+    const token = authHeader.split(" ")[1]; // Bearer <token>
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); 
+        req.user = decoded; 
+        next(); // continue to the next middleware or route handler
+    } catch (err) {
+        res.status(401).json({ message: "Invalid token" });
+    }
+};
+
+const accessAdminPanel = (req, res, next) => { // Middleware to check if user is admin
+    if (req.user && req.user.role === 'admin') {
+        next(); 
+    } else {
+        res.status(403).json({ message: "Access denied. You are not an admin." });
+    }
+};
+
 module.exports = {
     register,
-    login
+    login,
+    registerAdmin,
+    loginAdmin,
+    verifyToken,
+    accessAdminPanel
 };

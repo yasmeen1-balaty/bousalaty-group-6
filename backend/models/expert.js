@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       expert.belongsTo(models.faculty, { foreignKey: 'facultyID' })
       models.faculty.hasMany(expert, { foreignKey: 'facultyID' })
+
+        expert.belongsTo(models.admin, { foreignKey: 'adminID' })
+        models.admin.hasMany(expert, { foreignKey: 'adminID' })
     }
   }
   expert.init({
@@ -37,7 +40,10 @@ module.exports = (sequelize, DataTypes) => {
     facultyID: {
       type: DataTypes.INTEGER,
       allowNull: false
-    }
+    },
+      adminID: {
+      type: DataTypes.INTEGER
+      }
   }, {
     sequelize,
     modelName: 'expert',
