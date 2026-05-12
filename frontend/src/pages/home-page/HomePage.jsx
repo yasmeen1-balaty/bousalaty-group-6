@@ -1,7 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import img1 from "./image/hero-bg.jpeg"
+import { Link, useNavigate } from 'react-router-dom';
+import img1 from "./image/hero-bg.jpeg";
+
 const HomePage = () => {
+    const navigate = useNavigate();
+      const savedUser = JSON.parse(localStorage.getItem("user"));
+      const studentID = savedUser?.id;
     const features = [
         {
             icon: 'fas fa-brain',
@@ -19,7 +23,13 @@ const HomePage = () => {
             desc: 'مناسب أكثر لمهاراتك الحاسوبية'
         }
     ];
-
+  const handleNav = async () => {
+    if (!studentID) {
+      navigate('/login')
+      return;
+    }
+    navigate('/quiz')
+}
     return (
         <>
         <section
@@ -76,8 +86,8 @@ const HomePage = () => {
           تحليل ميولك ومهاراتك واقتراح أفضل تخصص لك
         </p>
 
-        <Link
-          to="/login"
+        <button 
+          onClick={handleNav}
           style={{
             background: 'linear-gradient(90deg, #10b981, #059669)',
             color: '#fff',
@@ -90,7 +100,7 @@ const HomePage = () => {
           }}
         >
           🚀 ابدأ التحليل الذكي
-        </Link>
+        </button>
       </div>
 
     </div>

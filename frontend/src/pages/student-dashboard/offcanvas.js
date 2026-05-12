@@ -36,13 +36,13 @@ export function Offcanvas() {
                     {isAdmin ? (
                         <>
                             <li className="list-group-item list-group-item-action">
-                                <Link to="/adminpanel" className="text-decoration-none d-block">
+                                <Link to="/admin/adminpanel" className="text-decoration-none d-block">
                                     <div data-bs-dismiss="offcanvas"> ادارة الكليات والتخصصات </div>
                                 </Link>
                             </li>
 
                             <li className="list-group-item list-group-item-action">
-                                <Link to="/adminpanel" className="text-decoration-none d-block">
+                                <Link to="/admin/adminpanel" className="text-decoration-none d-block">
                                     <div data-bs-dismiss="offcanvas">إدارة الخبراء</div>
                                 </Link>
                             </li>
