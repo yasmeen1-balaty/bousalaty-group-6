@@ -77,7 +77,7 @@ const HomePage = () => {
         </p>
 
         <Link
-          to="/quiz"
+          to="/login"
           style={{
             background: 'linear-gradient(90deg, #10b981, #059669)',
             color: '#fff',

@@ -20,6 +20,15 @@ module.exports = {
         allowNull: false,
         unique: true
       },
+      adminID: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'admins',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL'
+      },
       costPerHour: {
         type: Sequelize.INTEGER
       },

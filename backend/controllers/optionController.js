@@ -27,6 +27,7 @@ const createOption = async (req, res) => {
     try {
         const { optionText } = req.body;
         const { questionID } = req.body;
+        const {optionID} = req.body;
 
         if (!questionID) {
             return res.status(400).json({ message: "questionID is required" });
@@ -34,7 +35,10 @@ const createOption = async (req, res) => {
         if (!optionText) {
             return res.status(400).json({ message: "optionText is required" });
         }
-        const newOption = await db.option.create({ optionText, questionID });
+        if (!optionID) {
+            return res.status(400).json({ message: "optionID is required" });
+        }
+        const newOption = await db.option.create({ optionID, optionText, questionID });
         res.status(201).json(newOption);
     } catch (error) {
         res.status(500).json({ message: error.message });

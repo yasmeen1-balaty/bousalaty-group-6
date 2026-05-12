@@ -19,9 +19,9 @@ module.exports = (sequelize, DataTypes) => {
   }
   option.init({
     optionID: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
+      type: DataTypes.STRING,
+      allowNull: false,
+      primaryKey: true
     },
     questionID: {
       type: DataTypes.INTEGER,
