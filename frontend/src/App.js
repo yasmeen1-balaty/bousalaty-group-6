@@ -57,7 +57,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<AuthPage login={login} />} />
-        <Route path='/adminLogin' element={ <AdminAuthPage />} />
+        <Route path='/adminLogin' element={ <AdminAuthPage login={login}/>} />
         <Route path="/majors/:majorID" element={<MajorDetails />} />
         <Route path="/suggestions" element={<SuggestMajors />} />
         <Route path="/about" element={<About />} />

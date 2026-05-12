@@ -93,145 +93,148 @@ const AdminAuthPage = ({ login }) => {
         localStorage.setItem("role", "admin");
 
         if (data.token) {
-            setMessageType('success');
-            localStorage.setItem("token", data.token);
+            const userData = {
+                token: data.token,
+                role: "admin"
+            };
 
-            if (login) {
-                login(data);
-            }
+            localStorage.setItem("user", JSON.stringify(userData));
+
+            login(userData);
+
             navigate('/about');
-        } else {
-            setMessageType('danger');
-        }
+    } else {
+        setMessageType('danger');
+}
 
-        setTimeout(() => {
-            navigate('/about');
-        }, 500);
+setTimeout(() => {
+    navigate('/about');
+}, 500);
 
-        return true;
+return true;
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        if (!validateForm()) {
-            return;
+    if (!validateForm()) {
+        return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+        const success = await handleAuth();
+
+        if (success) {
+            setFormData({
+                email: '',
+                password: ''
+            });
         }
+    } catch (error) {
+        setMessageType('danger');
+        setMessage('Error occurred. Please try again.');
+    }
 
-        setIsSubmitting(true);
+    setIsSubmitting(false);
+};
 
-        try {
-            const success = await handleAuth();
+return (
+    <div className="auth-container">
+        <div className="split-screen">
+            <div className="left-panel">
+                <i className="bi bi-person-badge logo-icon"></i>
+                <h1>Bousalaty</h1>
+                <p>
+                    Welcome to your educational journey.
+                    <br />
+                    Discover majors and build your future.
+                </p>
+            </div>
 
-            if (success) {
-                setFormData({
-                    email: '',
-                    password: ''
-                });
-            }
-        } catch (error) {
-            setMessageType('danger');
-            setMessage('Error occurred. Please try again.');
-        }
+            <div className="right-panel">
+                <div className="form-card">
+                    <div className="form-switcher text text-center">
+                        <h2>Welcome Back Admin</h2>
+                        <p className="text-secondary mb-4">
+                            Please sign in to your account
+                        </p>
+                    </div>
 
-        setIsSubmitting(false);
-    };
-
-    return (
-        <div className="auth-container">
-            <div className="split-screen">
-                <div className="left-panel">
-                    <i className="bi bi-person-badge logo-icon"></i>
-                    <h1>Bousalaty</h1>
-                    <p>
-                        Welcome to your educational journey.
-                        <br />
-                        Discover majors and build your future.
-                    </p>
-                </div>
-
-                <div className="right-panel">
-                    <div className="form-card">
-                        <div className="form-switcher text text-center">
-                            <h2>Welcome Back Admin</h2>
-                            <p className="text-secondary mb-4">
-                                Please sign in to your account
-                            </p>
+                    <form ref={formRef} onSubmit={handleSubmit} noValidate>
+                        <div className="form-floating form-content show">
+                            <i className={`bi bi-envelope input-icon ${focusedInputs.email ? 'focused' : ''}`}></i>
+                            <input
+                                type="email"
+                                className="form-control"
+                                id="email"
+                                name="email"
+                                placeholder="name@example.com"
+                                value={formData.email}
+                                onChange={handleInputChange}
+                                onFocus={() => handleFocus('email')}
+                                onBlur={() => handleBlur('email')}
+                                required
+                            />
+                            <label htmlFor="email">Email address</label>
+                            {errors.email && <div className="error-message">{errors.email}</div>}
                         </div>
 
-                        <form ref={formRef} onSubmit={handleSubmit} noValidate>
-                            <div className="form-floating form-content show">
-                                <i className={`bi bi-envelope input-icon ${focusedInputs.email ? 'focused' : ''}`}></i>
-                                <input
-                                    type="email"
-                                    className="form-control"
-                                    id="email"
-                                    name="email"
-                                    placeholder="name@example.com"
-                                    value={formData.email}
-                                    onChange={handleInputChange}
-                                    onFocus={() => handleFocus('email')}
-                                    onBlur={() => handleBlur('email')}
-                                    required
-                                />
-                                <label htmlFor="email">Email address</label>
-                                {errors.email && <div className="error-message">{errors.email}</div>}
-                            </div>
+                        <div className="form-floating form-content show">
+                            <i className={`bi bi-lock input-icon ${focusedInputs.password ? 'focused' : ''}`}></i>
+                            <input
+                                type="password"
+                                className="form-control"
+                                id="password"
+                                name="password"
+                                placeholder="Password"
+                                value={formData.password}
+                                onChange={handleInputChange}
+                                onFocus={() => handleFocus('password')}
+                                onBlur={() => handleBlur('password')}
+                                required
+                            />
+                            <label htmlFor="password">Password</label>
+                            {errors.password && <div className="error-message">{errors.password}</div>}
+                        </div>
 
-                            <div className="form-floating form-content show">
-                                <i className={`bi bi-lock input-icon ${focusedInputs.password ? 'focused' : ''}`}></i>
-                                <input
-                                    type="password"
-                                    className="form-control"
-                                    id="password"
-                                    name="password"
-                                    placeholder="Password"
-                                    value={formData.password}
-                                    onChange={handleInputChange}
-                                    onFocus={() => handleFocus('password')}
-                                    onBlur={() => handleBlur('password')}
-                                    required
-                                />
-                                <label htmlFor="password">Password</label>
-                                {errors.password && <div className="error-message">{errors.password}</div>}
-                            </div>
-
-                            <button
-                                type="submit"
-                                className="btn btn-primary mb-4 mt-3"
-                                disabled={isSubmitting}
-                            >
-                                {isSubmitting ? (
-                                    <>
-                                        <span className="spinner-border spinner-border-sm me-2" role="status"></span>
-                                        Signing In...
-                                    </>
-                                ) : (
-                                    'Sign In'
-                                )}
-                            </button>
-
-                            {message && (
-                                <div className={`alert alert-${messageType} text-center mt-3`} role="alert">
-                                    {message}
-                                </div>
+                        <button
+                            type="submit"
+                            className="btn btn-primary mb-4 mt-3"
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting ? (
+                                <>
+                                    <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                                    Signing In...
+                                </>
+                            ) : (
+                                'Sign In'
                             )}
+                        </button>
 
-                            <div className="text-center">
-                                <button
-                                    type="button"
-                                    className="btn btn-link link-secondary text-decoration-none"
-                                    onClick={() => navigate('/Login')}
-                                >
-                                    Not an Admin? Continue as student
-                                </button>
+                        {message && (
+                            <div className={`alert alert-${messageType} text-center mt-3`} role="alert">
+                                {message}
                             </div>
-                        </form>
-                    </div>
+                        )}
+
+                        <div className="text-center">
+                            <button
+                                type="button"
+                                className="btn btn-link link-secondary text-decoration-none"
+                                onClick={() => navigate('/Login')}
+                            >
+                                Not an Admin? Continue as student
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    );
+    </div>
+);
 };
 
 export default AdminAuthPage;
