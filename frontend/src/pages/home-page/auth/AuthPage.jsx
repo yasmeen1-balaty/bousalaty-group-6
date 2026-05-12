@@ -105,7 +105,11 @@ const AuthPage = ({ login }) => {
 
   const handleAuth = async () => {
     setMessage('');
-    const url = isLogin ? "http://localhost:3001/login" : "http://localhost:3001/register";
+
+    const url = isLogin
+      ? "http://localhost:3001/login"
+      : "http://localhost:3001/register";
+
     const response = await fetch(url, {
       method: "POST",
       headers: {
@@ -119,16 +123,31 @@ const AuthPage = ({ login }) => {
     });
 
     const data = await response.json();
+
     if (data.token) {
       setMessageType('success');
+
       localStorage.setItem("token", data.token);
-      
-      login(data);
-      navigate('/about');
+
+      login(data.user || data.student);
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(data.user || data.student)
+      );
+
+      if ((data.student)?.role === "admin" || (data.user)?.role === "admin") {
+        navigate('/admin-panel');
+      } else {
+        navigate('/about');
+      }
+
     } else {
       setMessageType('danger');
     }
+
     setMessage(data.message);
+
     setTimeout(() => {
       setMessage('');
     }, 3000);
@@ -275,7 +294,7 @@ const AuthPage = ({ login }) => {
                     : 'Already have an account? Sign in'}
                 </a>
                 <br />
-                <a href= "/adminLogin" className="link-secondary text-decoration-none" onClick={toggleForm}>Continue as Admin</a>
+                <a href="/adminLogin" className="link-secondary text-decoration-none" onClick={toggleForm}>Continue as Admin</a>
               </div>
             </form>
           </div>

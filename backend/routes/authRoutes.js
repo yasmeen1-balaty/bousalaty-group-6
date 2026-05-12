@@ -8,7 +8,14 @@ router.post('/login', authController.login);
 
 // Routes for Admin
 router.post('/admin/login', authController.loginAdmin);
-router.get('/admin/dashboard', authController.verifyToken, authController.accessAdminPanel);
+router.get('/admin/adminpanel',
+    authController.verifyToken,
+    authController.accessAdminPanel,
+    (req, res) => {
+        res.json({
+            message: "Welcome Admin"
+        });
+    });
 
 console.log("authRoutes loaded");
 module.exports = router;
