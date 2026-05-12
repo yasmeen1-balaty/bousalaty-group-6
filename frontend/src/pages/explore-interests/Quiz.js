@@ -55,9 +55,10 @@ function Quiz() {
   const handleSubmit = async () => {
     if (!studentID) {
       alert("لازم تسجل دخول أولاً");
-      navigate("/login");
+      navigate('/login')
       return;
     }
+    
 
     const responses = Object.entries(answers).map(([questionID, optionID]) => ({
       studentID,

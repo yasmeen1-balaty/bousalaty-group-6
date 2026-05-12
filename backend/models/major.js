@@ -24,6 +24,9 @@ module.exports = (sequelize, DataTypes) => {
 
        major.hasMany(models.jobOpportuneties, { foreignKey: 'majorID' })
        models.jobOpportuneties.belongsTo(major, { foreignKey: 'majorID' })
+
+        major.belongsTo(models.admin, { foreignKey: 'adminID' })
+        models.admin.hasMany(major, { foreignKey: 'adminID' })
     }
   }
   major.init({
@@ -49,6 +52,9 @@ module.exports = (sequelize, DataTypes) => {
     facultyID: {
       type: DataTypes.INTEGER,
       allowNull: false
+    },
+    adminID: {
+      type: DataTypes.INTEGER
     }
   }, {
     sequelize,

@@ -274,6 +274,8 @@ const AuthPage = ({ login }) => {
                     ? "Don't have an account? Sign up"
                     : 'Already have an account? Sign in'}
                 </a>
+                <br />
+                <a href= "/adminLogin" className="link-secondary text-decoration-none" onClick={toggleForm}>Continue as Admin</a>
               </div>
             </form>
           </div>
