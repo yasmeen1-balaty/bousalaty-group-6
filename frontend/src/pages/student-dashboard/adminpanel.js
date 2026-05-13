@@ -10,6 +10,7 @@ export default function AdminPanel() {
   const fetchFaculties = async () => {
     try {
       const res = await fetch("http://localhost:3001/faculties");
+      console.log(faculties);
       const data = await res.json();
       setFaculties(data);
     } catch (err) {
@@ -430,7 +431,7 @@ export default function AdminPanel() {
 
       {/* ================= FORMS ================= */}
 
-      <div className="mt-5 mx-auto" style={{ maxWidth: "600px" }}>
+      <div className="mt-5 mx-auto">
 
         {activeForm === "addFaculty" && (
           <form onSubmit={addFaculty} className="card p-4 shadow">
@@ -449,8 +450,12 @@ export default function AdminPanel() {
         )}
 
         {activeForm === "updateFaculty" && (
-          <>
+          <div className="container">
+            <div className="row" >
+              <div className="col-4">
           <FacultiesTable faculties={faculties} />
+          </div>
+          <div className="col-4">
           <form onSubmit={updateFaculty} className="card p-4 shadow">
             <h4 className="text-center mb-3">تعديل كلية</h4>
 
@@ -472,12 +477,18 @@ export default function AdminPanel() {
 
             <button className="btn btn-warning text-white">تعديل</button>
           </form>
-          </>
+          </div>
+          </div>
+          </div>
         )}
 
         {activeForm === "deleteFaculty" && (
-          <>
+          <div className="container">
+            <div className="row" >
+              <div className="col-4">
           <FacultiesTable faculties={faculties} />
+          </div>
+          <div className="col-4">
           <form onSubmit={deleteFaculty} className="card p-4 shadow">
             <h4 className="text-center mb-3">حذف كلية</h4>
 
@@ -491,12 +502,18 @@ export default function AdminPanel() {
 
             <button className="btn btn-danger">حذف</button>
           </form>
-          </>
+          </div>
+          </div>
+          </div>
         )}
 
         {activeForm === "addMajor" && (
-          <>          
+          <div className="container">
+            <div className="row" >
+              <div className="col-4">       
           <FacultiesTable faculties={faculties} />
+          </div>
+          <div className="col-4">
             <form onSubmit={addMajor} className="card p-4 shadow">
               <h4 className="text-center mb-3">إضافة تخصص</h4>
 
@@ -509,12 +526,18 @@ export default function AdminPanel() {
 
               <button className="btn btn-success">حفظ</button>
             </form>
-            </>
+            </div>
+            </div>
+            </div>
         )}
 
         {activeForm === "updateMajor" && (
-          <>
+          <div className="container">
+            <div className="row" >
+              <div className="col-4">
           <FacultiesTable faculties={faculties} />
+          </div>
+          <div className="col-4">
           <form onSubmit={updateMajor} className="card p-4 shadow">
             <h4 className="text-center mb-3">تعديل تخصص</h4>
 
@@ -528,7 +551,9 @@ export default function AdminPanel() {
 
             <button className="btn btn-warning text-white">تعديل</button>
           </form>
-          </>
+          </div>
+          </div>
+          </div>
         )}
 
         {activeForm === "deleteMajor" && (
@@ -548,8 +573,12 @@ export default function AdminPanel() {
         )}
 
         {activeForm === "addExpert" && (
-          <>
-                    <FacultiesTable faculties={faculties} />
+          <div className="container">
+            <div className="row" >
+              <div className="col-4">
+              <FacultiesTable faculties={faculties} />
+              </div>
+              <div className="col-4">
           <form onSubmit={addExpert} className="card p-4 shadow">
             <h4 className="text-center mb-3">إضافة خبير</h4>
 
@@ -560,12 +589,18 @@ export default function AdminPanel() {
 
             <button className="btn btn-success">حفظ</button>
           </form>
-          </>
+          </div>
+          </div>
+          </div>
         )}
 
         {activeForm === "updateExpert" && (
-          <>
-                    <FacultiesTable faculties={faculties} />
+          <div className="container">
+            <div className="row" >
+              <div className="col-4">
+              <FacultiesTable faculties={faculties} />
+              </div>
+              <div className="col-4">
           <form onSubmit={updateExpert} className="card p-4 shadow">
             <h4 className="text-center mb-3">تعديل خبير</h4>
 
@@ -577,7 +612,9 @@ export default function AdminPanel() {
 
             <button className="btn btn-warning text-white">تعديل</button>
           </form>
-          </>
+          </div>
+          </div>
+          </div>
         )}
 
         {activeForm === "deleteExpert" && (
