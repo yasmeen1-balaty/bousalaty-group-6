@@ -2,15 +2,18 @@ import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 import FacultiesTable from "./facultiesTable";
+import MajorsTable from "./majorsTable";
+import ExpertsTable from "./expertsTable";
 
 export default function AdminPanel() {
 
   const [faculties, setFaculties] = useState([]);
+  const [majors, setMajors] = useState([]);
+  const [experts, setExperts] = useState([]);
 
   const fetchFaculties = async () => {
     try {
       const res = await fetch("http://localhost:3001/faculties");
-      console.log(faculties);
       const data = await res.json();
       setFaculties(data);
     } catch (err) {
@@ -18,8 +21,30 @@ export default function AdminPanel() {
     }
   };
 
+  const fetchMajors = async () => {
+    try {
+      const res = await fetch("http://localhost:3001/majors");
+      const data = await res.json();
+      setMajors(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchExperts = async () => {
+    try {
+      const res = await fetch("http://localhost:3001/experts");
+      const data = await res.json();
+      setExperts(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     fetchFaculties();
+    fetchMajors();
+    fetchExperts();
   }, []);
 
   const navigate = useNavigate();
@@ -453,32 +478,32 @@ export default function AdminPanel() {
           <div className="container">
             <div className="row" >
               <div className="col-4">
-          <FacultiesTable faculties={faculties} />
-          </div>
-          <div className="col-4">
-          <form onSubmit={updateFaculty} className="card p-4 shadow">
-            <h4 className="text-center mb-3">تعديل كلية</h4>
+                <FacultiesTable faculties={faculties} />
+              </div>
+              <div className="col-4">
+                <form onSubmit={updateFaculty} className="card p-4 shadow">
+                  <h4 className="text-center mb-3">تعديل كلية</h4>
 
-            <input
-              className="form-control mb-3"
-              placeholder="رقم الكلية facultyID"
-              value={facultyID}
-              onChange={(e) => setFacultyID(e.target.value)}
-              required
-            />
+                  <input
+                    className="form-control mb-3"
+                    placeholder="رقم الكلية facultyID"
+                    value={facultyID}
+                    onChange={(e) => setFacultyID(e.target.value)}
+                    required
+                  />
 
-            <input
-              className="form-control mb-3"
-              placeholder="اسم الكلية الجديد"
-              value={facultyName}
-              onChange={(e) => setFacultyName(e.target.value)}
-              required
-            />
+                  <input
+                    className="form-control mb-3"
+                    placeholder="اسم الكلية الجديد"
+                    value={facultyName}
+                    onChange={(e) => setFacultyName(e.target.value)}
+                    required
+                  />
 
-            <button className="btn btn-warning text-white">تعديل</button>
-          </form>
-          </div>
-          </div>
+                  <button className="btn btn-warning text-white">تعديل</button>
+                </form>
+              </div>
+            </div>
           </div>
         )}
 
@@ -486,111 +511,123 @@ export default function AdminPanel() {
           <div className="container">
             <div className="row" >
               <div className="col-4">
-          <FacultiesTable faculties={faculties} />
-          </div>
-          <div className="col-4">
-          <form onSubmit={deleteFaculty} className="card p-4 shadow">
-            <h4 className="text-center mb-3">حذف كلية</h4>
+                <FacultiesTable faculties={faculties} />
+              </div>
+              <div className="col-4">
+                <form onSubmit={deleteFaculty} className="card p-4 shadow">
+                  <h4 className="text-center mb-3">حذف كلية</h4>
 
-            <input
-              className="form-control mb-3"
-              placeholder="رقم الكلية facultyID"
-              value={facultyID}
-              onChange={(e) => setFacultyID(e.target.value)}
-              required
-            />
+                  <input
+                    className="form-control mb-3"
+                    placeholder="رقم الكلية facultyID"
+                    value={facultyID}
+                    onChange={(e) => setFacultyID(e.target.value)}
+                    required
+                  />
 
-            <button className="btn btn-danger">حذف</button>
-          </form>
-          </div>
-          </div>
+                  <button className="btn btn-danger">حذف</button>
+                </form>
+              </div>
+            </div>
           </div>
         )}
 
         {activeForm === "addMajor" && (
           <div className="container">
             <div className="row" >
-              <div className="col-4">       
-          <FacultiesTable faculties={faculties} />
+              <div className="col-4">
+                <FacultiesTable faculties={faculties} />
+              </div>
+              <div className="col-4">
+                <form onSubmit={addMajor} className="card p-4 shadow">
+                  <h4 className="text-center mb-3">إضافة تخصص</h4>
+
+                  <input className="form-control mb-3" placeholder="اسم التخصص" value={majorName} onChange={(e) => setMajorName(e.target.value)} required />
+                  <input className="form-control mb-3" placeholder="رقم الكلية facultyID" value={majorFacultyID} onChange={(e) => setMajorFacultyID(e.target.value)} required />
+                  <input className="form-control mb-3" placeholder="معدل القبول" value={acceptanceGrade} onChange={(e) => setAcceptanceGrade(e.target.value)} />
+                  <input className="form-control mb-3" placeholder="عدد الساعات" value={creditHours} onChange={(e) => setCreditHours(e.target.value)} />
+                  <input className="form-control mb-3" placeholder="سعر الساعة" value={costPerHour} onChange={(e) => setCostPerHour(e.target.value)} />
+                  <input className="form-control mb-3" placeholder="رابط الخطة الدراسية" value={studyPlanURL} onChange={(e) => setStudyPlanURL(e.target.value)} />
+
+                  <button className="btn btn-success">حفظ</button>
+                </form>
+              </div>
+            </div>
           </div>
-          <div className="col-4">
-            <form onSubmit={addMajor} className="card p-4 shadow">
-              <h4 className="text-center mb-3">إضافة تخصص</h4>
-
-              <input className="form-control mb-3" placeholder="اسم التخصص" value={majorName} onChange={(e) => setMajorName(e.target.value)} required />
-              <input className="form-control mb-3" placeholder="رقم الكلية facultyID" value={majorFacultyID} onChange={(e) => setMajorFacultyID(e.target.value)} required />
-              <input className="form-control mb-3" placeholder="معدل القبول" value={acceptanceGrade} onChange={(e) => setAcceptanceGrade(e.target.value)} />
-              <input className="form-control mb-3" placeholder="عدد الساعات" value={creditHours} onChange={(e) => setCreditHours(e.target.value)} />
-              <input className="form-control mb-3" placeholder="سعر الساعة" value={costPerHour} onChange={(e) => setCostPerHour(e.target.value)} />
-              <input className="form-control mb-3" placeholder="رابط الخطة الدراسية" value={studyPlanURL} onChange={(e) => setStudyPlanURL(e.target.value)} />
-
-              <button className="btn btn-success">حفظ</button>
-            </form>
-            </div>
-            </div>
-            </div>
         )}
 
         {activeForm === "updateMajor" && (
           <div className="container">
             <div className="row" >
               <div className="col-4">
-          <FacultiesTable faculties={faculties} />
-          </div>
-          <div className="col-4">
-          <form onSubmit={updateMajor} className="card p-4 shadow">
-            <h4 className="text-center mb-3">تعديل تخصص</h4>
+                <FacultiesTable faculties={faculties} />
+              </div>
+              <div className="col-4">
+                <form onSubmit={updateMajor} className="card p-4 shadow">
+                  <h4 className="text-center mb-3">تعديل تخصص</h4>
 
-            <input className="form-control mb-3" placeholder="رقم التخصص majorID" value={majorID} onChange={(e) => setMajorID(e.target.value)} required />
-            <input className="form-control mb-3" placeholder="اسم التخصص الجديد" value={majorName} onChange={(e) => setMajorName(e.target.value)} required />
-            <input className="form-control mb-3" placeholder="رقم الكلية facultyID" value={majorFacultyID} onChange={(e) => setMajorFacultyID(e.target.value)} required />
-            <input className="form-control mb-3" placeholder="معدل القبول" value={acceptanceGrade} onChange={(e) => setAcceptanceGrade(e.target.value)} />
-            <input className="form-control mb-3" placeholder="عدد الساعات" value={creditHours} onChange={(e) => setCreditHours(e.target.value)} />
-            <input className="form-control mb-3" placeholder="سعر الساعة" value={costPerHour} onChange={(e) => setCostPerHour(e.target.value)} />
-            <input className="form-control mb-3" placeholder="رابط الخطة الدراسية" value={studyPlanURL} onChange={(e) => setStudyPlanURL(e.target.value)} />
+                  <input className="form-control mb-3" placeholder="رقم التخصص majorID" value={majorID} onChange={(e) => setMajorID(e.target.value)} required />
+                  <input className="form-control mb-3" placeholder="اسم التخصص الجديد" value={majorName} onChange={(e) => setMajorName(e.target.value)} required />
+                  <input className="form-control mb-3" placeholder="رقم الكلية facultyID" value={majorFacultyID} onChange={(e) => setMajorFacultyID(e.target.value)} required />
+                  <input className="form-control mb-3" placeholder="معدل القبول" value={acceptanceGrade} onChange={(e) => setAcceptanceGrade(e.target.value)} />
+                  <input className="form-control mb-3" placeholder="عدد الساعات" value={creditHours} onChange={(e) => setCreditHours(e.target.value)} />
+                  <input className="form-control mb-3" placeholder="سعر الساعة" value={costPerHour} onChange={(e) => setCostPerHour(e.target.value)} />
+                  <input className="form-control mb-3" placeholder="رابط الخطة الدراسية" value={studyPlanURL} onChange={(e) => setStudyPlanURL(e.target.value)} />
 
-            <button className="btn btn-warning text-white">تعديل</button>
-          </form>
-          </div>
-          </div>
+                  <button className="btn btn-warning text-white">تعديل</button>
+                </form>
+              </div>
+              <div className="col-4" >
+                <MajorsTable majors={majors} />
+              </div>
+            </div>
           </div>
         )}
 
         {activeForm === "deleteMajor" && (
-          <form onSubmit={deleteMajor} className="card p-4 shadow">
-            <h4 className="text-center mb-3">حذف تخصص</h4>
+          <div className="conatainer" >
+            <div className="row">
+              <div className="col-4" >
+                <MajorsTable majors={majors} />
+              </div>
+              <div className="col-4">
+              <form onSubmit={deleteMajor} className="card p-4 shadow">
+                <h4 className="text-center mb-3">حذف تخصص</h4>
 
-            <input
-              className="form-control mb-3"
-              placeholder="رقم التخصص majorID"
-              value={majorID}
-              onChange={(e) => setMajorID(e.target.value)}
-              required
-            />
+                <input
+                  className="form-control mb-3"
+                  placeholder="رقم التخصص majorID"
+                  value={majorID}
+                  onChange={(e) => setMajorID(e.target.value)}
+                  required
+                />
 
-            <button className="btn btn-danger">حذف</button>
-          </form>
+                <button className="btn btn-danger">حذف</button>
+              </form>
+              </div>
+            </div>
+          </div>
         )}
 
         {activeForm === "addExpert" && (
           <div className="container">
             <div className="row" >
               <div className="col-4">
-              <FacultiesTable faculties={faculties} />
+                <FacultiesTable faculties={faculties} />
               </div>
               <div className="col-4">
-          <form onSubmit={addExpert} className="card p-4 shadow">
-            <h4 className="text-center mb-3">إضافة خبير</h4>
+                <form onSubmit={addExpert} className="card p-4 shadow">
+                  <h4 className="text-center mb-3">إضافة خبير</h4>
 
-            <input className="form-control mb-3" placeholder="الاسم الأول" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
-            <input className="form-control mb-3" placeholder="اسم العائلة" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
-            <input className="form-control mb-3" placeholder="الإيميل" value={expertEmail} onChange={(e) => setExpertEmail(e.target.value)} required />
-            <input className="form-control mb-3" placeholder="رقم الكلية facultyID" value={expertFacultyID} onChange={(e) => setExpertFacultyID(e.target.value)} required />
+                  <input className="form-control mb-3" placeholder="الاسم الأول" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+                  <input className="form-control mb-3" placeholder="اسم العائلة" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+                  <input className="form-control mb-3" placeholder="الإيميل" value={expertEmail} onChange={(e) => setExpertEmail(e.target.value)} required />
+                  <input className="form-control mb-3" placeholder="رقم الكلية facultyID" value={expertFacultyID} onChange={(e) => setExpertFacultyID(e.target.value)} required />
 
-            <button className="btn btn-success">حفظ</button>
-          </form>
-          </div>
-          </div>
+                  <button className="btn btn-success">حفظ</button>
+                </form>
+              </div>
+            </div>
           </div>
         )}
 
@@ -598,39 +635,51 @@ export default function AdminPanel() {
           <div className="container">
             <div className="row" >
               <div className="col-4">
-              <FacultiesTable faculties={faculties} />
+                <FacultiesTable faculties={faculties} />
               </div>
               <div className="col-4">
-          <form onSubmit={updateExpert} className="card p-4 shadow">
-            <h4 className="text-center mb-3">تعديل خبير</h4>
+                <form onSubmit={updateExpert} className="card p-4 shadow">
+                  <h4 className="text-center mb-3">تعديل خبير</h4>
 
-            <input className="form-control mb-3" placeholder="رقم الخبير expertID" value={expertID} onChange={(e) => setExpertID(e.target.value)} required />
-            <input className="form-control mb-3" placeholder="الاسم الأول" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
-            <input className="form-control mb-3" placeholder="اسم العائلة" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
-            <input className="form-control mb-3" placeholder="الإيميل" value={expertEmail} onChange={(e) => setExpertEmail(e.target.value)} required />
-            <input className="form-control mb-3" placeholder="رقم الكلية facultyID" value={expertFacultyID} onChange={(e) => setExpertFacultyID(e.target.value)} required />
+                  <input className="form-control mb-3" placeholder="رقم الخبير expertID" value={expertID} onChange={(e) => setExpertID(e.target.value)} required />
+                  <input className="form-control mb-3" placeholder="الاسم الأول" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+                  <input className="form-control mb-3" placeholder="اسم العائلة" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+                  <input className="form-control mb-3" placeholder="الإيميل" value={expertEmail} onChange={(e) => setExpertEmail(e.target.value)} required />
+                  <input className="form-control mb-3" placeholder="رقم الكلية facultyID" value={expertFacultyID} onChange={(e) => setExpertFacultyID(e.target.value)} required />
 
-            <button className="btn btn-warning text-white">تعديل</button>
-          </form>
-          </div>
-          </div>
+                  <button className="btn btn-warning text-white">تعديل</button>
+                </form>
+              </div>
+              <div className="col-4" >
+                <ExpertsTable experts={experts} />
+              </div>
+            </div>
           </div>
         )}
 
         {activeForm === "deleteExpert" && (
-          <form onSubmit={deleteExpert} className="card p-4 shadow">
-            <h4 className="text-center mb-3">حذف خبير</h4>
+          <div className="container" >
+            <div className="row">
+              <div className="col-4" >
+                <ExpertsTable experts={experts} />
+              </div>
+              <div className="col-4" >
+              <form onSubmit={deleteExpert} className="card p-4 shadow">
+                <h4 className="text-center mb-3">حذف خبير</h4>
 
-            <input
-              className="form-control mb-3"
-              placeholder="رقم الخبير expertID"
-              value={expertID}
-              onChange={(e) => setExpertID(e.target.value)}
-              required
-            />
+                <input
+                  className="form-control mb-3"
+                  placeholder="رقم الخبير expertID"
+                  value={expertID}
+                  onChange={(e) => setExpertID(e.target.value)}
+                  required
+                />
 
-            <button className="btn btn-danger">حذف</button>
-          </form>
+                <button className="btn btn-danger">حذف</button>
+              </form>
+              </div>
+            </div>
+          </div>
         )}
 
       </div>
