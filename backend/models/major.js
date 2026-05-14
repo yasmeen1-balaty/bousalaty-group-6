@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       major.belongsTo(models.faculty, { foreignKey: 'facultyID' })
       models.faculty.hasMany(major, { foreignKey: 'facultyID' })
 
+      
       major.belongsToMany(models.student, { through: 'studentMajors', foreignKey: 'majorID' })
       models.student.belongsToMany(major, { through: 'studentMajors', foreignKey: 'studentID' })
 
