@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import FacultiesTable from "./facultiesTable";
 import MajorsTable from "./majorsTable";
 import ExpertsTable from "./expertsTable";
+import AdminCards from "./components/adminCards";
 
 export default function AdminPanel() {
 
@@ -382,75 +383,23 @@ export default function AdminPanel() {
       </h1>
 
       <div className="row g-4">
+        <AdminCards title="إدارة الخبراء"
+          onAdd={() => { resetForms(); setActiveForm("addExpert"); }}
+          onUpdate={() => { resetForms(); setActiveForm("updateExpert"); }}
+          onDelete={() => { resetForms(); setActiveForm("deleteExpert"); }}
+        />
 
-        {/* إدارة الخبراء */}
-        <div className="col-md-4">
-          <div className="card shadow border-0 h-100 rounded-4">
-            <div className="card-body text-center p-4">
-              <h3 className="fw-bold mb-4">إدارة الخبراء</h3>
+        <AdminCards title="إدارة التخصصات"
+          onAdd={() => { resetForms();  setActiveForm("addMajor"); }}
+          onUpdate={() => { resetForms(); setActiveForm("updateMajor"); }}
+          onDelete={() => { resetForms(); setActiveForm("deleteMajor"); }}
+        />
 
-              <div className="d-grid gap-3">
-                <button onClick={() => { resetForms(); setActiveForm("addExpert"); }} className="btn btn-success rounded-pill">
-                  إضافة خبير
-                </button>
-
-                <button onClick={() => { resetForms(); setActiveForm("updateExpert"); }} className="btn btn-warning text-white rounded-pill">
-                  تعديل خبير
-                </button>
-
-                <button onClick={() => { resetForms(); setActiveForm("deleteExpert"); }} className="btn btn-danger rounded-pill">
-                  حذف خبير
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* إدارة التخصصات */}
-        <div className="col-md-4">
-          <div className="card shadow border-0 h-100 rounded-4">
-            <div className="card-body text-center p-4">
-              <h3 className="fw-bold mb-4">إدارة التخصصات</h3>
-
-              <div className="d-grid gap-3">
-                <button onClick={() => { resetForms(); setActiveForm("addMajor"); }} className="btn btn-success rounded-pill">
-                  إضافة تخصص
-                </button>
-
-                <button onClick={() => { resetForms(); setActiveForm("updateMajor"); }} className="btn btn-warning text-white rounded-pill">
-                  تعديل تخصص
-                </button>
-
-                <button onClick={() => { resetForms(); setActiveForm("deleteMajor"); }} className="btn btn-danger rounded-pill">
-                  حذف تخصص
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* إدارة الكليات */}
-        <div className="col-md-4">
-          <div className="card shadow border-0 h-100 rounded-4">
-            <div className="card-body text-center p-4">
-              <h3 className="fw-bold mb-4">إدارة الكليات</h3>
-
-              <div className="d-grid gap-3">
-                <button onClick={() => { resetForms(); setActiveForm("addFaculty"); }} className="btn btn-success rounded-pill">
-                  إضافة كلية
-                </button>
-
-                <button onClick={() => { resetForms(); setActiveForm("updateFaculty"); }} className="btn btn-warning text-white rounded-pill">
-                  تعديل كلية
-                </button>
-
-                <button onClick={() => { resetForms(); setActiveForm("deleteFaculty"); }} className="btn btn-danger rounded-pill">
-                  حذف كلية
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <AdminCards title="إدارة الكليات"
+          onAdd={() => { resetForms(); setActiveForm("addFaculty"); }}
+          onUpdate={() => { resetForms(); setActiveForm("updateFaculty"); }}
+          onDelete={() => { resetForms(); setActiveForm("deleteFaculty"); }}
+        />
 
       </div>
 
@@ -591,19 +540,19 @@ export default function AdminPanel() {
                 <MajorsTable majors={majors} />
               </div>
               <div className="col-4">
-              <form onSubmit={deleteMajor} className="card p-4 shadow">
-                <h4 className="text-center mb-3">حذف تخصص</h4>
+                <form onSubmit={deleteMajor} className="card p-4 shadow">
+                  <h4 className="text-center mb-3">حذف تخصص</h4>
 
-                <input
-                  className="form-control mb-3"
-                  placeholder="رقم التخصص majorID"
-                  value={majorID}
-                  onChange={(e) => setMajorID(e.target.value)}
-                  required
-                />
+                  <input
+                    className="form-control mb-3"
+                    placeholder="رقم التخصص majorID"
+                    value={majorID}
+                    onChange={(e) => setMajorID(e.target.value)}
+                    required
+                  />
 
-                <button className="btn btn-danger">حذف</button>
-              </form>
+                  <button className="btn btn-danger">حذف</button>
+                </form>
               </div>
             </div>
           </div>
@@ -664,19 +613,19 @@ export default function AdminPanel() {
                 <ExpertsTable experts={experts} />
               </div>
               <div className="col-4" >
-              <form onSubmit={deleteExpert} className="card p-4 shadow">
-                <h4 className="text-center mb-3">حذف خبير</h4>
+                <form onSubmit={deleteExpert} className="card p-4 shadow">
+                  <h4 className="text-center mb-3">حذف خبير</h4>
 
-                <input
-                  className="form-control mb-3"
-                  placeholder="رقم الخبير expertID"
-                  value={expertID}
-                  onChange={(e) => setExpertID(e.target.value)}
-                  required
-                />
+                  <input
+                    className="form-control mb-3"
+                    placeholder="رقم الخبير expertID"
+                    value={expertID}
+                    onChange={(e) => setExpertID(e.target.value)}
+                    required
+                  />
 
-                <button className="btn btn-danger">حذف</button>
-              </form>
+                  <button className="btn btn-danger">حذف</button>
+                </form>
               </div>
             </div>
           </div>

@@ -6,7 +6,6 @@ const cors = require('cors');
 
 
 const studentRoutes = require('./routes/studentRoutes');
-const resultRoutes = require('./routes/resultRoutes');
 const authRoutes = require('./routes/authRoutes');
 const facultyRoutes = require('./routes/facultyRoutes');
 const expertRoutes = require('./routes/expertRoutes');
@@ -25,7 +24,6 @@ app.use(cors({
 
 app.use(express.json());
 app.use('/students', studentRoutes);
-app.use('/results', resultRoutes);
 app.use('/', authRoutes);
 app.use('/faculties', facultyRoutes);
 app.use('/experts', expertRoutes);
