@@ -116,42 +116,7 @@ const removeFromSavedMajors = async (req, res) => {
   }
 };
 
-const createResult = async (req, res) => {
-  try {
-    const { studentID, resultText } = req.body;
-    if (!studentID || !resultText) {
-      return res.status(400).json({ error: 'studentID and resultText are required' });
-    }
-
-    const newResult = await db.result.upsert({  //upsert = update or insert (create if not exists, else update)
-      studentID,
-      resultText
-    }, {
-      where: { studentID }
-    });
-
-    return res.status(201).json(newResult);
-  } catch (error) {
-    return res.status(500).json({ error: error.message || 'Server error' });
-  }
-};
-
-const getResult = async (req, res) => {
-  try {
-    const { studentID } = req.params;
-    if (!studentID) {
-      return res.status(400).json({ error: 'studentID is required' });
-    }
-    const result = await db.result.findOne({ where: { studentID } });
-
-    if (!result) { return res.status(404).json({ error: 'Result not found' }); }
-
-    return res.json({ result });
-  } catch (error) {
-    return res.status(500).json({ error: error.message || 'Server error' });
-  }
-};
 
 module.exports = {
-  getSavedMajors, deleteStudent, updateStudent, createStudent, findStudent, addToSavedMajors, removeFromSavedMajors, createResult, getResult
+  getSavedMajors, deleteStudent, updateStudent, createStudent, findStudent, addToSavedMajors, removeFromSavedMajors
 };

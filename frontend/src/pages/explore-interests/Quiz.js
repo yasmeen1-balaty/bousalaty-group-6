@@ -69,14 +69,11 @@ function Quiz() {
       // 1) إنشاء submission جديد
       const submissionRes = await fetch("http://localhost:3001/submissions", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ studentID }),
       });
 
       const submissionData = await submissionRes.json();
-
       if (!submissionRes.ok) {
         alert(submissionData.message || "صار خطأ أثناء إنشاء المحاولة");
         return;
@@ -84,33 +81,42 @@ function Quiz() {
 
       const submissionID = submissionData.submissionID;
 
-      // 2) تجهيز الإجابات باستخدام submissionID بدل studentID
+      // 2) تخزين الإجابات
       const responses = Object.entries(answers).map(([questionID, optionID]) => ({
         submissionID,
         questionID,
         optionID
       }));
 
-      // 3) تخزين كل الإجابات
       for (const response of responses) {
         const responseRes = await fetch("http://localhost:3001/responses", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(response),
         });
 
-        const responseData = await responseRes.json();
-
         if (!responseRes.ok) {
+          const responseData = await responseRes.json();
           alert(responseData.message || "صار خطأ أثناء حفظ الإجابات");
           return;
         }
       }
 
-      alert("تم إرسال إجاباتك!");
-      navigate("/suggestions");
+      // 3) استدعاء الـ AI ✨
+      const aiRes = await fetch(`http://localhost:3001/submissions/${submissionID}/analyze`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const aiData = await aiRes.json();
+
+      if (!aiRes.ok) {
+        alert("صار خطأ أثناء تحليل إجاباتك");
+        return;
+      }
+
+      // 4) روحي لصفحة النتائج مع البيانات
+      navigate("/suggestions", { state: { recommendations: aiData.recommendations } });
 
     } catch (error) {
       console.log(error);
