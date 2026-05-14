@@ -93,6 +93,21 @@ const deleteMajor = async (req, res) => {
     } catch (error) { res.status(500).json({ message: error.message }); }
 };
 
+const getAllMajors = async (req, res) => {
+  try {
+    const majors = await db.major.findAll({
+      attributes: ["majorID", "majorName"],
+    });
+
+    res.status(200).json(majors);
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
     findMajor,
     createMajor,
@@ -100,5 +115,6 @@ module.exports = {
     deleteMajor,
     getMajorsSkills,
     getMajorsJobOpportuneties,
-    getMajorsFaculty
+    getMajorsFaculty,
+    getAllMajors
 };

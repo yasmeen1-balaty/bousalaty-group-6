@@ -53,4 +53,19 @@ const deleteExpert = async (req, res) => {
   } catch (error) { res.status(500).json({ message: error.message }); }
 };
 
-module.exports = { deleteExpert, updateExpert, createExpert, findExpert };
+const getAllExperts = async (req, res) => {
+  try {
+    const experts = await db.expert.findAll({
+      attributes: ["expertID", "firstName" , "lastName"],
+    });
+
+    res.status(200).json(experts);
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+module.exports = { deleteExpert, updateExpert, createExpert, findExpert, getAllExperts };
