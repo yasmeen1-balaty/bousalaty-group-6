@@ -157,7 +157,6 @@ const accessAdminPanel = (req, res, next) => { // Middleware to check if user is
 module.exports = {
     register,
     login,
-    registerAdmin,
     loginAdmin,
     verifyToken,
     accessAdminPanel
