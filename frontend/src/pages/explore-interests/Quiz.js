@@ -9,8 +9,8 @@ function Quiz() {
   const [answers, setAnswers] = useState({});
   const [loading, setLoading] = useState(true);
 
-//const savedUser = JSON.parse(localStorage.getItem("user"));
-//const studentID = savedUser?.studentID || savedUser?.id || savedUser?.userID;
+  //const savedUser = JSON.parse(localStorage.getItem("user"));
+  //const studentID = savedUser?.studentID || savedUser?.id || savedUser?.userID;
 
 
   useEffect(() => {
@@ -54,37 +54,59 @@ function Quiz() {
   };
 
 
-const handleSubmit = async () => {
-  const token = localStorage.getItem("token");
-  const savedUser = JSON.parse(localStorage.getItem("user"));
-  const studentID = savedUser?.studentID || savedUser?.id || savedUser?.userID;
+  const handleSubmit = async () => {
+    const token = localStorage.getItem("token");
+    const savedUser = JSON.parse(localStorage.getItem("user"));
+    const studentID = savedUser?.studentID || savedUser?.id || savedUser?.userID;
 
-  console.log("savedUser:", savedUser);
-  console.log("studentID:", studentID);
-  console.log("token:", token);
-
-  if (!token || !savedUser || !studentID) {
-    alert("لازم تسجل دخول أولاً");
-    navigate("/login");
-    return;
-  }
-  
-
-    const responses = Object.entries(answers).map(([questionID, optionID]) => ({
-      studentID,
-      questionID,
-      optionID
-    }));
+    if (!token || !savedUser || !studentID) {
+      alert("لازم تسجل دخول أولاً");
+      navigate("/login");
+      return;
+    }
 
     try {
+      // 1) إنشاء submission جديد
+      const submissionRes = await fetch("http://localhost:3001/submissions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ studentID }),
+      });
+
+      const submissionData = await submissionRes.json();
+
+      if (!submissionRes.ok) {
+        alert(submissionData.message || "صار خطأ أثناء إنشاء المحاولة");
+        return;
+      }
+
+      const submissionID = submissionData.submissionID;
+
+      // 2) تجهيز الإجابات باستخدام submissionID بدل studentID
+      const responses = Object.entries(answers).map(([questionID, optionID]) => ({
+        submissionID,
+        questionID,
+        optionID
+      }));
+
+      // 3) تخزين كل الإجابات
       for (const response of responses) {
-        await fetch("http://localhost:3001/responses", {
+        const responseRes = await fetch("http://localhost:3001/responses", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(response),
         });
+
+        const responseData = await responseRes.json();
+
+        if (!responseRes.ok) {
+          alert(responseData.message || "صار خطأ أثناء حفظ الإجابات");
+          return;
+        }
       }
 
       alert("تم إرسال إجاباتك!");
@@ -321,7 +343,7 @@ const questions = [
 */
 
 
-  //const currentQuestion = questions[currentIndex];
-  //const isLast = currentIndex === questions.length - 1;
-  //const selectedAnswer = answers[currentQuestion.questionID];
-  //const progress = ((currentIndex + 1) / questions.length) * 100;
+//const currentQuestion = questions[currentIndex];
+//const isLast = currentIndex === questions.length - 1;
+//const selectedAnswer = answers[currentQuestion.questionID];
+//const progress = ((currentIndex + 1) / questions.length) * 100;
