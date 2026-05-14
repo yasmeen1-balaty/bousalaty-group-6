@@ -2,41 +2,30 @@ const db = require('../models');
 
 const createResponse = async (req, res) => {
     try {
+        const { submissionID, questionID, optionID } = req.body;
 
-        const { studentID, questionID, optionID } = req.body;
-
-        if (!studentID) {
-            return res.status(400).json({
-                message: "studentID is required"
-            });
+        if (!submissionID) {
+            return res.status(400).json({ message: "submissionID is required" });
         }
 
         if (!questionID) {
-            return res.status(400).json({
-                message: "questionID is required"
-            });
+            return res.status(400).json({ message: "questionID is required" });
         }
 
         if (!optionID) {
-            return res.status(400).json({
-                message: "optionID is required"
-            });
+            return res.status(400).json({ message: "optionID is required" });
         }
 
-        const student = await db.student.findByPk(studentID);
+        const submission = await db.submission.findByPk(submissionID);
 
-        if (!student) {
-            return res.status(404).json({
-                message: "Student not found"
-            });
+        if (!submission) {
+            return res.status(404).json({ message: "Submission not found" });
         }
 
         const question = await db.question.findByPk(questionID);
 
         if (!question) {
-            return res.status(404).json({
-                message: "Question not found"
-            });
+            return res.status(404).json({ message: "Question not found" });
         }
 
         const option = await db.option.findOne({
@@ -52,27 +41,8 @@ const createResponse = async (req, res) => {
             });
         }
 
-        const existingResponse = await db.response.findOne({
-            where: {
-                studentID,
-                questionID
-            }
-        });
-
-        if (existingResponse) {
-
-            existingResponse.optionID = optionID;
-
-            await existingResponse.save();
-
-            return res.status(200).json({
-                message: "Response updated successfully",
-                response: existingResponse
-            });
-        }
-
         const newResponse = await db.response.create({
-            studentID,
+            submissionID,
             questionID,
             optionID
         });
@@ -80,11 +50,9 @@ const createResponse = async (req, res) => {
         res.status(201).json(newResponse);
 
     } catch (error) {
-
         res.status(500).json({
             message: error.message
         });
-
     }
 };
 
@@ -92,11 +60,17 @@ const getAllResponses = async (req, res) => {
     try {
         const responses = await db.response.findAll({
             include: [
-
-
                 {
-                    model: db.student,
-                    attributes: ['studentID', 'name', 'email']
+                    model: db.submission,
+
+                    attributes: ['submissionID', 'studentID', 'status', 'aiResult'],
+
+                    include: [
+                        {
+                            model: db.student,
+                            attributes: ['studentID', 'name', 'email']
+                        }
+                    ]
                 },
                 {
                     model: db.question,
@@ -123,8 +97,8 @@ const getResponseById = async (req, res) => {
         const response = await db.response.findByPk(responseID, {
             include: [
                 {
-                    model: db.student,
-                    attributes: ['studentID', 'name', 'email']
+                    model: db.submission,
+                    attributes: ['submissionID', 'studentID', 'status', 'aiResult']
                 },
                 {
                     model: db.question,
@@ -148,12 +122,12 @@ const getResponseById = async (req, res) => {
     }
 };
 
-const getResponsesByStudent = async (req, res) => {
+const getResponsesBySubmission = async (req, res) => {
     try {
-        const { studentID } = req.params;
+        const { submissionID } = req.params;
 
         const responses = await db.response.findAll({
-            where: { studentID },
+            where: { submissionID },
             include: [
                 {
                     model: db.question,
@@ -176,7 +150,7 @@ const getResponsesByStudent = async (req, res) => {
 const updateResponse = async (req, res) => {
     try {
         const { responseID } = req.params;
-        const { studentID, questionID, optionID } = req.body;
+        const { submissionID, questionID, optionID } = req.body;
 
         const response = await db.response.findByPk(responseID);
 
@@ -184,10 +158,10 @@ const updateResponse = async (req, res) => {
             return res.status(404).json({ message: "Response not found" });
         }
 
-        if (studentID) {
-            const student = await db.student.findByPk(studentID);
-            if (!student) {
-                return res.status(404).json({ message: "Student not found" });
+        if (submissionID) {
+            const submission = await db.submission.findByPk(submissionID);
+            if (!submission) {
+                return res.status(404).json({ message: "Submission not found" });
             }
         }
 
@@ -199,10 +173,8 @@ const updateResponse = async (req, res) => {
         }
 
         if (optionID) {
-            const finalQuestionID = questionID || response.questionID; 
+            const finalQuestionID = questionID || response.questionID;
 
-            // Check if the selected option exists
-            // and belongs to the correct question before updating the response
             const option = await db.option.findOne({
                 where: {
                     optionID,
@@ -216,11 +188,9 @@ const updateResponse = async (req, res) => {
                 });
             }
         }
-        
-        // Update only the fields sent in the request,
-        // otherwise keep the old values from the current respons
+
         await response.update({
-            studentID: studentID || response.studentID,
+            submissionID: submissionID || response.submissionID,
             questionID: questionID || response.questionID,
             optionID: optionID || response.optionID
         });
@@ -255,7 +225,7 @@ module.exports = {
     createResponse,
     getAllResponses,
     getResponseById,
-    getResponsesByStudent,
+    getResponsesBySubmission,
     updateResponse,
     deleteResponse
 };

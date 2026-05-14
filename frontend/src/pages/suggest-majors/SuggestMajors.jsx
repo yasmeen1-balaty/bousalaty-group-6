@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useEffect, useState } from 'react';
 
 import "./SuggestMajors.css";
 import heroBg from "../../background-img/img3.png";
@@ -6,72 +6,48 @@ import img1 from "./imges/img2.png";
 import { Link } from "react-router-dom";
 
 
-const majors = [
-  {
-    id: 1,
-    title: "علوم الحاسوب",
-    match: 87,
-    emoji: "🖥️",
-    about: "يُعنى هذا التخصص بتصميم وتطوير البرمجيات وتحليل البيانات وبناء الأنظمة الذكية والشبكات.",
-    skills: ["التفكير المنطقي", "حل المشكلات", "البرمجة", "الرياضيات", "الإبداع التقني"],
-    jobs: ["مطور برمجيات", "محلل بيانات", "مهندس ذكاء اصطناعي", "أمن المعلومات", "مدير أنظمة"],
-    duration: "4 سنوات",
-    salary: "3,000 - 8,000 شيكل شهرياً",
-    desc: "مجال مناسب لمن يحب التقنية وتحليل المشاكل وتطوير البرمجيات والأنظمة.",
-  },
-  {
-    id: 2,
-    title: "إدارة أعمال",
-    match: 82,
-    emoji: "📊",
-    about: "يُركز على تطوير مهارات القيادة والتخطيط الاستراتيجي وإدارة الموارد البشرية والمالية.",
-    skills: ["القيادة", "التواصل", "التحليل المالي", "التفاوض", "إدارة الوقت"],
-    jobs: ["مدير تنفيذي", "محلل أعمال", "مستشار إداري", "رائد أعمال", "مدير مشاريع"],
-    duration: "4 سنوات",
-    salary: "2,000 - 6,000 شيكل شهرياً",
-    desc: "تخصص يجمع بين التخطيط والتنفيذ لمن يحب قيادة الفرق وبناء الأعمال.",
-  },
-  {
-    id: 3,
-    title: "تمريض",
-    match: 78,
-    emoji: "🩺",
-    about: "يجمع بين العلوم الطبية والرعاية الإنسانية لتقديم الدعم الصحي للمرضى في مختلف البيئات الطبية.",
-    skills: ["التعاطف", "الدقة", "العمل تحت الضغط", "التواصل", "المعرفة الطبية"],
-    jobs: ["ممرض مستشفى", "ممرض طوارئ", "ممرض منزلي", "مشرف تمريض", "معلم صحي"],
-    duration: "4 سنوات",
-    salary: "3,000 - 5,000 شيكل شهرياً",
-    desc: "إذا كنت تهتم بمساعدة الآخرين وتحب مجال الرعاية الصحية فهذا هو تخصصك.",
-  },
-  {
-    id: 4,
-    title: "هندسه الحاسوب",
-    match: 90,
-    emoji: "🖥️",
-  about: "يُعنى هذا التخصص بتصميم وتطوير البرمجيات وتحليل البيانات وبناء الأنظمة الذكية والشبكات.",
-    skills: ["التفكير المنطقي", "حل المشكلات", "البرمجة", "الرياضيات", "الإبداع التقني"],
-    jobs: ["مطور برمجيات", "محلل بيانات", "مهندس ذكاء اصطناعي", "أمن المعلومات", "مدير أنظمة"],
-    duration: "5 سنوات",
-    salary: "5,000 - 8,000 شيكل شهرياً",
-    desc: "مجال مناسب لمن يحب التقنية وتحليل المشاكل وتطوير البرمجيات والأنظمة.",
-  },
-];
+
 
 export default function SuggestMajors() {
-  const [selectedMajor, setSelectedMajor] = useState(null);
+  const [majors, setMajors] = useState([]);
+  const [faculties , setfaculties] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("http://localhost:3001/majors")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Majors from backend:", data);
+        setMajors(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching majors:", error);
+        setLoading(false);
+      });
+
+
+       fetch("http://localhost:3001/faculties")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("faculties from backend:", data);
+        setfaculties(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching faculties:", error);
+        setLoading(false);
+      });
+
+  }, []);
+
+
+if (loading) {
+  return <p className="text-center mt-5">Loading...</p>;
+}
+
 
   function addToFavorite(item) {
-    const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-
-    const exists = favorites.find((fav) => fav.id === item.id);
-
-    if (!exists) {
-      favorites.push(item);
-      localStorage.setItem("favorites", JSON.stringify(favorites));
-      alert("تمت الإضافة إلى المفضلة");
-    } else {
-      alert("هذا التخصص موجود مسبقًا في المفضلة");
-    }
   }
 
 
@@ -120,18 +96,22 @@ export default function SuggestMajors() {
 
         <div className="row g-4">
           {majors.map((major) => (
-            <div className="col-md-3" key={major.id}>
+            <div className="col-md-3" key={major.majorID}>
               <div className="sm-card h-100 position-relative text-center">
 
-                <span className="sm-badge">{major.match}%</span>
+                <span className="sm-badge">{major.acceptanceGrade}%</span>
 
                 <div className="sm-card-topline" />
 
                 <div className="d-flex flex-column align-items-center p-4 pt-5">
-                  <div className="sm-card-emoji mb-3">{major.emoji}</div>
-                  <h5 className="sm-card-title mb-2">{major.title}</h5>
-                  <p className="sm-card-desc flex-grow-1">{major.desc}</p>
-                  <Link to={`/majors/${major.id}`} className="sm-card-btn w-100 mt-3" onClick={() => setSelectedMajor(major)}>
+                  <div className="sm-card-emoji mb-3">emoje</div>
+                  <h5 className="sm-card-title mb-2">{major.majorName}</h5>
+                   {faculties.map((facultiy) => (
+                   <h4 className="sm-card-desc flex-grow-1">{facultiy.facultyName} </h4>
+                   ))}
+
+
+                  <Link to={`/majors/${major.majorID}`} className="sm-card-btn w-100 mt-3" >
                     عرض التفاصيل
                   </Link>
                   <button
@@ -148,86 +128,48 @@ export default function SuggestMajors() {
         </div>
 
       </section>
-
-    
-      
-
-      {/* ===== MODAL ===== */}
-      {selectedMajor && (
-        <div
-          className="sm-overlay d-flex align-items-center justify-content-center"
-          onClick={() => setSelectedMajor(null)}
-        >
-          <div
-            className="sm-modal position-relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Gold top bar */}
-            <div className="sm-modal-topbar" />
-
-            <div className="p-4">
-              <button className="sm-modal-close position-absolute" onClick={() => setSelectedMajor(null)}>
-                ✕
-              </button>
-
-              <div className="d-flex align-items-center gap-3 mb-3">
-                <span className="sm-modal-emoji">{selectedMajor.emoji}</span>
-                <div>
-                  <h4 className="sm-modal-title mb-1">{selectedMajor.title}</h4>
-                  <span className="sm-modal-match-badge">{selectedMajor.match}% تطابق</span>
-                </div>
-              </div>
-
-              <div className="sm-gold-divider mb-4" />
-
-              <div className="mb-3">
-                <h6 className="sm-modal-label mb-2">📋 عن التخصص</h6>
-                <p className="sm-modal-text">{selectedMajor.about}</p>
-              </div>
-
-              <div className="mb-3">
-                <h6 className="sm-modal-label mb-2">✦ المهارات المطلوبة</h6>
-                <div className="d-flex flex-wrap gap-2">
-                  {selectedMajor.skills.map((s, i) => (
-                    <span key={i} className="sm-tag">{s}</span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mb-3">
-                <h6 className="sm-modal-label mb-2">🎓 فرص العمل</h6>
-                <div className="d-flex flex-wrap gap-2">
-                  {selectedMajor.jobs.map((j, i) => (
-                    <span key={i} className="sm-tag">{j}</span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="row g-3 mb-4">
-                <div className="col-6">
-                  <div className="sm-info-box">
-                    <span>⏱️ مدة الدراسة</span>
-                    <strong>{selectedMajor.duration}</strong>
-                  </div>
-                </div>
-                <div className="col-6">
-                  <div className="sm-info-box">
-                    <span>💰 متوسط الراتب</span>
-                    <strong>{selectedMajor.salary}</strong>
-                  </div>
-                </div>
-              </div>
-
-              <button
-                className="sm-modal-close-btn w-100"
-                onClick={() => setSelectedMajor(null)}
-              >
-                إغلاق
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
+     
+  
+
   );
 }
+
+
+
+/** 
+const majors = [
+  {
+    id: 1,
+    majorName: "علوم الحاسوب",
+    acceptanceGrade: 87,
+    skills: ["التفكير المنطقي", "حل المشكلات", "البرمجة", "الرياضيات", "الإبداع التقني"],
+    jobs: ["مطور برمجيات", "محلل بيانات", "مهندس ذكاء اصطناعي", "أمن المعلومات", "مدير أنظمة"],
+ 
+  },
+  {
+    id: 2,
+    majorName: "إدارة أعمال",
+    acceptanceGrade: 82,
+    skills: ["القيادة", "التواصل", "التحليل المالي", "التفاوض", "إدارة الوقت"],
+    jobs: ["مدير تنفيذي", "محلل أعمال", "مستشار إداري", "رائد أعمال", "مدير مشاريع"],
+  
+  },
+  {
+    id: 3,
+    majorName: "تمريض",
+    acceptanceGrade: 78,
+    skills: ["التعاطف", "الدقة", "العمل تحت الضغط", "التواصل", "المعرفة الطبية"],
+    jobs: ["ممرض مستشفى", "ممرض طوارئ", "ممرض منزلي", "مشرف تمريض", "معلم صحي"],
+   
+  },
+  {
+    id: 4,
+    majorName: "هندسه الحاسوب",
+    acceptanceGrade: 90,
+    skills: ["التفكير المنطقي", "حل المشكلات", "البرمجة", "الرياضيات", "الإبداع التقني"],
+    jobs: ["مطور برمجيات", "محلل بيانات", "مهندس ذكاء اصطناعي", "أمن المعلومات", "مدير أنظمة"],
+  
+  },
+];
+*/
