@@ -9,8 +9,9 @@ function Quiz() {
   const [answers, setAnswers] = useState({});
   const [loading, setLoading] = useState(true);
 
-  const savedUser = JSON.parse(localStorage.getItem("user"));
-  const studentID = savedUser?.student?.studentID;
+//const savedUser = JSON.parse(localStorage.getItem("user"));
+//const studentID = savedUser?.studentID || savedUser?.id || savedUser?.userID;
+
 
   useEffect(() => {
     fetch("http://localhost:3001/questions")
@@ -52,13 +53,22 @@ function Quiz() {
     }
   };
 
-  const handleSubmit = async () => {
-    if (!studentID) {
-      alert("لازم تسجل دخول أولاً");
-      navigate('/login')
-      return;
-    }
-    
+
+const handleSubmit = async () => {
+  const token = localStorage.getItem("token");
+  const savedUser = JSON.parse(localStorage.getItem("user"));
+  const studentID = savedUser?.studentID || savedUser?.id || savedUser?.userID;
+
+  console.log("savedUser:", savedUser);
+  console.log("studentID:", studentID);
+  console.log("token:", token);
+
+  if (!token || !savedUser || !studentID) {
+    alert("لازم تسجل دخول أولاً");
+    navigate("/login");
+    return;
+  }
+  
 
     const responses = Object.entries(answers).map(([questionID, optionID]) => ({
       studentID,
