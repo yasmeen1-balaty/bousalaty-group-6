@@ -15,9 +15,7 @@ const opportunityRoutes = require('./routes/opportunityRoutes');
 const optionRoutes = require('./routes/optionRoutes');
 const questionRoutes = require('./routes/questionRoutes');
 const responseRoutes = require('./routes/responseRoutes');
-const submissionRoutes = require('./routes/submissionRoutes');
 const skillRoutes = require('./routes/skillRoutes');
-
 
 app.use(cors({
     origin: 'http://localhost:3000',
@@ -36,7 +34,6 @@ app.use('/opportunities', opportunityRoutes);
 app.use('/options', optionRoutes);
 app.use('/questions', questionRoutes);
 app.use('/responses', responseRoutes);
-app.use('/submissions', submissionRoutes);
 app.use('/skills', skillRoutes);
 
 app.listen(3001, () => {
