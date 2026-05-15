@@ -1,7 +1,17 @@
 require('dotenv').config();
+
 const express = require('express');
-const app = express();
 const cors = require('cors');
+
+const app = express();
+
+app.use(cors({
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.use(express.json());
 
 const studentRoutes = require('./routes/studentRoutes');
 const authRoutes = require('./routes/authRoutes');
@@ -14,14 +24,7 @@ const questionRoutes = require('./routes/questionRoutes');
 const responseRoutes = require('./routes/responseRoutes');
 const submissionRoutes = require('./routes/submissionRoutes');
 const skillRoutes = require('./routes/skillRoutes');
-
-app.use(cors({
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
-app.use(express.json());
+const chatbotRoutes = require('./routes/chatbotRoutes');
 
 app.use('/students', studentRoutes);
 app.use('/', authRoutes);
@@ -34,6 +37,7 @@ app.use('/questions', questionRoutes);
 app.use('/responses', responseRoutes);
 app.use('/submissions', submissionRoutes);
 app.use('/skills', skillRoutes);
+app.use('/chatbot', chatbotRoutes);
 
 app.listen(3001, () => {
     console.log('Server running on http://localhost:3001');
@@ -82,3 +86,4 @@ const createAdminUser = async () => {
 
 createAdminUser();
 */
+
