@@ -4,7 +4,7 @@ const app = express();
 const cors = require('cors');
 
 
-
+const submissionRoutes = require('./routes/submissionRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const authRoutes = require('./routes/authRoutes');
 const facultyRoutes = require('./routes/facultyRoutes');
@@ -33,6 +33,7 @@ app.use('/options', optionRoutes);
 app.use('/questions', questionRoutes);
 app.use('/responses', responseRoutes);
 app.use('/skills', skillRoutes);
+app.use('/submissions' , submissionRoutes)
 
 app.listen(3001, () => {
     console.log('Server running on http://localhost:3001');

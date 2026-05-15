@@ -50,7 +50,7 @@ export default function SuggestMajors() {
             {recommendations.map((major, index) => (
               <div className="col-md-4" key={index}>
                 <div className="sm-card h-100 position-relative text-center">
-
+                  معدل القبول
                   <span className="sm-badge">{major.acceptanceGrade}%</span>
                   <div className="sm-card-topline" />
 
