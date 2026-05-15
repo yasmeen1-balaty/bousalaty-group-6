@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import "./SuggestMajors.css";
 import heroBg from "../../background-img/img3.png";
 import img1 from "./imges/img2.png";
@@ -6,7 +6,33 @@ import { Link, useLocation } from "react-router-dom";
 
 export default function SuggestMajors() {
   const location = useLocation();
-  const recommendations = location.state?.recommendations || [];
+  const [recommendations, setRecommendations] = useState(location.state?.recommendations || []);
+  const [loading, setLoading] = useState(!location.state?.recommendations);
+
+  useEffect(() => {
+    // لو ما في state، جيبي آخر submission من الـ DB
+    if (!location.state?.recommendations) {
+      const savedUser = JSON.parse(localStorage.getItem("user"));
+      const studentID = savedUser?.studentID || savedUser?.id || savedUser?.userID;
+
+      if (!studentID) {
+        setLoading(false);
+        return;
+      }
+
+      fetch(`http://localhost:3001/submissions/student/${studentID}/latest`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.aiResult) {
+            setRecommendations(data.aiResult);
+          }
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
+    }
+  }, []);
+
+  if (loading) return <p className="text-center mt-5">جاري التحميل...</p>;
 
   return (
     <div dir="rtl" className="sm-wrapper">
@@ -53,7 +79,6 @@ export default function SuggestMajors() {
                   معدل القبول
                   <span className="sm-badge">{major.acceptanceGrade}%</span>
                   <div className="sm-card-topline" />
-
                   <div className="d-flex flex-column align-items-center p-4 pt-5">
                     <h5 className="sm-card-title mb-2">{major.majorName}</h5>
                     <p className="text-muted mb-3" style={{ fontSize: '14px' }}>
@@ -63,7 +88,6 @@ export default function SuggestMajors() {
                       عرض التفاصيل
                     </Link>
                   </div>
-
                 </div>
               </div>
             ))}

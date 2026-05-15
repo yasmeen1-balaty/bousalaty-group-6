@@ -22,6 +22,7 @@ const opportunityRoutes = require('./routes/opportunityRoutes');
 const optionRoutes = require('./routes/optionRoutes');
 const questionRoutes = require('./routes/questionRoutes');
 const responseRoutes = require('./routes/responseRoutes');
+const submissionRoutes = require('./routes/submissionRoutes');
 const skillRoutes = require('./routes/skillRoutes');
 const chatbotRoutes = require('./routes/chatbotRoutes');
 const submissionRoutes = require('./routes/submissionRoutes');
@@ -36,6 +37,7 @@ app.use('/opportunities', opportunityRoutes);
 app.use('/options', optionRoutes);
 app.use('/questions', questionRoutes);
 app.use('/responses', responseRoutes);
+app.use('/submissions', submissionRoutes);
 app.use('/skills', skillRoutes);
 app.use('/submissions' , submissionRoutes)
 app.use('/chatbot', chatbotRoutes);
@@ -58,8 +60,8 @@ const createAdminUser = async () => {
             role: "admin"
         };
 
-        const existingAdmin = await Admin.findOne({ 
-            where: { email: adminData.email } 
+        const existingAdmin = await Admin.findOne({
+            where: { email: adminData.email }
         });
 
         if (existingAdmin) {

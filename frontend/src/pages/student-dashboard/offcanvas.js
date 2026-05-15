@@ -66,6 +66,12 @@ export function Offcanvas() {
                                     <div data-bs-dismiss="offcanvas">نصائح الدراسة</div>
                                 </Link>
                             </li>
+
+                            <li className="list-group-item list-group-item-action">
+                                <Link to="/suggestions" className="text-decoration-none d-block">
+                                    <div data-bs-dismiss="offcanvas">التخصصات المقترحة لي</div>
+                                </Link>
+                            </li>
                         </>
                     )}
 
