@@ -1,127 +1,93 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const Groq = require('groq-sdk');
+const db = require('../models');
 
-const {
-  response,
-  student,
-  question,
-  option,
-} = require("../models");
+const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-const recommendMajors = async (req, res) => {
+const analyzeAndSuggestMajors = async (req, res) => {
   try {
-    const { studentID } = req.body;
+    const { submissionID } = req.params;
 
-    if (!studentID) {
-      return res.status(400).json({
-        message: "studentID is required",
-      });
-    }
-
-    const responses = await response.findAll({
-      where: { studentID },
+    // 1. جيبي الأجوبة مع الأسئلة والخيارات
+    const responses = await db.response.findAll({
+      where: { submissionID },
       include: [
-        {
-          model: student,
-          as: "student",
-          attributes: ["studentID", "name", "email"],
-        },
-        {
-          model: question,
-          as: "question",
-          attributes: ["questionID", "questionText"],
-        },
-        {
-          model: option,
-          as: "option",
-          attributes: ["optionID", "optionText"],
-        },
-      ],
-      order: [["questionID", "ASC"]],
+        { model: db.question },
+        { model: db.option }
+      ]
     });
 
-    if (!responses || responses.length === 0) {
-      return res.status(404).json({
-        message: "No responses found for this student",
-      });
+    if (!responses.length) {
+      return res.status(404).json({ message: 'No responses found' });
     }
 
-    const formattedAnswers = responses
-      .map((item, index) => {
-        return `
-${index + 1}. السؤال: ${item.question.questionText}
-إجابة الطالب: ${item.option.optionText}
-`;
-      })
-      .join("\n");
+    // 2. جيبي كل التخصصات من DB
+    const allMajors = await db.major.findAll({
+      attributes: ['majorID', 'majorName']
+    });
+    const majorsList = allMajors.map(m => m.majorName).join('، ');
+
+    // 3. بني الـ prompt
+    const answersText = responses.map((r, i) =>
+      `السؤال ${i + 1}: ${r.question.questionText}\nالإجابة: ${r.option.optionText}`
+    ).join('\n\n');
 
     const prompt = `
-أنت مساعد أكاديمي في موقع اسمه Bousalaty.
-مهمتك اقتراح تخصصات جامعية مناسبة للطالب بناءً على إجاباته في الاختبار.
+أنت مستشار أكاديمي متخصص. بناءً على إجابات الطالب، اقترح أفضل 3 تخصصات من القائمة التالية فقط.
+
+التخصصات المتاحة: ${majorsList}
 
 إجابات الطالب:
-${formattedAnswers}
+${answersText}
 
-أرجع النتيجة بصيغة JSON فقط بدون أي كلام إضافي.
-
-الشكل المطلوب بالضبط:
+أرجع JSON فقط بهذا الشكل بدون أي نص إضافي:
 {
-  "majors": [
-    {
-      "name": "اسم التخصص",
-      "reason": "سبب قصير لماذا هذا التخصص مناسب"
-    }
+  "recommendations": [
+    { "majorName": "اسم التخصص", "reason": "سبب بجملة واحدة" },
+    { "majorName": "اسم التخصص", "reason": "سبب بجملة واحدة" },
+    { "majorName": "اسم التخصص", "reason": "سبب بجملة واحدة" }
   ]
-}
+}`;
 
-الشروط:
-- أرجع 4 تخصصات فقط.
-- لا تكتب markdown.
-- لا تكتب شرح خارج JSON.
-- السبب يكون قصير وواضح.
-- خلي التخصصات مناسبة لإجابات الطالب.
-`;
-
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash",
+    // 4. ابعتي لـ Groq
+    const completion = await client.chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.7,
+      max_tokens: 1024,
+      response_format: { type: 'json_object' }
     });
 
-    const result = await model.generateContent(prompt);
-    const aiText = result.response.text();
+    const aiData = JSON.parse(completion.choices[0].message.content);
 
-    let parsedResult;
+    // 5. جيبي تفاصيل التخصصات من DB
+    const recommendedMajors = await Promise.all(
+      aiData.recommendations.map(async (rec) => {
+        const major = await db.major.findOne({
+          where: { majorName: rec.majorName }
+        });
+        return {
+          ...major?.dataValues,
+          reason: rec.reason
+        };
+      })
+    );
 
-    try {
-      const cleanedText = aiText
-        .replace(/```json/g, "")
-        .replace(/```/g, "")
-        .trim();
+    // 6. احفظي النتيجة في submission
+    await db.submission.update(
+      { aiResult: recommendedMajors, status: 'completed' },
+      { where: { submissionID } }
+    );
 
-      parsedResult = JSON.parse(cleanedText);
-    } catch (error) {
-      return res.status(500).json({
-        message: "Gemini response is not valid JSON",
-        rawResponse: aiText,
-      });
-    }
-
-    return res.status(200).json({
-      message: "Majors recommended successfully",
-      student: responses[0].student,
-      data: parsedResult.majors,
-    });
+    res.json({ recommendations: recommendedMajors });
 
   } catch (error) {
-    console.error("Gemini Controller Error:", error);
-
-    return res.status(500).json({
-      message: "Server error",
-      error: error.message,
-    });
+    console.error('AI Error:', error);
+    await db.submission.update(
+      { status: 'failed' },
+      { where: { submissionID: req.params.submissionID } }
+    );
+    res.status(500).json({ message: error.message });
   }
 };
 
-module.exports = {
-  recommendMajors,
-};
+module.exports = { analyzeAndSuggestMajors };

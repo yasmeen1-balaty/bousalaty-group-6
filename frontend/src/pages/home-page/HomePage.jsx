@@ -4,8 +4,8 @@ import img1 from "./image/hero-bg.jpeg";
 
 const HomePage = () => {
     const navigate = useNavigate();
-      const savedUser = JSON.parse(localStorage.getItem("user"));
-      const studentID = savedUser?.id ;
+    const savedUser = JSON.parse(localStorage.getItem("user"));
+    const studentID = savedUser?.id || savedUser?.studentID;
     const features = [
         {
             icon: 'fas fa-brain',
@@ -23,90 +23,90 @@ const HomePage = () => {
             desc: 'مناسب أكثر لمهاراتك الحاسوبية'
         }
     ];
-  const handleNav = async () => {
-    if (!studentID) {
-      navigate('/login')
-      return;
+    const handleNav = async () => {
+        if (!studentID) {
+            navigate('/login')
+            return;
+        }
+        navigate('/quiz')
     }
-    navigate('/quiz')
-}
     return (
         <>
-        <section
-  className="hero-bg d-flex align-items-center"
-  style={{
-   backgroundImage: `url(${img1})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    minHeight: '100vh',
-    position: 'relative'
-  }}
->
+            <section
+                className="hero-bg d-flex align-items-center"
+                style={{
+                    backgroundImage: `url(${img1})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    minHeight: '100vh',
+                    position: 'relative'
+                }}
+            >
 
-  
-  <div
-    style={{
-      position: 'absolute',
-      inset: 0,
-      
-      zIndex: 1
-    }}
-  ></div>
 
-  
-  <div className="container" style={{ position: 'relative', zIndex: 2 }}>
-    <div className="row min-vh-100 align-items-center">
+                <div
+                    style={{
+                        position: 'absolute',
+                        inset: 0,
 
-      <div className="col-lg-6 text-start">
-        <h1
-          style={{
-            fontSize: '56px',
-            fontWeight: '800',
-            color: '#1f2937',
-            lineHeight: '1.3',
-            position: "relative",
-    right:" 612px",
-          }}
-        >
-          اكتشف تخصصك الذكي مع مساعدك AI
-        </h1>
+                        zIndex: 1
+                    }}
+                ></div>
 
-        <p
-          style={{
-            fontSize: '25px',
-            color: '#374151',
-            marginTop: '20px',
-            marginBottom: '30px',
-            maxWidth: '500px',
-            position : 'relative',
-            right:"750px"
-          }}
-        >
-          تحليل ميولك ومهاراتك واقتراح أفضل تخصص لك
-        </p>
 
-        <button 
-          onClick={handleNav}
-          style={{
-            background: 'linear-gradient(90deg, #10b981, #059669)',
-            color: '#fff',
-            padding: '14px 30px',
-            borderRadius: '50px',
-            fontWeight: '700',
-            textDecoration: 'none',
-             position : 'relative',
-            right:"512px"
-          }}
-        >
-          🚀 ابدأ التحليل الذكي
-        </button>
-      </div>
+                <div className="container" style={{ position: 'relative', zIndex: 2 }}>
+                    <div className="row min-vh-100 align-items-center">
 
-    </div>
-  </div>
-</section>
-            
+                        <div className="col-lg-6 text-start">
+                            <h1
+                                style={{
+                                    fontSize: '56px',
+                                    fontWeight: '800',
+                                    color: '#1f2937',
+                                    lineHeight: '1.3',
+                                    position: "relative",
+                                    right: " 612px",
+                                }}
+                            >
+                                اكتشف تخصصك الذكي مع مساعدك AI
+                            </h1>
+
+                            <p
+                                style={{
+                                    fontSize: '25px',
+                                    color: '#374151',
+                                    marginTop: '20px',
+                                    marginBottom: '30px',
+                                    maxWidth: '500px',
+                                    position: 'relative',
+                                    right: "750px"
+                                }}
+                            >
+                                تحليل ميولك ومهاراتك واقتراح أفضل تخصص لك
+                            </p>
+
+                            <button
+                                onClick={handleNav}
+                                style={{
+                                    background: 'linear-gradient(90deg, #10b981, #059669)',
+                                    color: '#fff',
+                                    padding: '14px 30px',
+                                    borderRadius: '50px',
+                                    fontWeight: '700',
+                                    textDecoration: 'none',
+                                    position: 'relative',
+                                    right: "512px"
+                                }}
+                            >
+                                🚀 ابدأ التحليل الذكي
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
             <section className="feature-section">
                 <div className="container">
                     <div className="text-center mb-5">
@@ -128,7 +128,7 @@ const HomePage = () => {
                 </div>
             </section>
 
-            
+
             <section className="comparison-section">
                 <div className="container">
                     <div className="text-center mb-5">
@@ -139,7 +139,7 @@ const HomePage = () => {
                         <div className="col-lg-5">
                             <div className="comparison-card h-100 text-center p-4">
                                 <i className="fas fa-laptop-code fa-3x text-primary mb-4"></i>
-                                
+
                                 <h3 className="fw-bold mb-3">علوم الحاسوب</h3>
                                 <ul className="list-unstyled mb-4">
                                     <li className="mb-2"><i className="fas fa-check text-success me-2"></i>برمجة وتطوير</li>
@@ -160,9 +160,9 @@ const HomePage = () => {
                         </div>
                         <div className="col-lg-5">
                             <div className="comparison-card h-100 text-center p-4">
-                              
-                                
-                                <i className="fas fa-robot fa-3x  text-success mb-4" style={{ content:"\f544"}}></i>
+
+
+                                <i className="fas fa-robot fa-3x  text-success mb-4" style={{ content: "\f544" }}></i>
                                 <h3 className="fw-bold mb-3">الذكاء الاصطناعي</h3>
                                 <ul className="list-unstyled mb-4">
                                     <li className="mb-2"><i className="fas fa-check text-success me-2"></i>تعلم آلي</li>
@@ -178,13 +178,17 @@ const HomePage = () => {
                 </div>
             </section>
 
-            
+
             <section className="cta-section text-center py-5">
                 <div className="container">
                     <h2 className="display-4 fw-bold mb-4">جاهز لاكتشاف تخصصك؟</h2>
-                    <Link to="/login" className="btn-success-custom px-6">
+                    <button
+                        onClick={handleNav}
+                        className="btn-success-custom px-6"
+                        style={{ border: "none" }}
+                    >
                         <i className="fas fa-magic me-2"></i>ابدأ الآن مجاناً
-                    </Link>
+                    </button>
                 </div>
             </section>
         </>

@@ -111,8 +111,6 @@ const login = async (req, res) => {
     }
 };
 
-
-
 const loginAdmin = async (req, res) => {
     const { email, password } = req.body;
     console.log('Login attempt for email:', email);
