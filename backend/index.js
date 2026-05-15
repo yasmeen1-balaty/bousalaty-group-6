@@ -25,7 +25,6 @@ const responseRoutes = require('./routes/responseRoutes');
 const submissionRoutes = require('./routes/submissionRoutes');
 const skillRoutes = require('./routes/skillRoutes');
 const chatbotRoutes = require('./routes/chatbotRoutes');
-const submissionRoutes = require('./routes/submissionRoutes');
 
 
 app.use('/students', studentRoutes);
