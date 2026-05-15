@@ -3,8 +3,6 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 
-
-
 const studentRoutes = require('./routes/studentRoutes');
 const authRoutes = require('./routes/authRoutes');
 const facultyRoutes = require('./routes/facultyRoutes');
@@ -14,6 +12,7 @@ const opportunityRoutes = require('./routes/opportunityRoutes');
 const optionRoutes = require('./routes/optionRoutes');
 const questionRoutes = require('./routes/questionRoutes');
 const responseRoutes = require('./routes/responseRoutes');
+const submissionRoutes = require('./routes/submissionRoutes');
 const skillRoutes = require('./routes/skillRoutes');
 
 app.use(cors({
@@ -23,6 +22,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
+
 app.use('/students', studentRoutes);
 app.use('/', authRoutes);
 app.use('/faculties', facultyRoutes);
@@ -32,12 +32,12 @@ app.use('/opportunities', opportunityRoutes);
 app.use('/options', optionRoutes);
 app.use('/questions', questionRoutes);
 app.use('/responses', responseRoutes);
+app.use('/submissions', submissionRoutes);
 app.use('/skills', skillRoutes);
 
 app.listen(3001, () => {
     console.log('Server running on http://localhost:3001');
 });
-
 
 /*
 const db = require('./models');
@@ -53,8 +53,8 @@ const createAdminUser = async () => {
             role: "admin"
         };
 
-        const existingAdmin = await Admin.findOne({ 
-            where: { email: adminData.email } 
+        const existingAdmin = await Admin.findOne({
+            where: { email: adminData.email }
         });
 
         if (existingAdmin) {
