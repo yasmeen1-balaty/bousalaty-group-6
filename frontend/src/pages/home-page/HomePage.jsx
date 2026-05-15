@@ -5,7 +5,7 @@ import img1 from "./image/hero-bg.jpeg";
 const HomePage = () => {
     const navigate = useNavigate();
       const savedUser = JSON.parse(localStorage.getItem("user"));
-      const studentID = savedUser?.id;
+      const studentID = savedUser?.id ;
     const features = [
         {
             icon: 'fas fa-brain',

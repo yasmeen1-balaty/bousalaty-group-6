@@ -66,11 +66,28 @@ const updateOption = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ message: error.message || 'Server error' });
     }
+
+    
+};
+
+const getAllOptions = async (req, res) => {
+  try {
+    const options = await db.option.findAll({
+      order: [["questionID", "ASC"]],
+    });
+
+    res.json(options);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message || "Server error"
+    });
+  }
 };
 
 module.exports = {
-    getOptionText,
-    deleteOption,
-    createOption,
-    updateOption
+  getOptionText,
+  deleteOption,
+  createOption,
+  updateOption,
+  getAllOptions,
 };

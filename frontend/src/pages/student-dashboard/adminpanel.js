@@ -1,15 +1,26 @@
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
-import FacultiesTable from "./facultiesTable";
-import MajorsTable from "./majorsTable";
-import ExpertsTable from "./expertsTable";
+
+import AdminCards from "./admin/AdminCards";
+
+import SkillForms from "./admin/skills/SkillForms";
+import OpportunityForms from "./admin/opportunities/OpportunityForms";
+import OptionForms from "./admin/options/OptionForms";
+import QuestionForms from "./admin/questions/QuestionForms";
+import ExpertForms from "./admin/experts/ExpertForms";
+import MajorForms from "./admin/majors/MajorForms";
+import FacultyForms from "./admin/faculties/FacultyForms";
 
 export default function AdminPanel() {
 
   const [faculties, setFaculties] = useState([]);
   const [majors, setMajors] = useState([]);
   const [experts, setExperts] = useState([]);
+  const [questions, setQuestions] = useState([]);
+  const [options, setOptions] = useState([]);
+  const [skills, setSkills] = useState([]);
+  const [opportunities, setOpportunities] = useState([]);
 
   const fetchFaculties = async () => {
     try {
@@ -41,11 +52,83 @@ export default function AdminPanel() {
     }
   };
 
-  useEffect(() => {
-    fetchFaculties();
-    fetchMajors();
-    fetchExperts();
-  }, []);
+  const fetchQuestions = async () => {
+  try {
+    const res = await fetch("http://localhost:3001/questions");
+    const data = await res.json();
+    setQuestions(data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+const fetchOptions = async () => {
+  try {
+    const res = await fetch("http://localhost:3001/options");
+    const data = await res.json();
+
+    console.log("Options from backend:", data);
+
+    if (Array.isArray(data)) {
+      setOptions(data);
+    } else if (Array.isArray(data.options)) {
+      setOptions(data.options);
+    } else {
+      setOptions([]);
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
+const fetchSkills = async () => {
+  try {
+    const res = await fetch("http://localhost:3001/skills");
+    const data = await res.json();
+
+    console.log("Skills from backend:", data);
+
+    if (Array.isArray(data)) {
+      setSkills(data);
+    } else {
+      setSkills([]);
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const fetchOpportunities = async () => {
+  try {
+    const res = await fetch("http://localhost:3001/opportunities");
+    const data = await res.json();
+
+    console.log("Opportunities from backend:", data);
+
+    if (Array.isArray(data)) {
+      setOpportunities(data);
+    } else {
+      setOpportunities([]);
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
+
+useEffect(() => {
+  fetchFaculties();
+  fetchMajors();
+  fetchExperts();
+  fetchQuestions();
+  fetchOptions();
+  fetchSkills();
+  fetchOpportunities();
+}, []);
+
+
+
 
   const navigate = useNavigate();
 
@@ -74,6 +157,31 @@ export default function AdminPanel() {
   const [expertEmail, setExpertEmail] = useState("");
   const [expertFacultyID, setExpertFacultyID] = useState("");
 
+
+  // Question states
+const [questionID, setQuestionID] = useState("");
+const [questionText, setQuestionText] = useState("");
+
+
+// Option states
+const [optionID, setOptionID] = useState("");
+const [optionText, setOptionText] = useState("");
+const [optionQuestionID, setOptionQuestionID] = useState("");
+
+
+// Skill states
+const [skillID, setSkillID] = useState("");
+const [skillMajorID, setSkillMajorID] = useState("");
+const [skill, setSkill] = useState("");
+
+
+
+// Opportunity states
+const [oppoID, setOppoID] = useState("");
+const [opportunityMajorID, setOpportunityMajorID] = useState("");
+const [opportunity, setOpportunity] = useState("");
+
+
   useEffect(() => {
     if (!isAdmin) {
       alert("you are not an admin");
@@ -100,6 +208,28 @@ export default function AdminPanel() {
     setLastName("");
     setExpertEmail("");
     setExpertFacultyID("");
+
+
+    setQuestionID("");
+    setQuestionText(""); 
+
+
+   setOptionID("");
+  setOptionText("");
+   setOptionQuestionID("");
+
+
+
+setSkillID("");
+setSkillMajorID("");
+setSkill("");
+
+
+setOppoID("");
+setOpportunityMajorID("");
+setOpportunity("");
+
+
   };
 
   // ================= FACULTY =================
@@ -318,6 +448,98 @@ export default function AdminPanel() {
     }
   };
 
+  // ================= QUESTIONS =================
+
+const addQuestion = async (e) => {
+  e.preventDefault();
+
+  try {
+    const res = await fetch("http://localhost:3001/questions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        questionText
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "حدث خطأ");
+      return;
+    }
+
+    alert("تمت إضافة السؤال بنجاح");
+    resetForms();
+    setActiveForm("");
+    fetchQuestions();
+  } catch (error) {
+    console.log(error);
+    alert("Server error");
+  }
+};
+
+const updateQuestion = async (e) => {
+  e.preventDefault();
+
+  try {
+    const res = await fetch(`http://localhost:3001/questions/${questionID}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        questionText
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "حدث خطأ");
+      return;
+    }
+
+    alert("تم تعديل السؤال بنجاح");
+    resetForms();
+    setActiveForm("");
+    fetchQuestions();
+  } catch (error) {
+    console.log(error);
+    alert("Server error");
+  }
+};
+
+const deleteQuestion = async (e) => {
+  e.preventDefault();
+
+  try {
+    const res = await fetch(`http://localhost:3001/questions/${questionID}`, {
+      method: "DELETE"
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "حدث خطأ");
+      return;
+    }
+
+    alert("تم حذف السؤال بنجاح");
+    resetForms();
+    setActiveForm("");
+    fetchQuestions();
+  } catch (error) {
+    console.log(error);
+    alert("Server error");
+
+
+  }
+
+};
+
   const updateExpert = async (e) => {
     e.preventDefault();
 
@@ -373,314 +595,488 @@ export default function AdminPanel() {
       console.log(error);
       alert("Server error");
     }
-  };
 
-  return (
-    <div className="container py-5" dir="rtl" style={{ minHeight: "100vh" }}>
-      <h1 className="text-center mb-5 fw-bold text-primary">
-        لوحة تحكم الإدارة
-      </h1>
 
-      <div className="row g-4">
 
-        {/* إدارة الخبراء */}
-        <div className="col-md-4">
-          <div className="card shadow border-0 h-100 rounded-4">
-            <div className="card-body text-center p-4">
-              <h3 className="fw-bold mb-4">إدارة الخبراء</h3>
 
-              <div className="d-grid gap-3">
-                <button onClick={() => { resetForms(); setActiveForm("addExpert"); }} className="btn btn-success rounded-pill">
-                  إضافة خبير
-                </button>
+  }
+  // ================= OPTIONS =================
 
-                <button onClick={() => { resetForms(); setActiveForm("updateExpert"); }} className="btn btn-warning text-white rounded-pill">
-                  تعديل خبير
-                </button>
+const addOption = async (e) => {
+  e.preventDefault();
 
-                <button onClick={() => { resetForms(); setActiveForm("deleteExpert"); }} className="btn btn-danger rounded-pill">
-                  حذف خبير
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+  if (!optionID || !optionQuestionID || !optionText) {
+    alert("رقم الخيار ورقم السؤال ونص الخيار مطلوبة");
+    return;
+  }
 
-        {/* إدارة التخصصات */}
-        <div className="col-md-4">
-          <div className="card shadow border-0 h-100 rounded-4">
-            <div className="card-body text-center p-4">
-              <h3 className="fw-bold mb-4">إدارة التخصصات</h3>
+  try {
+    const res = await fetch("http://localhost:3001/options", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        optionID: optionID,
+        questionID: optionQuestionID,
+        optionText: optionText,
+      }),
+    });
 
-              <div className="d-grid gap-3">
-                <button onClick={() => { resetForms(); setActiveForm("addMajor"); }} className="btn btn-success rounded-pill">
-                  إضافة تخصص
-                </button>
+    const data = await res.json();
 
-                <button onClick={() => { resetForms(); setActiveForm("updateMajor"); }} className="btn btn-warning text-white rounded-pill">
-                  تعديل تخصص
-                </button>
+    if (!res.ok) {
+      alert(data.message || data.error || "حدث خطأ");
+      return;
+    }
 
-                <button onClick={() => { resetForms(); setActiveForm("deleteMajor"); }} className="btn btn-danger rounded-pill">
-                  حذف تخصص
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+    alert("تمت إضافة الخيار بنجاح");
+    resetForms();
+    setActiveForm("");
+    fetchOptions();
+  } catch (error) {
+    console.log(error);
+    alert("Server error");
+  }
+};
 
-        {/* إدارة الكليات */}
-        <div className="col-md-4">
-          <div className="card shadow border-0 h-100 rounded-4">
-            <div className="card-body text-center p-4">
-              <h3 className="fw-bold mb-4">إدارة الكليات</h3>
+const updateOption = async (e) => {
+  e.preventDefault();
 
-              <div className="d-grid gap-3">
-                <button onClick={() => { resetForms(); setActiveForm("addFaculty"); }} className="btn btn-success rounded-pill">
-                  إضافة كلية
-                </button>
+  try {
+    const res = await fetch(`http://localhost:3001/options/${optionID}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        optionText,
+        questionID: optionQuestionID
+      })
+    });
 
-                <button onClick={() => { resetForms(); setActiveForm("updateFaculty"); }} className="btn btn-warning text-white rounded-pill">
-                  تعديل كلية
-                </button>
+    const data = await res.json();
 
-                <button onClick={() => { resetForms(); setActiveForm("deleteFaculty"); }} className="btn btn-danger rounded-pill">
-                  حذف كلية
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+    if (!res.ok) {
+      alert(data.message || "حدث خطأ");
+      return;
+    }
 
-      </div>
+    alert("تم تعديل الخيار بنجاح");
+    resetForms();
+    setActiveForm("");
+    fetchOptions();
+  } catch (error) {
+    console.log(error);
+    alert("Server error");
+  }
+};
 
-      {/* ================= FORMS ================= */}
+const deleteOption = async (e) => {
+  e.preventDefault();
 
+  try {
+    const res = await fetch(`http://localhost:3001/options/${optionID}`, {
+      method: "DELETE"
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "حدث خطأ");
+      return;
+    }
+
+    alert("تم حذف الخيار بنجاح");
+    resetForms();
+    setActiveForm("");
+    fetchOptions();
+  } catch (error) {
+    console.log(error);
+    alert("Server error");
+  }
+};
+
+
+
+
+// ================= SKILLS =================
+
+const addSkill = async (e) => {
+  e.preventDefault();
+
+  if (!skillMajorID || !skill) {
+    alert("رقم التخصص والمهارة مطلوبين");
+    return;
+  }
+
+  try {
+    const res = await fetch("http://localhost:3001/skills", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        majorID: skillMajorID,
+        skill: skill,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "حدث خطأ");
+      return;
+    }
+
+    alert("تمت إضافة المهارة بنجاح");
+    resetForms();
+    fetchSkills();
+  } catch (error) {
+    console.log(error);
+    alert("Server error");
+  }
+};
+
+const updateSkill = async (e) => {
+  e.preventDefault();
+
+  if (!skillID || !skillMajorID || !skill) {
+    alert("رقم المهارة ورقم التخصص والمهارة مطلوبين");
+    return;
+  }
+
+  try {
+    const res = await fetch(`http://localhost:3001/skills/${skillID}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        majorID: skillMajorID,
+        skill: skill,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "حدث خطأ");
+      return;
+    }
+
+    alert("تم تعديل المهارة بنجاح");
+    resetForms();
+    fetchSkills();
+  } catch (error) {
+    console.log(error);
+    alert("Server error");
+  }
+};
+
+const deleteSkill = async (e) => {
+  e.preventDefault();
+
+  if (!skillID || !skillMajorID) {
+    alert("رقم المهارة ورقم التخصص مطلوبين");
+    return;
+  }
+
+  try {
+    const res = await fetch(`http://localhost:3001/skills/${skillID}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        majorID: skillMajorID,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "حدث خطأ");
+      return;
+    }
+
+    alert("تم حذف المهارة بنجاح");
+    resetForms();
+    fetchSkills();
+  } catch (error) {
+    console.log(error);
+    alert("Server error");
+  }
+};
+
+
+// ================= OPPORTUNITIES =================
+
+const addOpportunity = async (e) => {
+  e.preventDefault();
+
+  if (!opportunityMajorID || !opportunity) {
+    alert("رقم التخصص وفرصة العمل مطلوبين");
+    return;
+  }
+
+  try {
+    const res = await fetch("http://localhost:3001/opportunities", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        majorID: opportunityMajorID,
+        opportunity: opportunity,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "حدث خطأ");
+      return;
+    }
+
+    alert("تمت إضافة فرصة العمل بنجاح");
+    resetForms();
+    fetchOpportunities();
+  } catch (error) {
+    console.log(error);
+    alert("Server error");
+  }
+};
+
+const updateOpportunity = async (e) => {
+  e.preventDefault();
+
+  if (!oppoID || !opportunityMajorID || !opportunity) {
+    alert("رقم الفرصة ورقم التخصص وفرصة العمل مطلوبين");
+    return;
+  }
+
+  try {
+    const res = await fetch(`http://localhost:3001/opportunities/${oppoID}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        majorID: opportunityMajorID,
+        opportunity: opportunity,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "حدث خطأ");
+      return;
+    }
+
+    alert("تم تعديل فرصة العمل بنجاح");
+    resetForms();
+    fetchOpportunities();
+  } catch (error) {
+    console.log(error);
+    alert("Server error");
+  }
+};
+
+const deleteOpportunity = async (e) => {
+  e.preventDefault();
+
+  if (!oppoID || !opportunityMajorID) {
+    alert("رقم الفرصة ورقم التخصص مطلوبين");
+    return;
+  }
+
+  try {
+    const res = await fetch(`http://localhost:3001/opportunities/${oppoID}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        majorID: opportunityMajorID,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "حدث خطأ");
+      return;
+    }
+
+    alert("تم حذف فرصة العمل بنجاح");
+    resetForms();
+    fetchOpportunities();
+  } catch (error) {
+    console.log(error);
+    alert("Server error");
+  }
+};
+
+ return (
+  <div className="container py-5" dir="rtl" style={{ minHeight: "100vh" }}>
+    <h1 className="text-center mb-5 fw-bold text-primary">
+      لوحة تحكم الإدارة
+    </h1>
+
+    <AdminCards resetForms={resetForms} setActiveForm={setActiveForm} />
+
+    {/* ================= FORMS ================= */}
       <div className="mt-5 mx-auto">
 
-        {activeForm === "addFaculty" && (
-          <form onSubmit={addFaculty} className="card p-4 shadow">
-            <h4 className="text-center mb-3">إضافة كلية</h4>
+        
+<FacultyForms
+  activeForm={activeForm}
+  faculties={faculties}
 
-            <input
-              className="form-control mb-3"
-              placeholder="اسم الكلية"
-              value={facultyName}
-              onChange={(e) => setFacultyName(e.target.value)}
-              required
-            />
+  facultyID={facultyID}
+  setFacultyID={setFacultyID}
 
-            <button className="btn btn-success">حفظ</button>
-          </form>
-        )}
+  facultyName={facultyName}
+  setFacultyName={setFacultyName}
 
-        {activeForm === "updateFaculty" && (
-          <div className="container">
-            <div className="row" >
-              <div className="col-4">
-                <FacultiesTable faculties={faculties} />
-              </div>
-              <div className="col-4">
-                <form onSubmit={updateFaculty} className="card p-4 shadow">
-                  <h4 className="text-center mb-3">تعديل كلية</h4>
+  addFaculty={addFaculty}
+  updateFaculty={updateFaculty}
+  deleteFaculty={deleteFaculty}
+/>
 
-                  <input
-                    className="form-control mb-3"
-                    placeholder="رقم الكلية facultyID"
-                    value={facultyID}
-                    onChange={(e) => setFacultyID(e.target.value)}
-                    required
-                  />
+<MajorForms
+  activeForm={activeForm}
+  faculties={faculties}
+  majors={majors}
 
-                  <input
-                    className="form-control mb-3"
-                    placeholder="اسم الكلية الجديد"
-                    value={facultyName}
-                    onChange={(e) => setFacultyName(e.target.value)}
-                    required
-                  />
+  majorID={majorID}
+  setMajorID={setMajorID}
 
-                  <button className="btn btn-warning text-white">تعديل</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        )}
+  majorName={majorName}
+  setMajorName={setMajorName}
 
-        {activeForm === "deleteFaculty" && (
-          <div className="container">
-            <div className="row" >
-              <div className="col-4">
-                <FacultiesTable faculties={faculties} />
-              </div>
-              <div className="col-4">
-                <form onSubmit={deleteFaculty} className="card p-4 shadow">
-                  <h4 className="text-center mb-3">حذف كلية</h4>
+  majorFacultyID={majorFacultyID}
+  setMajorFacultyID={setMajorFacultyID}
 
-                  <input
-                    className="form-control mb-3"
-                    placeholder="رقم الكلية facultyID"
-                    value={facultyID}
-                    onChange={(e) => setFacultyID(e.target.value)}
-                    required
-                  />
+  acceptanceGrade={acceptanceGrade}
+  setAcceptanceGrade={setAcceptanceGrade}
 
-                  <button className="btn btn-danger">حذف</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        )}
+  creditHours={creditHours}
+  setCreditHours={setCreditHours}
 
-        {activeForm === "addMajor" && (
-          <div className="container">
-            <div className="row" >
-              <div className="col-4">
-                <FacultiesTable faculties={faculties} />
-              </div>
-              <div className="col-4">
-                <form onSubmit={addMajor} className="card p-4 shadow">
-                  <h4 className="text-center mb-3">إضافة تخصص</h4>
+  costPerHour={costPerHour}
+  setCostPerHour={setCostPerHour}
 
-                  <input className="form-control mb-3" placeholder="اسم التخصص" value={majorName} onChange={(e) => setMajorName(e.target.value)} required />
-                  <input className="form-control mb-3" placeholder="رقم الكلية facultyID" value={majorFacultyID} onChange={(e) => setMajorFacultyID(e.target.value)} required />
-                  <input className="form-control mb-3" placeholder="معدل القبول" value={acceptanceGrade} onChange={(e) => setAcceptanceGrade(e.target.value)} />
-                  <input className="form-control mb-3" placeholder="عدد الساعات" value={creditHours} onChange={(e) => setCreditHours(e.target.value)} />
-                  <input className="form-control mb-3" placeholder="سعر الساعة" value={costPerHour} onChange={(e) => setCostPerHour(e.target.value)} />
-                  <input className="form-control mb-3" placeholder="رابط الخطة الدراسية" value={studyPlanURL} onChange={(e) => setStudyPlanURL(e.target.value)} />
+  studyPlanURL={studyPlanURL}
+  setStudyPlanURL={setStudyPlanURL}
 
-                  <button className="btn btn-success">حفظ</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        )}
+  addMajor={addMajor}
+  updateMajor={updateMajor}
+  deleteMajor={deleteMajor}
+/>
 
-        {activeForm === "updateMajor" && (
-          <div className="container">
-            <div className="row" >
-              <div className="col-4">
-                <FacultiesTable faculties={faculties} />
-              </div>
-              <div className="col-4">
-                <form onSubmit={updateMajor} className="card p-4 shadow">
-                  <h4 className="text-center mb-3">تعديل تخصص</h4>
+<ExpertForms
+  activeForm={activeForm}
+  faculties={faculties}
+  experts={experts}
 
-                  <input className="form-control mb-3" placeholder="رقم التخصص majorID" value={majorID} onChange={(e) => setMajorID(e.target.value)} required />
-                  <input className="form-control mb-3" placeholder="اسم التخصص الجديد" value={majorName} onChange={(e) => setMajorName(e.target.value)} required />
-                  <input className="form-control mb-3" placeholder="رقم الكلية facultyID" value={majorFacultyID} onChange={(e) => setMajorFacultyID(e.target.value)} required />
-                  <input className="form-control mb-3" placeholder="معدل القبول" value={acceptanceGrade} onChange={(e) => setAcceptanceGrade(e.target.value)} />
-                  <input className="form-control mb-3" placeholder="عدد الساعات" value={creditHours} onChange={(e) => setCreditHours(e.target.value)} />
-                  <input className="form-control mb-3" placeholder="سعر الساعة" value={costPerHour} onChange={(e) => setCostPerHour(e.target.value)} />
-                  <input className="form-control mb-3" placeholder="رابط الخطة الدراسية" value={studyPlanURL} onChange={(e) => setStudyPlanURL(e.target.value)} />
+  expertID={expertID}
+  setExpertID={setExpertID}
 
-                  <button className="btn btn-warning text-white">تعديل</button>
-                </form>
-              </div>
-              <div className="col-4" >
-                <MajorsTable majors={majors} />
-              </div>
-            </div>
-          </div>
-        )}
+  firstName={firstName}
+  setFirstName={setFirstName}
 
-        {activeForm === "deleteMajor" && (
-          <div className="conatainer" >
-            <div className="row">
-              <div className="col-4" >
-                <MajorsTable majors={majors} />
-              </div>
-              <div className="col-4">
-              <form onSubmit={deleteMajor} className="card p-4 shadow">
-                <h4 className="text-center mb-3">حذف تخصص</h4>
+  lastName={lastName}
+  setLastName={setLastName}
 
-                <input
-                  className="form-control mb-3"
-                  placeholder="رقم التخصص majorID"
-                  value={majorID}
-                  onChange={(e) => setMajorID(e.target.value)}
-                  required
-                />
+  expertEmail={expertEmail}
+  setExpertEmail={setExpertEmail}
 
-                <button className="btn btn-danger">حذف</button>
-              </form>
-              </div>
-            </div>
-          </div>
-        )}
+  expertFacultyID={expertFacultyID}
+  setExpertFacultyID={setExpertFacultyID}
 
-        {activeForm === "addExpert" && (
-          <div className="container">
-            <div className="row" >
-              <div className="col-4">
-                <FacultiesTable faculties={faculties} />
-              </div>
-              <div className="col-4">
-                <form onSubmit={addExpert} className="card p-4 shadow">
-                  <h4 className="text-center mb-3">إضافة خبير</h4>
+  addExpert={addExpert}
+  updateExpert={updateExpert}
+  deleteExpert={deleteExpert}
+/>
 
-                  <input className="form-control mb-3" placeholder="الاسم الأول" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
-                  <input className="form-control mb-3" placeholder="اسم العائلة" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
-                  <input className="form-control mb-3" placeholder="الإيميل" value={expertEmail} onChange={(e) => setExpertEmail(e.target.value)} required />
-                  <input className="form-control mb-3" placeholder="رقم الكلية facultyID" value={expertFacultyID} onChange={(e) => setExpertFacultyID(e.target.value)} required />
 
-                  <button className="btn btn-success">حفظ</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        )}
+<QuestionForms
+  activeForm={activeForm}
+  questions={questions}
 
-        {activeForm === "updateExpert" && (
-          <div className="container">
-            <div className="row" >
-              <div className="col-4">
-                <FacultiesTable faculties={faculties} />
-              </div>
-              <div className="col-4">
-                <form onSubmit={updateExpert} className="card p-4 shadow">
-                  <h4 className="text-center mb-3">تعديل خبير</h4>
+  questionID={questionID}
+  setQuestionID={setQuestionID}
 
-                  <input className="form-control mb-3" placeholder="رقم الخبير expertID" value={expertID} onChange={(e) => setExpertID(e.target.value)} required />
-                  <input className="form-control mb-3" placeholder="الاسم الأول" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
-                  <input className="form-control mb-3" placeholder="اسم العائلة" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
-                  <input className="form-control mb-3" placeholder="الإيميل" value={expertEmail} onChange={(e) => setExpertEmail(e.target.value)} required />
-                  <input className="form-control mb-3" placeholder="رقم الكلية facultyID" value={expertFacultyID} onChange={(e) => setExpertFacultyID(e.target.value)} required />
+  questionText={questionText}
+  setQuestionText={setQuestionText}
 
-                  <button className="btn btn-warning text-white">تعديل</button>
-                </form>
-              </div>
-              <div className="col-4" >
-                <ExpertsTable experts={experts} />
-              </div>
-            </div>
-          </div>
-        )}
+  addQuestion={addQuestion}
+  updateQuestion={updateQuestion}
+  deleteQuestion={deleteQuestion}
+/>
 
-        {activeForm === "deleteExpert" && (
-          <div className="container" >
-            <div className="row">
-              <div className="col-4" >
-                <ExpertsTable experts={experts} />
-              </div>
-              <div className="col-4" >
-              <form onSubmit={deleteExpert} className="card p-4 shadow">
-                <h4 className="text-center mb-3">حذف خبير</h4>
 
-                <input
-                  className="form-control mb-3"
-                  placeholder="رقم الخبير expertID"
-                  value={expertID}
-                  onChange={(e) => setExpertID(e.target.value)}
-                  required
-                />
+<OptionForms
+  activeForm={activeForm}
+  questions={questions}
+  options={options}
 
-                <button className="btn btn-danger">حذف</button>
-              </form>
-              </div>
-            </div>
-          </div>
-        )}
+  optionID={optionID}
+  setOptionID={setOptionID}
+
+  optionText={optionText}
+  setOptionText={setOptionText}
+
+  optionQuestionID={optionQuestionID}
+  setOptionQuestionID={setOptionQuestionID}
+
+  addOption={addOption}
+  updateOption={updateOption}
+  deleteOption={deleteOption}
+/>
+
+<SkillForms
+  activeForm={activeForm}
+  majors={majors}
+  skills={skills}
+
+  skillID={skillID}
+  setSkillID={setSkillID}
+
+  skillMajorID={skillMajorID}
+  setSkillMajorID={setSkillMajorID}
+
+  skill={skill}
+  setSkill={setSkill}
+
+  addSkill={addSkill}
+  updateSkill={updateSkill}
+  deleteSkill={deleteSkill}
+/>
+
+<OpportunityForms
+  activeForm={activeForm}
+  majors={majors}
+  opportunities={opportunities}
+
+  oppoID={oppoID}
+  setOppoID={setOppoID}
+
+  opportunityMajorID={opportunityMajorID}
+  setOpportunityMajorID={setOpportunityMajorID}
+
+  opportunity={opportunity}
+  setOpportunity={setOpportunity}
+
+  addOpportunity={addOpportunity}
+  updateOpportunity={updateOpportunity}
+  deleteOpportunity={deleteOpportunity}
+/>
+
+
 
       </div>
     </div>
