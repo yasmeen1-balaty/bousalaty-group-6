@@ -1,7 +1,11 @@
 {
   "dependencies": {
     "bcrypt": "^6.0.0",
+<<<<<<< HEAD
+    "dotenv": "^17.4.2",
+=======
     "groq-sdk": "^1.2.0",
+>>>>>>> 99b947138cdb853dcee7c94ba29a904fad865b78
     "jsonwebtoken": "^9.0.3"
   }
 }

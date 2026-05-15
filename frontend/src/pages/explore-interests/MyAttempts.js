@@ -8,14 +8,25 @@ function MyAttempts() {
   const studentID = savedUser?.studentID || savedUser?.id || savedUser?.userID;
 
   useEffect(() => {
-    fetch(`http://localhost:3001/submissions/student/${studentID}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setSubmissions(data);
-      })
-      .catch((err) => console.log(err));
-  }, [studentID]);
+  if (!studentID) return;
 
+  fetch(`http://localhost:3001/submissions/student/${studentID}`)
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("submissions:", data);
+
+      if (Array.isArray(data)) {
+        setSubmissions(data);
+      } else if (Array.isArray(data.submissions)) {
+        setSubmissions(data.submissions);
+      } else if (Array.isArray(data.data)) {
+        setSubmissions(data.data);
+      } else {
+        setSubmissions([]);
+      }
+    })
+    .catch((err) => console.log(err));
+}, [studentID]);
   return (
     <div className="container mt-5" style={{ direction: "rtl" }}>
       <h2 className="mb-4">محاولاتي السابقة</h2>
