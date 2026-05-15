@@ -15,7 +15,9 @@ const opportunityRoutes = require('./routes/opportunityRoutes');
 const optionRoutes = require('./routes/optionRoutes');
 const questionRoutes = require('./routes/questionRoutes');
 const responseRoutes = require('./routes/responseRoutes');
+const submissionRoutes = require('./routes/submissionRoutes');
 const skillRoutes = require('./routes/skillRoutes');
+
 
 app.use(cors({
     origin: 'http://localhost:3000',
@@ -34,8 +36,57 @@ app.use('/opportunities', opportunityRoutes);
 app.use('/options', optionRoutes);
 app.use('/questions', questionRoutes);
 app.use('/responses', responseRoutes);
+app.use('/submissions', submissionRoutes);
 app.use('/skills', skillRoutes);
 
 app.listen(3001, () => {
     console.log('Server running on http://localhost:3001');
 });
+
+
+
+
+/*
+const db = require('./models');
+const bcrypt = require('bcrypt');
+const Admin = db.admin;
+
+const createAdminUser = async () => {
+    try {
+        const adminData = {
+            name: "Administrator",
+            email: "admin@bousalaty.com",
+            password: "Admin@12345",
+            role: "admin"
+        };
+
+        const existingAdmin = await Admin.findOne({ 
+            where: { email: adminData.email } 
+        });
+
+        if (existingAdmin) {
+            console.log("Admin already exists", adminData.email);
+            return;
+        }
+
+        const hashedPassword = await bcrypt.hash(adminData.password, 10);
+
+        const newAdmin = await Admin.create({
+            name: adminData.name,
+            email: adminData.email,
+            password: hashedPassword,
+            role: adminData.role
+        });
+
+        console.log("Done");
+
+    } catch (error) {
+        console.error("error occured", error.message);
+    } finally {
+        process.exit(0);
+    }
+};
+
+createAdminUser();
+*/
+

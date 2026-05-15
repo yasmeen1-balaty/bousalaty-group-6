@@ -88,11 +88,27 @@ const getExperts = async (req, res) => {
     }
 };
 
+const getAllFaculties = async (req, res) => {
+  try {
+    const faculties = await db.faculty.findAll({
+      attributes: ["facultyID", "facultyName"],
+    });
+
+    res.status(200).json(faculties);
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
     findFaculty,
     createFaculty,
     updateFaculty,
     deleteFaculty,
     getMajors,
-    getExperts
+    getExperts,
+    getAllFaculties
 };

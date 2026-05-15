@@ -1,21 +1,21 @@
 'use strict';
-/** @type {import('sequelize-cli').Migration} */
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('responses', {
       responseID: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
-        allowNull : false ,
+        allowNull: false,
         primaryKey: true
       },
 
-      studentID: {
+      submissionID: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'students',
-          key: 'studentID'
+          model: 'submissions',
+          key: 'submissionID'
         },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
@@ -41,18 +41,20 @@ module.exports = {
         },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
-
       },
+
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
       },
+
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
       }
     });
   },
+
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('responses');
   }

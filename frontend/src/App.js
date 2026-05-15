@@ -13,8 +13,8 @@ import MajorDetails from './pages/explore-major/Major';
 import { Dashboard } from './pages/student-dashboard/dashboard';
 import { useState, useEffect } from 'react';
 import AdminAuthPage from './pages/home-page/auth/adminLogin';
-
-     
+import AdminPanel from './pages/student-dashboard/adminpanel';
+import MyAttempts from './pages/explore-interests/MyAttempts';
 function App() {
   const [items, setItems] = useState([]);
   const [dataIsLoaded, setDataIsLoaded] = useState(false);
@@ -30,12 +30,13 @@ function App() {
       });
   }, []);
 
-  useEffect(() => {
+ useEffect(() => {
     const savedUser = localStorage.getItem("user");
-    if (savedUser) {
+    if (savedUser && savedUser !== "undefined") {
       setUser(JSON.parse(savedUser));
     }
   }, []);
+ 
 
   function login(userData) {
     localStorage.setItem("user", JSON.stringify(userData));
@@ -63,6 +64,8 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path='/admin/adminpanel' element= {<AdminPanel />} />
+        <Route path="/my-attempts" element={<MyAttempts />} /> 
       </Routes>
 
       <ChatBot />
