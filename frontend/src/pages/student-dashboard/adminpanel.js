@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
-<<<<<<< HEAD:frontend/src/pages/student-dashboard/adminpanel.js
 
 import AdminCards from "./admin/AdminCards";
 
@@ -12,12 +11,6 @@ import QuestionForms from "./admin/questions/QuestionForms";
 import ExpertForms from "./admin/experts/ExpertForms";
 import MajorForms from "./admin/majors/MajorForms";
 import FacultyForms from "./admin/faculties/FacultyForms";
-=======
-import FacultiesTable from "./facultiesTable";
-import MajorsTable from "./majorsTable";
-import ExpertsTable from "./expertsTable";
-import AdminCards from "./components/adminCards";
->>>>>>> 99b947138cdb853dcee7c94ba29a904fad865b78:frontend/src/pages/admin/adminpanel.js
 
 export default function AdminPanel() {
 
@@ -581,60 +574,53 @@ const deleteQuestion = async (e) => {
   };
 
   const deleteExpert = async (e) => {
-    e.preventDefault();
-
-    try {
-      const res = await fetch(`http://localhost:3001/experts/${expertID}`, {
-        method: "DELETE"
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(data.message || "حدث خطأ");
-        return;
-      }
-
-      alert("تم حذف الخبير بنجاح");
-      resetForms();
-      setActiveForm("");
-    } catch (error) {
-      console.log(error);
-      alert("Server error");
-    }
-
-
-<<<<<<< HEAD:frontend/src/pages/student-dashboard/adminpanel.js
-
-
-  }
-  // ================= OPTIONS =================
-
-const addOption = async (e) => {
   e.preventDefault();
 
-  if (!optionID || !optionQuestionID || !optionText) {
-    alert("رقم الخيار ورقم السؤال ونص الخيار مطلوبة");
-    return;
-  }
-
   try {
-    const res = await fetch("http://localhost:3001/options", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        optionID: optionID,
-        questionID: optionQuestionID,
-        optionText: optionText,
-      }),
+    const res = await fetch(`http://localhost:3001/experts/${expertID}`, {
+      method: "DELETE"
     });
 
     const data = await res.json();
 
     if (!res.ok) {
-      alert(data.message || data.error || "حدث خطأ");
+      alert(data.message || "حدث خطأ");
+      return;
+    }
+
+    alert("تم حذف الخبير بنجاح");
+    resetForms();
+    setActiveForm("");
+    fetchExperts();
+  } catch (error) {
+    console.log(error);
+    alert("Server error");
+  }
+};
+
+
+  
+  // ================= OPTIONS =================
+
+const addOption = async (e) => {
+  e.preventDefault();
+
+  try {
+    const res = await fetch("http://localhost:3001/options", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        optionText,
+        questionID: optionQuestionID
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "حدث خطأ");
       return;
     }
 
@@ -669,26 +655,6 @@ const updateOption = async (e) => {
       alert(data.message || "حدث خطأ");
       return;
     }
-=======
-      <div className="row g-4">
-        <AdminCards title="إدارة الخبراء"
-          onAdd={() => { resetForms(); setActiveForm("addExpert"); }}
-          onUpdate={() => { resetForms(); setActiveForm("updateExpert"); }}
-          onDelete={() => { resetForms(); setActiveForm("deleteExpert"); }}
-        />
-
-        <AdminCards title="إدارة التخصصات"
-          onAdd={() => { resetForms();  setActiveForm("addMajor"); }}
-          onUpdate={() => { resetForms(); setActiveForm("updateMajor"); }}
-          onDelete={() => { resetForms(); setActiveForm("deleteMajor"); }}
-        />
-
-        <AdminCards title="إدارة الكليات"
-          onAdd={() => { resetForms(); setActiveForm("addFaculty"); }}
-          onUpdate={() => { resetForms(); setActiveForm("updateFaculty"); }}
-          onDelete={() => { resetForms(); setActiveForm("deleteFaculty"); }}
-        />
->>>>>>> 99b947138cdb853dcee7c94ba29a904fad865b78:frontend/src/pages/admin/adminpanel.js
 
     alert("تم تعديل الخيار بنجاح");
     resetForms();
@@ -724,8 +690,6 @@ const deleteOption = async (e) => {
     alert("Server error");
   }
 };
-
-
 
 
 // ================= SKILLS =================
@@ -947,7 +911,7 @@ const deleteOpportunity = async (e) => {
   }
 };
 
- return (
+return (
   <div className="container py-5" dir="rtl" style={{ minHeight: "100vh" }}>
     <h1 className="text-center mb-5 fw-bold text-primary">
       لوحة تحكم الإدارة
@@ -956,211 +920,118 @@ const deleteOpportunity = async (e) => {
     <AdminCards resetForms={resetForms} setActiveForm={setActiveForm} />
 
     {/* ================= FORMS ================= */}
-      <div className="mt-5 mx-auto">
+    <div className="mt-5 mx-auto">
+      <FacultyForms
+        activeForm={activeForm}
+        faculties={faculties}
+        facultyID={facultyID}
+        setFacultyID={setFacultyID}
+        facultyName={facultyName}
+        setFacultyName={setFacultyName}
+        addFaculty={addFaculty}
+        updateFaculty={updateFaculty}
+        deleteFaculty={deleteFaculty}
+      />
 
-        
-<FacultyForms
-  activeForm={activeForm}
-  faculties={faculties}
+      <MajorForms
+        activeForm={activeForm}
+        faculties={faculties}
+        majors={majors}
+        majorID={majorID}
+        setMajorID={setMajorID}
+        majorName={majorName}
+        setMajorName={setMajorName}
+        majorFacultyID={majorFacultyID}
+        setMajorFacultyID={setMajorFacultyID}
+        acceptanceGrade={acceptanceGrade}
+        setAcceptanceGrade={setAcceptanceGrade}
+        creditHours={creditHours}
+        setCreditHours={setCreditHours}
+        costPerHour={costPerHour}
+        setCostPerHour={setCostPerHour}
+        studyPlanURL={studyPlanURL}
+        setStudyPlanURL={setStudyPlanURL}
+        addMajor={addMajor}
+        updateMajor={updateMajor}
+        deleteMajor={deleteMajor}
+      />
 
-  facultyID={facultyID}
-  setFacultyID={setFacultyID}
+      <ExpertForms
+        activeForm={activeForm}
+        faculties={faculties}
+        experts={experts}
+        expertID={expertID}
+        setExpertID={setExpertID}
+        firstName={firstName}
+        setFirstName={setFirstName}
+        lastName={lastName}
+        setLastName={setLastName}
+        expertEmail={expertEmail}
+        setExpertEmail={setExpertEmail}
+        expertFacultyID={expertFacultyID}
+        setExpertFacultyID={setExpertFacultyID}
+        addExpert={addExpert}
+        updateExpert={updateExpert}
+        deleteExpert={deleteExpert}
+      />
 
-  facultyName={facultyName}
-  setFacultyName={setFacultyName}
+      <QuestionForms
+        activeForm={activeForm}
+        questions={questions}
+        questionID={questionID}
+        setQuestionID={setQuestionID}
+        questionText={questionText}
+        setQuestionText={setQuestionText}
+        addQuestion={addQuestion}
+        updateQuestion={updateQuestion}
+        deleteQuestion={deleteQuestion}
+      />
 
-  addFaculty={addFaculty}
-  updateFaculty={updateFaculty}
-  deleteFaculty={deleteFaculty}
-/>
+      <OptionForms
+        activeForm={activeForm}
+        questions={questions}
+        options={options}
+        optionID={optionID}
+        setOptionID={setOptionID}
+        optionText={optionText}
+        setOptionText={setOptionText}
+        optionQuestionID={optionQuestionID}
+        setOptionQuestionID={setOptionQuestionID}
+        addOption={addOption}
+        updateOption={updateOption}
+        deleteOption={deleteOption}
+      />
 
-<MajorForms
-  activeForm={activeForm}
-  faculties={faculties}
-  majors={majors}
+      <SkillForms
+        activeForm={activeForm}
+        majors={majors}
+        skills={skills}
+        skillID={skillID}
+        setSkillID={setSkillID}
+        skillMajorID={skillMajorID}
+        setSkillMajorID={setSkillMajorID}
+        skill={skill}
+        setSkill={setSkill}
+        addSkill={addSkill}
+        updateSkill={updateSkill}
+        deleteSkill={deleteSkill}
+      />
 
-  majorID={majorID}
-  setMajorID={setMajorID}
-
-  majorName={majorName}
-  setMajorName={setMajorName}
-
-  majorFacultyID={majorFacultyID}
-  setMajorFacultyID={setMajorFacultyID}
-
-  acceptanceGrade={acceptanceGrade}
-  setAcceptanceGrade={setAcceptanceGrade}
-
-  creditHours={creditHours}
-  setCreditHours={setCreditHours}
-
-  costPerHour={costPerHour}
-  setCostPerHour={setCostPerHour}
-
-  studyPlanURL={studyPlanURL}
-  setStudyPlanURL={setStudyPlanURL}
-
-  addMajor={addMajor}
-  updateMajor={updateMajor}
-  deleteMajor={deleteMajor}
-/>
-
-<ExpertForms
-  activeForm={activeForm}
-  faculties={faculties}
-  experts={experts}
-
-  expertID={expertID}
-  setExpertID={setExpertID}
-
-  firstName={firstName}
-  setFirstName={setFirstName}
-
-<<<<<<< HEAD:frontend/src/pages/student-dashboard/adminpanel.js
-  lastName={lastName}
-  setLastName={setLastName}
-
-  expertEmail={expertEmail}
-  setExpertEmail={setExpertEmail}
-
-  expertFacultyID={expertFacultyID}
-  setExpertFacultyID={setExpertFacultyID}
-=======
-        {activeForm === "deleteMajor" && (
-          <div className="conatainer" >
-            <div className="row">
-              <div className="col-4" >
-                <MajorsTable majors={majors} />
-              </div>
-              <div className="col-4">
-                <form onSubmit={deleteMajor} className="card p-4 shadow">
-                  <h4 className="text-center mb-3">حذف تخصص</h4>
-
-                  <input
-                    className="form-control mb-3"
-                    placeholder="رقم التخصص majorID"
-                    value={majorID}
-                    onChange={(e) => setMajorID(e.target.value)}
-                    required
-                  />
-
-                  <button className="btn btn-danger">حذف</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        )}
->>>>>>> 99b947138cdb853dcee7c94ba29a904fad865b78:frontend/src/pages/admin/adminpanel.js
-
-  addExpert={addExpert}
-  updateExpert={updateExpert}
-  deleteExpert={deleteExpert}
-/>
-
-
-<QuestionForms
-  activeForm={activeForm}
-  questions={questions}
-
-  questionID={questionID}
-  setQuestionID={setQuestionID}
-
-  questionText={questionText}
-  setQuestionText={setQuestionText}
-
-  addQuestion={addQuestion}
-  updateQuestion={updateQuestion}
-  deleteQuestion={deleteQuestion}
-/>
-
-<<<<<<< HEAD:frontend/src/pages/student-dashboard/adminpanel.js
-
-<OptionForms
-  activeForm={activeForm}
-  questions={questions}
-  options={options}
-
-  optionID={optionID}
-  setOptionID={setOptionID}
-
-  optionText={optionText}
-  setOptionText={setOptionText}
-
-  optionQuestionID={optionQuestionID}
-  setOptionQuestionID={setOptionQuestionID}
-
-  addOption={addOption}
-  updateOption={updateOption}
-  deleteOption={deleteOption}
-/>
-
-<SkillForms
-  activeForm={activeForm}
-  majors={majors}
-  skills={skills}
-
-  skillID={skillID}
-  setSkillID={setSkillID}
-
-  skillMajorID={skillMajorID}
-  setSkillMajorID={setSkillMajorID}
-
-  skill={skill}
-  setSkill={setSkill}
-
-  addSkill={addSkill}
-  updateSkill={updateSkill}
-  deleteSkill={deleteSkill}
-/>
-
-<OpportunityForms
-  activeForm={activeForm}
-  majors={majors}
-  opportunities={opportunities}
-
-  oppoID={oppoID}
-  setOppoID={setOppoID}
-
-  opportunityMajorID={opportunityMajorID}
-  setOpportunityMajorID={setOpportunityMajorID}
-
-  opportunity={opportunity}
-  setOpportunity={setOpportunity}
-
-  addOpportunity={addOpportunity}
-  updateOpportunity={updateOpportunity}
-  deleteOpportunity={deleteOpportunity}
-/>
-
-
-=======
-        {activeForm === "deleteExpert" && (
-          <div className="container" >
-            <div className="row">
-              <div className="col-4" >
-                <ExpertsTable experts={experts} />
-              </div>
-              <div className="col-4" >
-                <form onSubmit={deleteExpert} className="card p-4 shadow">
-                  <h4 className="text-center mb-3">حذف خبير</h4>
-
-                  <input
-                    className="form-control mb-3"
-                    placeholder="رقم الخبير expertID"
-                    value={expertID}
-                    onChange={(e) => setExpertID(e.target.value)}
-                    required
-                  />
-
-                  <button className="btn btn-danger">حذف</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        )}
->>>>>>> 99b947138cdb853dcee7c94ba29a904fad865b78:frontend/src/pages/admin/adminpanel.js
-
-      </div>
+      <OpportunityForms
+        activeForm={activeForm}
+        majors={majors}
+        opportunities={opportunities}
+        oppoID={oppoID}
+        setOppoID={setOppoID}
+        opportunityMajorID={opportunityMajorID}
+        setOpportunityMajorID={setOpportunityMajorID}
+        opportunity={opportunity}
+        setOpportunity={setOpportunity}
+        addOpportunity={addOpportunity}
+        updateOpportunity={updateOpportunity}
+        deleteOpportunity={deleteOpportunity}
+      />
     </div>
-  );
+  </div>
+);
 }
