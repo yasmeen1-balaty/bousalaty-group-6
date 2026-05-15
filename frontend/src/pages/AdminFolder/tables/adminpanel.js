@@ -605,6 +605,11 @@ const deleteQuestion = async (e) => {
 const addOption = async (e) => {
   e.preventDefault();
 
+  if (!optionID || !optionQuestionID || !optionText) {
+    alert("رقم الخيار ورقم السؤال ونص الخيار مطلوبة");
+    return;
+  }
+
   try {
     const res = await fetch("http://localhost:3001/options", {
       method: "POST",
@@ -612,8 +617,9 @@ const addOption = async (e) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        optionText,
-        questionID: optionQuestionID
+        optionID: optionID,
+        questionID: optionQuestionID,
+        optionText: optionText
       })
     });
 
@@ -626,7 +632,6 @@ const addOption = async (e) => {
 
     alert("تمت إضافة الخيار بنجاح");
     resetForms();
-    setActiveForm("");
     fetchOptions();
   } catch (error) {
     console.log(error);

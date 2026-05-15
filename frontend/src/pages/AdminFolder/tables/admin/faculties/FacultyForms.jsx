@@ -1,4 +1,4 @@
-import FacultiesTable from "../../tables/FacultiesTable";
+import FacultiesTable from "../../FacultiesTable";
 
 export default function FacultyForms({
   activeForm,

@@ -1,4 +1,4 @@
-import QuestionsTable from "../../tables/QuestionsTable";
+import QuestionsTable from "../../QuestionsTable";
 
 export default function QuestionForms({
   activeForm,

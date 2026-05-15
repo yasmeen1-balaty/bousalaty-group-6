@@ -9,8 +9,8 @@ const HomePage = () => {
 
     const isMobile = window.innerWidth <= 768;
 
-    const features = [
-        {
+    const features = [{
+    
             icon: 'fas fa-brain',
             title: 'تحليل تخصص فوري',
             desc: 'تحليل من الحاسوب وتحليل مهاراتك'

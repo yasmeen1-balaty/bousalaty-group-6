@@ -1,5 +1,5 @@
-import MajorsTable from "../../tables/MajorsTable";
-import OpportunitiesTable from "../../tables/OpportunitiesTable";
+import MajorsTable from "../../MajorsTable";
+import OpportunitiesTable from "../../OpportunitiesTable";
 
 export default function OpportunityForms({
   activeForm,

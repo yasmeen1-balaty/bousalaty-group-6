@@ -1,5 +1,5 @@
-import QuestionsTable from "../../tables/QuestionsTable";
-import OptionsTable from "../../tables/OptionsTable";
+import QuestionsTable from "../../QuestionsTable";
+import OptionsTable from "../../OptionsTable";
 
 export default function OptionForms({
   activeForm,
