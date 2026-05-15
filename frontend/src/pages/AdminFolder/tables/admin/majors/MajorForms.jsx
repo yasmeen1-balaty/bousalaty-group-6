@@ -1,5 +1,5 @@
-import FacultiesTable from "../../tables/FacultiesTable";
-import MajorsTable from "../../tables/MajorsTable";
+import FacultiesTable from "../../FacultiesTable";
+import MajorsTable from "../../MajorsTable";
 
 export default function MajorForms({
   activeForm,

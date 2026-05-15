@@ -1,5 +1,5 @@
-import FacultiesTable from "../../tables/FacultiesTable";
-import ExpertsTable from "../../tables/ExpertsTable";
+import FacultiesTable from "../../FacultiesTable";
+import ExpertsTable from "../../ExpertsTable";
 
 export default function ExpertForms({
   activeForm,

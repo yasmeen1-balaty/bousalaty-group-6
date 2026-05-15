@@ -1,5 +1,5 @@
-import MajorsTable from "../../tables/MajorsTable";
-import SkillsTable from "../../tables/SkillsTable";
+import MajorsTable from "../../MajorsTable";
+import SkillsTable from "../../SkillsTable";
 
 export default function SkillForms({
   activeForm,

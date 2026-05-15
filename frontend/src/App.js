@@ -13,7 +13,7 @@ import MajorDetails from './pages/explore-major/Major';
 import { Dashboard } from './pages/student-dashboard/dashboard';
 import { useState, useEffect } from 'react';
 import AdminAuthPage from './pages/home-page/auth/adminLogin';
-import AdminPanel from './pages/student-dashboard/adminpanel';
+import AdminPanel from './pages/AdminFolder/tables/adminpanel';
 import MyAttempts from './pages/explore-interests/MyAttempts';
 function App() {
   const [items, setItems] = useState([]);
