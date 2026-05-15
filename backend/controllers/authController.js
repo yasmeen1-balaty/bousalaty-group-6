@@ -111,29 +111,6 @@ const login = async (req, res) => {
     }
 };
 
-const registerAdmin = async (req, res) => {
-    const { name, email, password, role } = req.body;
-
-    if (!name || !email || !password) {
-        return res.status(400).json({ message: "Name, email, password required" });
-    }
-
-    const existingAdmin = await Admin.findOne({ where: { email } });
-    if (existingAdmin) return res.status(400).json({ message: "Email already exists" });
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const admin = await Admin.create({ name, email, password: hashedPassword, role: role || 'admin' });
-
-    const token = jwt.sign(
-        { adminID: admin.adminID, email: admin.email, role: admin.role },
-        process.env.JWT_SECRET,
-        { expiresIn: '1h' }
-    );
-
-    res.status(201).json({ message: "Admin registered", token, admin });
-};
-
 const loginAdmin = async (req, res) => {
     const { email, password } = req.body;
     console.log('Login attempt for email:', email);
@@ -180,7 +157,6 @@ const accessAdminPanel = (req, res, next) => { // Middleware to check if user is
 module.exports = {
     register,
     login,
-    registerAdmin,
     loginAdmin,
     verifyToken,
     accessAdminPanel

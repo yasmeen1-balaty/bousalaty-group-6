@@ -9,17 +9,5 @@ router.get('/:studentID', studentController.findStudent);
 router.post('/', studentController.createStudent);
 router.put('/:studentID', studentController.updateStudent);
 router.delete('/:studentID', studentController.deleteStudent);
-router.post('/:studentID/create-result', studentController.createResult);
-router.get('/:studentID/get-result', studentController.getResult);
 
 module.exports = router;
-
-
-/*  getSavedMajors, 
-deleteStudent,
- updateStudent, 
- createStudent, 
- findStudent, 
- addToSavedMajors, 
- removeFromSavedMajors
- */
