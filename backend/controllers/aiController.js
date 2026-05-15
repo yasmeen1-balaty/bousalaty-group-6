@@ -63,22 +63,30 @@ ${answersText}
     const recommendedMajors = await Promise.all(
       aiData.recommendations.map(async (rec) => {
         const major = await db.major.findOne({
-          where: { majorName: rec.majorName }
+          where: db.Sequelize.where(
+            db.Sequelize.fn('LOWER', db.Sequelize.col('majorName')),
+            db.Sequelize.fn('LOWER', rec.majorName)
+          )
         });
+
+        if (!major) return null;
+
         return {
-          ...major?.dataValues,
+          ...major.dataValues,
           reason: rec.reason
         };
       })
     );
 
+    const filteredMajors = recommendedMajors.filter(m => m !== null);
+
     // 6. احفظي النتيجة في submission
     await db.submission.update(
-      { aiResult: recommendedMajors, status: 'completed' },
+      { aiResult: filteredMajors, status: 'completed' },
       { where: { submissionID } }
     );
 
-    res.json({ recommendations: recommendedMajors });
+    res.json({ recommendations: filteredMajors });
 
   } catch (error) {
     console.error('AI Error:', error);

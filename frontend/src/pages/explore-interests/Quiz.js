@@ -66,7 +66,7 @@ function Quiz() {
     }
 
     try {
-      // 1) إنشاء submission جديد
+      // add new submission
       const submissionRes = await fetch("http://localhost:3001/submissions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -81,7 +81,7 @@ function Quiz() {
 
       const submissionID = submissionData.submissionID;
 
-      // 2) تخزين الإجابات
+      // storing responses
       const responses = Object.entries(answers).map(([questionID, optionID]) => ({
         submissionID,
         questionID,
@@ -102,7 +102,7 @@ function Quiz() {
         }
       }
 
-      // 3) استدعاء الـ AI ✨
+      // AI API
       const aiRes = await fetch(`http://localhost:3001/submissions/${submissionID}/analyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
