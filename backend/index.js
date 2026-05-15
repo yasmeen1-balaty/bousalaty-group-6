@@ -1,10 +1,18 @@
 require('dotenv').config();
+
 const express = require('express');
-const app = express();
 const cors = require('cors');
 
+const app = express();
 
-const submissionRoutes = require('./routes/submissionRoutes');
+app.use(cors({
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.use(express.json());
+
 const studentRoutes = require('./routes/studentRoutes');
 const authRoutes = require('./routes/authRoutes');
 const facultyRoutes = require('./routes/facultyRoutes');
@@ -15,14 +23,10 @@ const optionRoutes = require('./routes/optionRoutes');
 const questionRoutes = require('./routes/questionRoutes');
 const responseRoutes = require('./routes/responseRoutes');
 const skillRoutes = require('./routes/skillRoutes');
+const chatbotRoutes = require('./routes/chatbotRoutes');
+const submissionRoutes = require('./routes/submissionRoutes');
 
-app.use(cors({
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
 
-app.use(express.json());
 app.use('/students', studentRoutes);
 app.use('/', authRoutes);
 app.use('/faculties', facultyRoutes);
@@ -34,11 +38,11 @@ app.use('/questions', questionRoutes);
 app.use('/responses', responseRoutes);
 app.use('/skills', skillRoutes);
 app.use('/submissions' , submissionRoutes)
+app.use('/chatbot', chatbotRoutes);
 
 app.listen(3001, () => {
     console.log('Server running on http://localhost:3001');
 });
-
 
 /*
 const db = require('./models');
@@ -83,3 +87,4 @@ const createAdminUser = async () => {
 
 createAdminUser();
 */
+
