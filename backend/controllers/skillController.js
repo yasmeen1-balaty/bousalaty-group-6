@@ -45,9 +45,23 @@ const deleteSkill = async (req, res) => {
         return res.status(404).json({ message: "Skill not found" });
     } catch (error) { res.status(500).json({ message: error.message }); }
 };
+const getAllSkills = async (req, res) => {
+  try {
+    const skills = await db.skills.findAll({
+      order: [["majorID", "ASC"]],
+    });
+
+    return res.json(skills);
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || "Server error",
+    });
+  }
+};
 
 module.exports = {
     createSkill,
     updateSkill,
-    deleteSkill
+    deleteSkill,
+    getAllSkills
 }

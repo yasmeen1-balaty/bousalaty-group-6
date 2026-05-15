@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Quiz from './pages/explore-interests/Quiz'
@@ -13,7 +13,7 @@ import MajorDetails from './pages/explore-major/Major';
 import { Dashboard } from './pages/student-dashboard/dashboard';
 import { useState, useEffect } from 'react';
 import AdminAuthPage from './pages/home-page/auth/adminLogin';
-import AdminPanel from './pages/admin/adminpanel';
+import AdminPanel from './pages/AdminFolder/tables/adminpanel';
 import MyAttempts from './pages/explore-interests/MyAttempts';
 function App() {
   const [items, setItems] = useState([]);
@@ -64,7 +64,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path='/admin/adminpanel' element= {<AdminPanel />} />
+        <Route path="/admin/adminpanel" element={<AdminPanel />} />
         <Route path="/my-attempts" element={<MyAttempts />} /> 
       </Routes>
 

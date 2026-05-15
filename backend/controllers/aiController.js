@@ -7,7 +7,6 @@ const analyzeAndSuggestMajors = async (req, res) => {
   try {
     const { submissionID } = req.params;
 
-    // 1. جيبي الأجوبة مع الأسئلة والخيارات
     const responses = await db.response.findAll({
       where: { submissionID },
       include: [
@@ -20,21 +19,27 @@ const analyzeAndSuggestMajors = async (req, res) => {
       return res.status(404).json({ message: 'No responses found' });
     }
 
-    // 2. جيبي كل التخصصات من DB
-    const allMajors = await db.major.findAll({
-      attributes: ['majorID', 'majorName']
-    });
-    const majorsList = allMajors.map(m => m.majorName).join('، ');
+    const allMajors = await db.major.findAll();
 
-    // 3. بني الـ prompt
+    if (!allMajors.length) {
+      return res.status(404).json({ message: 'No majors found in database' });
+    }
+
+    const majorsList = allMajors
+      .map(m => `ID: ${m.majorID} - Name: ${m.majorName}`)
+      .join('\n');
+
     const answersText = responses.map((r, i) =>
       `السؤال ${i + 1}: ${r.question.questionText}\nالإجابة: ${r.option.optionText}`
     ).join('\n\n');
 
     const prompt = `
 أنت مستشار أكاديمي متخصص. بناءً على إجابات الطالب، اقترح أفضل 3 تخصصات من القائمة التالية فقط.
+لا تختر أي تخصص خارج القائمة.
+أرجع majorID كما هو من القائمة.
 
-التخصصات المتاحة: ${majorsList}
+التخصصات المتاحة:
+${majorsList}
 
 إجابات الطالب:
 ${answersText}
@@ -42,45 +47,48 @@ ${answersText}
 أرجع JSON فقط بهذا الشكل بدون أي نص إضافي:
 {
   "recommendations": [
-    { "majorName": "اسم التخصص", "reason": "سبب بجملة واحدة" },
-    { "majorName": "اسم التخصص", "reason": "سبب بجملة واحدة" },
-    { "majorName": "اسم التخصص", "reason": "سبب بجملة واحدة" }
+    { "majorID": 1, "reason": "سبب بجملة واحدة" },
+    { "majorID": 2, "reason": "سبب بجملة واحدة" },
+    { "majorID": 3, "reason": "سبب بجملة واحدة" }
   ]
 }`;
 
-    // 4. ابعتي لـ Groq
     const completion = await client.chat.completions.create({
       model: 'llama-3.3-70b-versatile',
       messages: [{ role: 'user', content: prompt }],
-      temperature: 0.7,
+      temperature: 0.3,
       max_tokens: 1024,
       response_format: { type: 'json_object' }
     });
 
-    const aiData = JSON.parse(completion.choices[0].message.content);
+    const rawContent = completion.choices[0].message.content;
+    console.log("AI RAW:", rawContent);
 
-    // 5. جيبي تفاصيل التخصصات من DB
+    const aiData = JSON.parse(rawContent);
+
+    const ids = (aiData.recommendations || [])
+      .map(r => Number(r.majorID))
+      .filter(id => !isNaN(id));
+
     const recommendedMajors = await Promise.all(
-      aiData.recommendations.map(async (rec) => {
-        const major = await db.major.findOne({
-          where: db.Sequelize.where(
-            db.Sequelize.fn('LOWER', db.Sequelize.col('majorName')),
-            db.Sequelize.fn('LOWER', rec.majorName)
-          )
-        });
+      ids.map(async (id) => {
+        const rec = aiData.recommendations.find(r => Number(r.majorID) === id);
+
+        const major = await db.major.findByPk(id);
 
         if (!major) return null;
 
         return {
           ...major.dataValues,
-          reason: rec.reason
+          reason: rec?.reason || "مناسب بناءً على إجاباتك"
         };
       })
     );
 
-    const filteredMajors = recommendedMajors.filter(m => m !== null);
+    const filteredMajors = recommendedMajors.filter(Boolean);
 
-    // 6. احفظي النتيجة في submission
+    console.log("FINAL RECOMMENDATIONS:", filteredMajors);
+
     await db.submission.update(
       { aiResult: filteredMajors, status: 'completed' },
       { where: { submissionID } }
@@ -90,10 +98,12 @@ ${answersText}
 
   } catch (error) {
     console.error('AI Error:', error);
+
     await db.submission.update(
       { status: 'failed' },
       { where: { submissionID: req.params.submissionID } }
     );
+
     res.status(500).json({ message: error.message });
   }
 };

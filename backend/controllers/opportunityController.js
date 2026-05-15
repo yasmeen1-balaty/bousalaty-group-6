@@ -46,8 +46,17 @@ const deleteOpportunity = async (req, res) => {
     } catch (error) { res.status(500).json({ message: error.message }); }
 };
 
+const getAllOpportunities = async (req, res) => {
+    try {
+        const opportunities = await db.jobOpportuneties.findAll();
+        res.json(opportunities);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 module.exports = {
     createOpportunity,
     updateOpportunity,
-    deleteOpportunity
+    deleteOpportunity,
+    getAllOpportunities
 }
