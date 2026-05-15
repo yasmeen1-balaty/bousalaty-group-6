@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import './Chatbot.css';
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -130,5 +131,9 @@ const Chatbot = () => {
     </>
   );
 };
+
+
+
+
 
 export default Chatbot;
