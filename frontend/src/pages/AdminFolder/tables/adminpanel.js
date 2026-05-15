@@ -184,8 +184,8 @@ const [opportunity, setOpportunity] = useState("");
 
   useEffect(() => {
     if (!isAdmin) {
-      alert("you are not an admin");
       navigate("/login");
+      alert("you are not an admin");
     }
   }, [isAdmin, navigate]);
 
@@ -347,6 +347,7 @@ setOpportunity("");
 
       alert("تمت إضافة التخصص بنجاح");
       resetForms();
+      fetchMajors();
       setActiveForm("");
     } catch (error) {
       console.log(error);
@@ -382,6 +383,7 @@ setOpportunity("");
 
       alert("تم تعديل التخصص بنجاح");
       resetForms();
+      fetchMajors();
       setActiveForm("");
     } catch (error) {
       console.log(error);
@@ -406,6 +408,7 @@ setOpportunity("");
 
       alert("تم حذف التخصص بنجاح");
       resetForms();
+      fetchMajors();
       setActiveForm("");
     } catch (error) {
       console.log(error);
@@ -441,6 +444,7 @@ setOpportunity("");
 
       alert("تمت إضافة الخبير بنجاح");
       resetForms();
+      fetchExperts();
       setActiveForm("");
     } catch (error) {
       console.log(error);
@@ -566,6 +570,7 @@ const deleteQuestion = async (e) => {
 
       alert("تم تعديل الخبير بنجاح");
       resetForms();
+      fetchExperts();
       setActiveForm("");
     } catch (error) {
       console.log(error);

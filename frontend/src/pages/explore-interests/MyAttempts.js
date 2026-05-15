@@ -8,25 +8,25 @@ function MyAttempts() {
   const studentID = savedUser?.studentID || savedUser?.id || savedUser?.userID;
 
   useEffect(() => {
-  if (!studentID) return;
+    if (!studentID) return;
 
-  fetch(`http://localhost:3001/submissions/student/${studentID}`)
-    .then((res) => res.json())
-    .then((data) => {
-      console.log("submissions:", data);
+    fetch(`http://localhost:3001/submissions/student/${studentID}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("submissions:", data);
 
-      if (Array.isArray(data)) {
-        setSubmissions(data);
-      } else if (Array.isArray(data.submissions)) {
-        setSubmissions(data.submissions);
-      } else if (Array.isArray(data.data)) {
-        setSubmissions(data.data);
-      } else {
-        setSubmissions([]);
-      }
-    })
-    .catch((err) => console.log(err));
-}, [studentID]);
+        if (Array.isArray(data)) {
+          setSubmissions(data);
+        } else if (Array.isArray(data.submissions)) {
+          setSubmissions(data.submissions);
+        } else if (Array.isArray(data.data)) {
+          setSubmissions(data.data);
+        } else {
+          setSubmissions([]);
+        }
+      })
+      .catch((err) => console.log(err));
+  }, [studentID]);
   return (
     <div className="container mt-5" style={{ direction: "rtl" }}>
       <h2 className="mb-4">محاولاتي السابقة</h2>
@@ -54,7 +54,15 @@ function MyAttempts() {
 
                 <button
                   className="btn btn-primary"
-                  onClick={() => setSelectedSubmission(submission)}
+                  onClick={() => {
+                    setSelectedSubmission(submission);
+
+                    setTimeout(() => {
+                      document
+                        .getElementById("attempts")
+                        ?.scrollIntoView({ behavior: "smooth" });
+                    }, 100);
+                  }}
                 >
                   عرض التفاصيل
                 </button>
@@ -65,7 +73,7 @@ function MyAttempts() {
       )}
 
       {selectedSubmission && (
-        <div className="card shadow-sm p-4 mt-4 mb-5">
+        <div className="card shadow-sm p-4 mt-4 mb-5" id="attempts">
           <h4 className="mb-3">
             تفاصيل المحاولة
           </h4>

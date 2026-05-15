@@ -1,4 +1,5 @@
 export default function ExpertsTable({experts}) {
+    console.log(experts);
     return(
         <div className="mt-5 mx-auto" style={{ maxWidth: "600px" }}>
         {experts?.length > 0 ? (
@@ -12,6 +13,7 @@ export default function ExpertsTable({experts}) {
                                 <th>Expert ID</th>
                                 <th>First Name</th>
                                 <th>Last Name</th>
+                                <th>Faculty ID</th>
                             </tr>
                         </thead>
 
@@ -21,6 +23,7 @@ export default function ExpertsTable({experts}) {
                                     <td>{e.expertID}</td>
                                     <td>{e.firstName}</td>
                                     <td>{e.lastName}</td>
+                                    <td>{e.facultyID}</td>
                                 </tr>
                             ))}
                         </tbody>

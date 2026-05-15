@@ -56,7 +56,7 @@ const deleteExpert = async (req, res) => {
 const getAllExperts = async (req, res) => {
   try {
     const experts = await db.expert.findAll({
-      attributes: ["expertID", "firstName" , "lastName"],
+      attributes: ["expertID", "firstName" , "lastName", "facultyID"],
     });
 
     res.status(200).json(experts);

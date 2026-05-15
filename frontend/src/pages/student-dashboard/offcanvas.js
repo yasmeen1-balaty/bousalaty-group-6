@@ -46,6 +46,11 @@ export function Offcanvas() {
                                     <div data-bs-dismiss="offcanvas">إدارة الخبراء</div>
                                 </Link>
                             </li>
+                            <li className="list-group-item list-group-item-action">
+                                <Link to="/admin/adminpanel" className="text-decoration-none d-block">
+                                    <div data-bs-dismiss="offcanvas">إدارة اسئلة الاختبار</div>
+                                </Link>
+                            </li>
                         </>
                     ) : (
                         <>

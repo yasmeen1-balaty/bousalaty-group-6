@@ -1,9 +1,21 @@
 import "./About.css";
 import aboutImg from "./imges/img8.png";
 import heroBg from "../../background-img/img3.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function AboutUs() {
+  const navigate = useNavigate();
+  const savedUser = JSON.parse(localStorage.getItem("user"));
+  const studentID = savedUser?.id || savedUser?.studentID;
+  
+  const handleNav = async () => {
+    if (!studentID) {
+      alert("لازم تسجل دخول كطالب أولاً");
+      navigate('/login')
+      return;
+    }
+    navigate('/quiz')
+  }
   return (
     <section
       className="about-page py-5"
@@ -95,7 +107,7 @@ export default function AboutUs() {
             دع <strong>بوصلتي</strong> يساعدك في اكتشاف التخصص الذي يناسبك،
             وابدأ مستقبلك بخطوة واثقة.
           </p>
-          <Link to="/quiz"><button className="about-btn">ابدأ الآن</button></Link>
+          <button onClick={handleNav} className="about-btn">ابدأ الآن</button>
         </div>
       </div>
     </section>

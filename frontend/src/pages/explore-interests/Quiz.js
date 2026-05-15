@@ -60,7 +60,7 @@ function Quiz() {
     const studentID = savedUser?.studentID || savedUser?.id || savedUser?.userID;
 
     if (!token || !savedUser || !studentID) {
-      alert("لازم تسجل دخول أولاً");
+      alert("لازم تسجل دخول كطالب أولاً");
       navigate("/login");
       return;
     }
