@@ -10,12 +10,25 @@ const MajorDetails = () => {
 
   const [skills, setSkills] = useState([]);
   const [opportunities, setOpportunities] = useState([]);
+  const [experts, setExperts] = useState([]);
 
   useEffect(() => {
     fetch(`http://localhost:3001/majors/${majorID}`)
       .then((res) => res.json())
       .then((data) => {
         setMajor(data);
+
+
+        if (data.facultyID) {
+          fetch(`http://localhost:3001/faculties/${data.facultyID}/experts`)
+            .then((res) => res.json())
+            .then((expertData) => {
+              setExperts(expertData);
+            })
+            .catch((error) => {
+              console.error('Error fetching experts:', error);
+            });
+        }
       });
 
     fetch(`http://localhost:3001/majors/${majorID}/skills`)
@@ -55,7 +68,7 @@ const MajorDetails = () => {
           </div>
 
           <h4 className="card-title">
-            المهارات المكتسبة
+            المهارات المطلوبة 🛠️
           </h4>
           <ul>
             {skills.map((skill, index) => (
@@ -115,7 +128,7 @@ const MajorDetails = () => {
                 للاطلاع على خطة التخصص والمواد الاساسية اضغط على زر عرض التفاصيل.
               </p>
               <div className="mt-3">
-                <button className="btn btn-primary">عرض تفاصيل</button>
+                <button className="btn btn-primary" onClick={() => major?.studyPlanURL && window.open(major.studyPlanURL, '_blank')}>عرض تفاصيل</button>
               </div>
             </div>
           </div>
@@ -129,7 +142,7 @@ const MajorDetails = () => {
                 تواصل مع خبرائنا للحصول على استشارة والإجابة على استفساراتك.
               </p>
               <div className="mt-3">
-                <button className="btn btn-primary">تواصل الآن</button>
+                <button className="btn btn-primary" disabled={experts.length === 0} onClick={() => experts.length > 0 && window.open(`mailto:${experts[0].email}`)}>تواصل الآن</button>
               </div>
             </div>
           </div>
