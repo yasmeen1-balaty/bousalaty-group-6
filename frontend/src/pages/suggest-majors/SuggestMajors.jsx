@@ -134,7 +134,7 @@ export default function SuggestMajors() {
             {recommendations.map((major, index) => (
               <div className="col-md-4" key={index}>
                 <div className="sm-card h-100 text-center position-relative">
-
+                  معدل القبول
                   <span className="sm-badge">
                     {major.acceptanceGrade}%
                   </span>
