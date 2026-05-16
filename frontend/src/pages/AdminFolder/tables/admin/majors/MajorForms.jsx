@@ -51,6 +51,34 @@ export default function MajorForms({
     </div>
   );
 
+  const handleMajorIDChange = async (e) => {
+  const id = e.target.value;
+  setMajorID(id);
+
+  if (id) {
+    try {
+      const res = await fetch(`http://localhost:3001/majors/${id}`);
+      const data = await res.json();
+
+      if (data) {
+        setMajorName(data.majorName || '');
+        setMajorFacultyID(data.facultyID || '');
+        setAcceptanceGrade(data.acceptanceGrade || '');
+        setCreditHours(data.creditHours || '');
+        setCostPerHour(data.costPerHour || '');
+        setStudyPlanURL(data.studyPlanURL || '');
+        setAcceptedBranches(
+          Array.isArray(data.acceptedBranches)
+            ? data.acceptedBranches
+            : JSON.parse(data.acceptedBranches || '[]')
+        );
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+};
+
   return (
     <>
       {activeForm === "addMajor" && (
@@ -141,7 +169,7 @@ export default function MajorForms({
                   className="form-control mb-3"
                   placeholder="رقم التخصص majorID"
                   value={majorID}
-                  onChange={(e) => setMajorID(e.target.value)}
+                  onChange={handleMajorIDChange}
                   required
                 />
 

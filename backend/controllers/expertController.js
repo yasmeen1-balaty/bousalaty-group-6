@@ -2,7 +2,7 @@ const db = require('../models');
 
 const findExpert = async (req, res) => {
   try {
-    const experts = await db.expert.findByPk(req.params.expertID, { attributes: ['firstName', 'lastName', 'email'] });
+    const experts = await db.expert.findByPk(req.params.expertID, { attributes: ['firstName', 'lastName', 'email' , 'facultyID'] });
     if (!experts) {
       return res.status(404).json({ message: "Expert not found" });
     }

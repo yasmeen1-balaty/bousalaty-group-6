@@ -24,7 +24,29 @@ export default function ExpertForms({
   addExpert,
   updateExpert,
   deleteExpert,
-}) {
+}) 
+{
+
+  const handleExpertIDChange = async (e) => {
+  const id = e.target.value;
+  setExpertID(id);
+
+  if (id) {
+    try {
+      const res = await fetch(`http://localhost:3001/experts/${id}`);
+      const data = await res.json();
+
+      if (data) {
+        setFirstName(data.firstName || '');
+        setLastName(data.lastName || '');
+        setExpertEmail(data.email || '');
+        setExpertFacultyID(data.facultyID || '');
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+};
   return (
     <>
       {activeForm === "addExpert" && (
@@ -96,7 +118,7 @@ export default function ExpertForms({
                   className="form-control mb-3"
                   placeholder="رقم الخبير expertID"
                   value={expertID}
-                  onChange={(e) => setExpertID(e.target.value)}
+                  onChange={handleExpertIDChange}
                   required
                 />
 
