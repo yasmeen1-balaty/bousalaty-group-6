@@ -1,36 +1,56 @@
 import FacultiesTable from "../../FacultiesTable";
 import MajorsTable from "../../MajorsTable";
 
+const BRANCHES = ["العلمي", "الادبي", "الصناعي", "التجاري", "الشرعي"]; // letter sensitive
+
 export default function MajorForms({
   activeForm,
   faculties,
   majors,
-
-  majorID,
-  setMajorID,
-
-  majorName,
-  setMajorName,
-
-  majorFacultyID,
-  setMajorFacultyID,
-
-  acceptanceGrade,
-  setAcceptanceGrade,
-
-  creditHours,
-  setCreditHours,
-
-  costPerHour,
-  setCostPerHour,
-
-  studyPlanURL,
-  setStudyPlanURL,
-
-  addMajor,
-  updateMajor,
-  deleteMajor,
+  majorID, setMajorID,
+  majorName, setMajorName,
+  majorFacultyID, setMajorFacultyID,
+  acceptanceGrade, setAcceptanceGrade,
+  creditHours, setCreditHours,
+  costPerHour, setCostPerHour,
+  studyPlanURL, setStudyPlanURL,
+  acceptedBranches, setAcceptedBranches,
+  addMajor, updateMajor, deleteMajor,
 }) {
+
+  const handleBranchChange = (branch) => {
+    if (acceptedBranches.includes(branch)) {
+      setAcceptedBranches(acceptedBranches.filter(b => b !== branch));
+    } else {
+      setAcceptedBranches([...acceptedBranches, branch]);
+    }
+  };
+
+  const BranchCheckboxes = () => (
+    <div className="mb-3">
+      <label className="form-label fw-bold">الفروع المقبولة:</label>
+      <div className="d-flex flex-wrap gap-3">
+        {BRANCHES.map(branch => (
+          <div key={branch} className="form-check">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id={branch}
+              checked={acceptedBranches.includes(branch)}
+              onChange={() => handleBranchChange(branch)}
+            />
+            <label className="form-check-label" htmlFor={branch}>
+              {branch}
+            </label>
+          </div>
+        ))}
+      </div>
+      {acceptedBranches.length === 0 && (
+        <small className="text-danger">اختر فرع واحد على الأقل</small>
+      )}
+    </div>
+  );
+
   return (
     <>
       {activeForm === "addMajor" && (
@@ -88,7 +108,14 @@ export default function MajorForms({
                   onChange={(e) => setStudyPlanURL(e.target.value)}
                 />
 
-                <button className="btn btn-success">حفظ</button>
+                <BranchCheckboxes />
+
+                <button
+                  className="btn btn-success"
+                  disabled={acceptedBranches.length === 0}
+                >
+                  حفظ
+                </button>
               </form>
             </div>
 
@@ -162,7 +189,14 @@ export default function MajorForms({
                   onChange={(e) => setStudyPlanURL(e.target.value)}
                 />
 
-                <button className="btn btn-warning text-white">تعديل</button>
+                <BranchCheckboxes />
+
+                <button
+                  className="btn btn-warning text-white"
+                  disabled={acceptedBranches.length === 0}
+                >
+                  تعديل
+                </button>
               </form>
             </div>
 

@@ -19,14 +19,58 @@ const analyzeAndSuggestMajors = async (req, res) => {
       return res.status(404).json({ message: 'No responses found' });
     }
 
-    const allMajors = await db.major.findAll();
+    // تحققي من المعدل أقل من 60
+    const gradeResponse = responses.find(r =>
+      r.option.optionText.includes('أقل من 60')
+    );
 
-    if (!allMajors.length) {
-      return res.status(404).json({ message: 'No majors found in database' });
+    if (gradeResponse) {
+      const result = [{
+        majorName: "كلية هشام حجاوي التقنية",
+        reason: "بناءً على معدلك، ننصحك بالتقديم على كلية هشام حجاوي التابعة لجامعة النجاح",
+        link: "https://hijjawi.najah.edu/ar/academic/hijjawi-specs/",
+        isExternal: true,
+        majorID: null
+      }];
+
+      await db.submission.update(
+        { aiResult: result, status: 'completed' },
+        { where: { submissionID } }
+      );
+
+      return res.json({ recommendations: result });
     }
 
-    const majorsList = allMajors
-      .map(m => `ID: ${m.majorID} - Name: ${m.majorName}`)
+    // استخرجي فرع الطالب
+    const streamResponse = responses.find(r =>
+      r.question.questionText.includes('فرعك') ||
+      r.question.questionText.includes('التوجيهي')
+    );
+
+    const optionText = streamResponse?.option?.optionText || '';
+    console.log("Student stream:", optionText);
+
+    // جيبي كل التخصصات
+    const allMajors = await db.major.findAll();
+
+    // فلتري حسب فرع الطالب
+    const filteredMajors = allMajors.filter(m => {
+      try {
+        const stream = Array.isArray(m.acceptedBranches)
+          ? m.acceptedBranches
+          : JSON.parse(m.acceptedBranches || '[]');
+        return stream.includes(optionText) || stream.includes('الجميع');
+      } catch {
+        return false;
+      }
+    });
+
+    if (!filteredMajors.length) {
+      return res.status(404).json({ message: 'No majors found for this stream' });
+    }
+
+    const majorsList = filteredMajors
+      .map(m => `ID: ${m.majorID} - Name: ${m.majorName} - AcceptanceGrade: ${m.acceptanceGrade}`)
       .join('\n');
 
     const answersText = responses.map((r, i) =>
@@ -37,6 +81,12 @@ const analyzeAndSuggestMajors = async (req, res) => {
 أنت مستشار أكاديمي متخصص. بناءً على إجابات الطالب، اقترح أفضل 3 تخصصات من القائمة التالية فقط.
 لا تختر أي تخصص خارج القائمة.
 أرجع majorID كما هو من القائمة.
+
+قواعد مهمة:
+- إذا كان معدل الطالب من 60 إلى 69، اقترح فقط تخصصات AcceptanceGrade أقل من 70.
+- إذا كان معدل الطالب من 70 إلى 79، اقترح فقط تخصصات AcceptanceGrade أقل من 80.
+- إذا كان معدل الطالب من 80 إلى 89، اقترح فقط تخصصات AcceptanceGrade أقل من 90.
+- إذا كان معدل الطالب من 90 إلى 100، يمكن اقتراح أي تخصص.
 
 التخصصات المتاحة:
 ${majorsList}
@@ -73,11 +123,8 @@ ${answersText}
     const recommendedMajors = await Promise.all(
       ids.map(async (id) => {
         const rec = aiData.recommendations.find(r => Number(r.majorID) === id);
-
         const major = await db.major.findByPk(id);
-
         if (!major) return null;
-
         return {
           ...major.dataValues,
           reason: rec?.reason || "مناسب بناءً على إجاباتك"
@@ -85,16 +132,16 @@ ${answersText}
       })
     );
 
-    const filteredMajors = recommendedMajors.filter(Boolean);
+    const filteredResult = recommendedMajors.filter(Boolean);
 
-    console.log("FINAL RECOMMENDATIONS:", filteredMajors);
+    console.log("FINAL RECOMMENDATIONS:", filteredResult);
 
     await db.submission.update(
-      { aiResult: filteredMajors, status: 'completed' },
+      { aiResult: filteredResult, status: 'completed' },
       { where: { submissionID } }
     );
 
-    res.json({ recommendations: filteredMajors });
+    res.json({ recommendations: filteredResult });
 
   } catch (error) {
     console.error('AI Error:', error);

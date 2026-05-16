@@ -46,31 +46,22 @@ export default function SuggestMajors() {
         }
       );
 
-      // ⚠️ already exists (409)
       if (res.status === 409) {
         setSaveMessages(prev => ({
           ...prev,
           [majorID]: { text: "هذا التخصص محفوظ مسبقاً", type: "error" }
         }));
-        
-    setTimeout(() => {
-      setSaveMessages('');
-    }, 3000);
+        setTimeout(() => setSaveMessages(''), 3000);
         return;
       }
 
       if (res.ok) {
         setSavedMajors(prev => [...prev, majorID]);
-
         setSaveMessages(prev => ({
           ...prev,
           [majorID]: { text: "تم حفظ التخصص بنجاح", type: "success" }
         }));
-        
-    setTimeout(() => {
-      setSaveMessages('');
-    }, 3000);
-
+        setTimeout(() => setSaveMessages(''), 3000);
       } else {
         setSaveMessages(prev => ({
           ...prev,
@@ -151,26 +142,35 @@ export default function SuggestMajors() {
                       {major.reason}
                     </p>
 
-                    <Link  to={`/majors/${major.majorID}`} className="sm-card-btn w-100 mt-2" >
-                      عرض التفاصيل
-                    </Link>
+                    {/* زر عرض التفاصيل */}
+                    {major.isExternal ? (
+                      <a href={major.link} target="_blank" rel="noreferrer" className="sm-card-btn w-100 mt-2">
+                        زيارة موقع الكلية
+                      </a>
+                    ) : (
+                      <Link to={`/majors/${major.majorID}`} className="sm-card-btn w-100 mt-2">
+                        عرض التفاصيل
+                      </Link>
+                    )}
 
-                    <button
-                      className="sm-card-btn w-100 mt-2"
-                      onClick={() => handleSaveMajor(major.majorID)}
-                      disabled={savedMajors.includes(major.majorID)}
-                    >
-                      {savedMajors.includes(major.majorID)
-                        ? "تم الحفظ"
-                        : "إضافة للمفضلة "}
-                    </button>
+                    {/* إخفاء زر المفضلة لكلية هشام */}
+                    {!major.isExternal && (
+                      <button
+                        className="sm-card-btn w-100 mt-2"
+                        onClick={() => handleSaveMajor(major.majorID)}
+                        disabled={savedMajors.includes(major.majorID)}
+                      >
+                        {savedMajors.includes(major.majorID)
+                          ? "تم الحفظ"
+                          : "إضافة للمفضلة"}
+                      </button>
+                    )}
 
                     {saveMessages[major.majorID] && (
                       <small
                         className="d-block mt-2 text-center"
                         style={{
-                          color:
-                            saveMessages[major.majorID].type === "success" ? "green" : "red",
+                          color: saveMessages[major.majorID].type === "success" ? "green" : "red",
                           fontWeight: "bold"
                         }}
                       >

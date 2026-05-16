@@ -64,7 +64,8 @@ const createMajor = async (req, res) => {
             acceptanceGrade: req.body.acceptanceGrade,
             creditHours: req.body.creditHours,
             costPerHour: req.body.costPerHour,
-            studyPlanURL: req.body.studyPlanURL
+            studyPlanURL: req.body.studyPlanURL,
+            acceptedBranches : req.body.acceptedBranches
         });
         res.status(201).json(newMajor);
     } catch (error) { res.status(500).json({ message: error.message }); }

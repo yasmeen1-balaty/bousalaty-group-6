@@ -47,6 +47,10 @@ module.exports = (sequelize, DataTypes) => {
           isUrl: true
         }
     },
+    acceptedBranches: {
+      type : DataTypes.JSON,
+      allowNull: false
+    },
     facultyID: {
       type: DataTypes.INTEGER,
       allowNull: false

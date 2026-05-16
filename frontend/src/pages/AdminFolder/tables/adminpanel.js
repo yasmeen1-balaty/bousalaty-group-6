@@ -21,6 +21,7 @@ export default function AdminPanel() {
   const [options, setOptions] = useState([]);
   const [skills, setSkills] = useState([]);
   const [opportunities, setOpportunities] = useState([]);
+  const [acceptedBranches, setAcceptedBranches] = useState([]);
 
   const fetchFaculties = async () => {
     try {
@@ -202,6 +203,7 @@ const [opportunity, setOpportunity] = useState("");
     setCreditHours("");
     setCostPerHour("");
     setStudyPlanURL("");
+    setAcceptedBranches([]);
 
     setExpertID("");
     setFirstName("");
@@ -334,7 +336,8 @@ setOpportunity("");
           acceptanceGrade,
           creditHours,
           costPerHour,
-          studyPlanURL
+          studyPlanURL,
+          acceptedBranches
         })
       });
 
@@ -370,7 +373,8 @@ setOpportunity("");
           acceptanceGrade,
           creditHours,
           costPerHour,
-          studyPlanURL
+          studyPlanURL,
+          acceptedBranches
         })
       });
 
@@ -964,6 +968,8 @@ return (
         addMajor={addMajor}
         updateMajor={updateMajor}
         deleteMajor={deleteMajor}
+        acceptedBranches={acceptedBranches}
+        setAcceptedBranches={setAcceptedBranches}
       />
 
       <ExpertForms

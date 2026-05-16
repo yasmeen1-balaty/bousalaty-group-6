@@ -1,4 +1,7 @@
 'use strict';
+
+const { sequelize } = require('../models');
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -19,6 +22,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
         unique: true
+      },
+      acceptedBranches :{
+        type: Sequelize.JSON,
+        allowNull: false
       },
       adminID: {
         type: Sequelize.INTEGER,
@@ -44,7 +51,7 @@ module.exports = {
           model: 'faculties',
           key: 'facultyID'
         },
-          onDelete: 'ReSTRICT',
+          onDelete: 'RESTRICT',
           onUpdate: 'CASCADE',
         allowNull: false
       },
