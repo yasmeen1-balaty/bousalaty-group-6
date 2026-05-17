@@ -2,7 +2,7 @@ import { Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Major.css';
 import { useState, useEffect } from 'react';
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const MajorDetails = () => {
   const [major, setMajor] = useState(null);
@@ -11,6 +11,9 @@ const MajorDetails = () => {
   const [skills, setSkills] = useState([]);
   const [opportunities, setOpportunities] = useState([]);
   const [experts, setExperts] = useState([]);
+
+  const savedUser = JSON.parse(localStorage.getItem("user"));
+  const studentID = savedUser?.studentID || savedUser?.id || savedUser?.userID;
 
   useEffect(() => {
     fetch(`http://localhost:3001/majors/${majorID}`)
@@ -68,7 +71,7 @@ const MajorDetails = () => {
           </div>
 
           <h4 className="card-title">
-            المهارات المطلوبة 🛠️
+            المهارات المكتسبة 🛠️
           </h4>
           <ul>
             {skills.map((skill, index) => (
@@ -148,6 +151,20 @@ const MajorDetails = () => {
           </div>
         </div>
 
+      </div>
+
+      <div className="d-flex justify-content-center gap-3 mt-5 flex-wrap">
+        <Link to="/dashboard">
+          <button className="btn btn-primary px-4">
+            العودة الى التخصصات المحفوظة
+          </button>
+        </Link>
+
+        <Link to="/suggestions">
+          <button className="btn btn-primary px-4">
+            العودة الى التخصصات المقترحة
+          </button>
+        </Link>
       </div>
 
     </Container>

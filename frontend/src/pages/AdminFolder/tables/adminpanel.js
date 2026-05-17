@@ -54,79 +54,79 @@ export default function AdminPanel() {
   };
 
   const fetchQuestions = async () => {
-  try {
-    const res = await fetch("http://localhost:3001/questions");
-    const data = await res.json();
-    setQuestions(data);
-  } catch (err) {
-    console.log(err);
-  }
-};
-const fetchOptions = async () => {
-  try {
-    const res = await fetch("http://localhost:3001/options");
-    const data = await res.json();
-
-    console.log("Options from backend:", data);
-
-    if (Array.isArray(data)) {
-      setOptions(data);
-    } else if (Array.isArray(data.options)) {
-      setOptions(data.options);
-    } else {
-      setOptions([]);
+    try {
+      const res = await fetch("http://localhost:3001/questions");
+      const data = await res.json();
+      setQuestions(data);
+    } catch (err) {
+      console.log(err);
     }
-  } catch (err) {
-    console.log(err);
-  }
-};
+  };
+  const fetchOptions = async () => {
+    try {
+      const res = await fetch("http://localhost:3001/options");
+      const data = await res.json();
 
+      console.log("Options from backend:", data);
 
-const fetchSkills = async () => {
-  try {
-    const res = await fetch("http://localhost:3001/skills");
-    const data = await res.json();
-
-    console.log("Skills from backend:", data);
-
-    if (Array.isArray(data)) {
-      setSkills(data);
-    } else {
-      setSkills([]);
+      if (Array.isArray(data)) {
+        setOptions(data);
+      } else if (Array.isArray(data.options)) {
+        setOptions(data.options);
+      } else {
+        setOptions([]);
+      }
+    } catch (err) {
+      console.log(err);
     }
-  } catch (err) {
-    console.log(err);
-  }
-};
+  };
 
-const fetchOpportunities = async () => {
-  try {
-    const res = await fetch("http://localhost:3001/opportunities");
-    const data = await res.json();
 
-    console.log("Opportunities from backend:", data);
+  const fetchSkills = async () => {
+    try {
+      const res = await fetch("http://localhost:3001/skills");
+      const data = await res.json();
 
-    if (Array.isArray(data)) {
-      setOpportunities(data);
-    } else {
-      setOpportunities([]);
+      console.log("Skills from backend:", data);
+
+      if (Array.isArray(data)) {
+        setSkills(data);
+      } else {
+        setSkills([]);
+      }
+    } catch (err) {
+      console.log(err);
     }
-  } catch (err) {
-    console.log(err);
-  }
-};
+  };
+
+  const fetchOpportunities = async () => {
+    try {
+      const res = await fetch("http://localhost:3001/opportunities");
+      const data = await res.json();
+
+      console.log("Opportunities from backend:", data);
+
+      if (Array.isArray(data)) {
+        setOpportunities(data);
+      } else {
+        setOpportunities([]);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
 
 
-useEffect(() => {
-  fetchFaculties();
-  fetchMajors();
-  fetchExperts();
-  fetchQuestions();
-  fetchOptions();
-  fetchSkills();
-  fetchOpportunities();
-}, []);
+  useEffect(() => {
+    fetchFaculties();
+    fetchMajors();
+    fetchExperts();
+    fetchQuestions();
+    fetchOptions();
+    fetchSkills();
+    fetchOpportunities();
+  }, []);
 
 
 
@@ -160,303 +160,308 @@ useEffect(() => {
 
 
   // Question states
-const [questionID, setQuestionID] = useState("");
-const [questionText, setQuestionText] = useState("");
+  const [questionID, setQuestionID] = useState("");
+  const [questionText, setQuestionText] = useState("");
 
 
-// Option states
-const [optionID, setOptionID] = useState("");
-const [optionText, setOptionText] = useState("");
-const [optionQuestionID, setOptionQuestionID] = useState("");
+  // Option states
+  const [optionID, setOptionID] = useState("");
+  const [optionText, setOptionText] = useState("");
+  const [optionQuestionID, setOptionQuestionID] = useState("");
 
 
-// Skill states
-const [skillID, setSkillID] = useState("");
-const [skillMajorID, setSkillMajorID] = useState("");
-const [skill, setSkill] = useState("");
+  // Skill states
+  const [skillID, setSkillID] = useState("");
+  const [skillMajorID, setSkillMajorID] = useState("");
+  const [skill, setSkill] = useState("");
 
 
 
-// Opportunity states
-const [oppoID, setOppoID] = useState("");
-const [opportunityMajorID, setOpportunityMajorID] = useState("");
-const [opportunity, setOpportunity] = useState("");
+  // Opportunity states
+  const [oppoID, setOppoID] = useState("");
+  const [opportunityMajorID, setOpportunityMajorID] = useState("");
+  const [opportunity, setOpportunity] = useState("");
 
 
   useEffect(() => {
-    if (!isAdmin) {
+    if (!user) {
       navigate("/login");
+      return;
+    }
+
+    if (user.role !== "admin") {
       alert("you are not an admin");
+      navigate("/login");
     }
-  }, [isAdmin, navigate]);
+  }, [user, navigate]);
 
-  if (!isAdmin) return null;
+if (!isAdmin) return null;
 
-  const resetForms = () => {
-    setFacultyID("");
-    setFacultyName("");
+const resetForms = () => {
+  setFacultyID("");
+  setFacultyName("");
 
-    setMajorID("");
-    setMajorName("");
-    setMajorFacultyID("");
-    setAcceptanceGrade("");
-    setCreditHours("");
-    setCostPerHour("");
-    setStudyPlanURL("");
-    setAcceptedBranches([]);
+  setMajorID("");
+  setMajorName("");
+  setMajorFacultyID("");
+  setAcceptanceGrade("");
+  setCreditHours("");
+  setCostPerHour("");
+  setStudyPlanURL("");
+  setAcceptedBranches([]);
 
-    setExpertID("");
-    setFirstName("");
-    setLastName("");
-    setExpertEmail("");
-    setExpertFacultyID("");
-
-
-    setQuestionID("");
-    setQuestionText(""); 
+  setExpertID("");
+  setFirstName("");
+  setLastName("");
+  setExpertEmail("");
+  setExpertFacultyID("");
 
 
-   setOptionID("");
+  setQuestionID("");
+  setQuestionText("");
+
+
+  setOptionID("");
   setOptionText("");
-   setOptionQuestionID("");
+  setOptionQuestionID("");
 
 
 
-setSkillID("");
-setSkillMajorID("");
-setSkill("");
+  setSkillID("");
+  setSkillMajorID("");
+  setSkill("");
 
 
-setOppoID("");
-setOpportunityMajorID("");
-setOpportunity("");
+  setOppoID("");
+  setOpportunityMajorID("");
+  setOpportunity("");
 
 
-  };
+};
 
-  // ================= FACULTY =================
+// ================= FACULTY =================
 
-  const addFaculty = async (e) => {
-    e.preventDefault();
+const addFaculty = async (e) => {
+  e.preventDefault();
 
-    try {
-      const res = await fetch("http://localhost:3001/faculties", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ facultyName })
-      });
+  try {
+    const res = await fetch("http://localhost:3001/faculties", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ facultyName })
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (!res.ok) {
-        alert(data.message || "حدث خطأ");
-        return;
-      }
-
-      alert("تمت إضافة الكلية بنجاح");
-      resetForms();
-      setActiveForm("");
-      fetchFaculties();
-    } catch (error) {
-      console.log(error);
-      alert("Server error");
+    if (!res.ok) {
+      alert(data.message || "حدث خطأ");
+      return;
     }
-  };
 
-  const updateFaculty = async (e) => {
-    e.preventDefault();
+    alert("تمت إضافة الكلية بنجاح");
+    resetForms();
+    setActiveForm("");
+    fetchFaculties();
+  } catch (error) {
+    console.log(error);
+    alert("Server error");
+  }
+};
 
-    try {
-      const res = await fetch(`http://localhost:3001/faculties/${facultyID}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ facultyName })
-      });
+const updateFaculty = async (e) => {
+  e.preventDefault();
 
-      const data = await res.json();
+  try {
+    const res = await fetch(`http://localhost:3001/faculties/${facultyID}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ facultyName })
+    });
 
-      if (!res.ok) {
-        alert(data.message || "حدث خطأ");
-        return;
-      }
+    const data = await res.json();
 
-      alert("تم تعديل الكلية بنجاح");
-      resetForms();
-      setActiveForm("");
-      fetchFaculties();
-    } catch (error) {
-      console.log(error);
-      alert("Server error");
+    if (!res.ok) {
+      alert(data.message || "حدث خطأ");
+      return;
     }
-  };
 
-  const deleteFaculty = async (e) => {
-    e.preventDefault();
+    alert("تم تعديل الكلية بنجاح");
+    resetForms();
+    setActiveForm("");
+    fetchFaculties();
+  } catch (error) {
+    console.log(error);
+    alert("Server error");
+  }
+};
 
-    try {
-      const res = await fetch(`http://localhost:3001/faculties/${facultyID}`, {
-        method: "DELETE"
-      });
+const deleteFaculty = async (e) => {
+  e.preventDefault();
 
-      const data = await res.json();
+  try {
+    const res = await fetch(`http://localhost:3001/faculties/${facultyID}`, {
+      method: "DELETE"
+    });
 
-      if (!res.ok) {
-        alert(data.message || "حدث خطأ");
-        return;
-      }
+    const data = await res.json();
 
-      alert("تم حذف الكلية بنجاح");
-      resetForms();
-      setActiveForm("");
-      fetchFaculties();
-    } catch (error) {
-      console.log(error);
-      alert("Server error");
+    if (!res.ok) {
+      alert(data.message || "حدث خطأ");
+      return;
     }
-  };
 
-  // ================= MAJOR =================
+    alert("تم حذف الكلية بنجاح");
+    resetForms();
+    setActiveForm("");
+    fetchFaculties();
+  } catch (error) {
+    console.log(error);
+    alert("Server error");
+  }
+};
 
-  const addMajor = async (e) => {
-    e.preventDefault();
+// ================= MAJOR =================
 
-    try {
-      const res = await fetch("http://localhost:3001/majors", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          majorName,
-          facultyID: majorFacultyID,
-          acceptanceGrade,
-          creditHours,
-          costPerHour,
-          studyPlanURL,
-          acceptedBranches
-        })
-      });
+const addMajor = async (e) => {
+  e.preventDefault();
 
-      const data = await res.json();
+  try {
+    const res = await fetch("http://localhost:3001/majors", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        majorName,
+        facultyID: majorFacultyID,
+        acceptanceGrade,
+        creditHours,
+        costPerHour,
+        studyPlanURL,
+        acceptedBranches
+      })
+    });
 
-      if (!res.ok) {
-        alert(data.message || "حدث خطأ");
-        return;
-      }
+    const data = await res.json();
 
-      alert("تمت إضافة التخصص بنجاح");
-      resetForms();
-      fetchMajors();
-      setActiveForm("");
-    } catch (error) {
-      console.log(error);
-      alert("Server error");
+    if (!res.ok) {
+      alert(data.message || "حدث خطأ");
+      return;
     }
-  };
 
-  const updateMajor = async (e) => {
-    e.preventDefault();
+    alert("تمت إضافة التخصص بنجاح");
+    resetForms();
+    fetchMajors();
+    setActiveForm("");
+  } catch (error) {
+    console.log(error);
+    alert("Server error");
+  }
+};
 
-    try {
-      const res = await fetch(`http://localhost:3001/majors/${majorID}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          majorName,
-          facultyID: majorFacultyID,
-          acceptanceGrade,
-          creditHours,
-          costPerHour,
-          studyPlanURL,
-          acceptedBranches
-        })
-      });
+const updateMajor = async (e) => {
+  e.preventDefault();
 
-      const data = await res.json();
+  try {
+    const res = await fetch(`http://localhost:3001/majors/${majorID}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        majorName,
+        facultyID: majorFacultyID,
+        acceptanceGrade,
+        creditHours,
+        costPerHour,
+        studyPlanURL,
+        acceptedBranches
+      })
+    });
 
-      if (!res.ok) {
-        alert(data.message || "حدث خطأ");
-        return;
-      }
+    const data = await res.json();
 
-      alert("تم تعديل التخصص بنجاح");
-      resetForms();
-      fetchMajors();
-      setActiveForm("");
-    } catch (error) {
-      console.log(error);
-      alert("Server error");
+    if (!res.ok) {
+      alert(data.message || "حدث خطأ");
+      return;
     }
-  };
 
-  const deleteMajor = async (e) => {
-    e.preventDefault();
+    alert("تم تعديل التخصص بنجاح");
+    resetForms();
+    fetchMajors();
+    setActiveForm("");
+  } catch (error) {
+    console.log(error);
+    alert("Server error");
+  }
+};
 
-    try {
-      const res = await fetch(`http://localhost:3001/majors/${majorID}`, {
-        method: "DELETE"
-      });
+const deleteMajor = async (e) => {
+  e.preventDefault();
 
-      const data = await res.json();
+  try {
+    const res = await fetch(`http://localhost:3001/majors/${majorID}`, {
+      method: "DELETE"
+    });
 
-      if (!res.ok) {
-        alert(data.message || "حدث خطأ");
-        return;
-      }
+    const data = await res.json();
 
-      alert("تم حذف التخصص بنجاح");
-      resetForms();
-      fetchMajors();
-      setActiveForm("");
-    } catch (error) {
-      console.log(error);
-      alert("Server error");
+    if (!res.ok) {
+      alert(data.message || "حدث خطأ");
+      return;
     }
-  };
 
-  // ================= EXPERT =================
+    alert("تم حذف التخصص بنجاح");
+    resetForms();
+    fetchMajors();
+    setActiveForm("");
+  } catch (error) {
+    console.log(error);
+    alert("Server error");
+  }
+};
 
-  const addExpert = async (e) => {
-    e.preventDefault();
+// ================= EXPERT =================
 
-    try {
-      const res = await fetch("http://localhost:3001/experts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          firstName,
-          lastName,
-          email: expertEmail,
-          facultyID: expertFacultyID
-        })
-      });
+const addExpert = async (e) => {
+  e.preventDefault();
 
-      const data = await res.json();
+  try {
+    const res = await fetch("http://localhost:3001/experts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        firstName,
+        lastName,
+        email: expertEmail,
+        facultyID: expertFacultyID
+      })
+    });
 
-      if (!res.ok) {
-        alert(data.message || "حدث خطأ");
-        return;
-      }
+    const data = await res.json();
 
-      alert("تمت إضافة الخبير بنجاح");
-      resetForms();
-      fetchExperts();
-      setActiveForm("");
-    } catch (error) {
-      console.log(error);
-      alert("Server error");
+    if (!res.ok) {
+      alert(data.message || "حدث خطأ");
+      return;
     }
-  };
 
-  // ================= QUESTIONS =================
+    alert("تمت إضافة الخبير بنجاح");
+    resetForms();
+    fetchExperts();
+    setActiveForm("");
+  } catch (error) {
+    console.log(error);
+    alert("Server error");
+  }
+};
+
+// ================= QUESTIONS =================
 
 const addQuestion = async (e) => {
   e.preventDefault();
@@ -548,41 +553,41 @@ const deleteQuestion = async (e) => {
 
 };
 
-  const updateExpert = async (e) => {
-    e.preventDefault();
+const updateExpert = async (e) => {
+  e.preventDefault();
 
-    try {
-      const res = await fetch(`http://localhost:3001/experts/${expertID}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          firstName,
-          lastName,
-          email: expertEmail,
-          facultyID: expertFacultyID
-        })
-      });
+  try {
+    const res = await fetch(`http://localhost:3001/experts/${expertID}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        firstName,
+        lastName,
+        email: expertEmail,
+        facultyID: expertFacultyID
+      })
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (!res.ok) {
-        alert(data.message || "حدث خطأ");
-        return;
-      }
-
-      alert("تم تعديل الخبير بنجاح");
-      resetForms();
-      fetchExperts();
-      setActiveForm("");
-    } catch (error) {
-      console.log(error);
-      alert("Server error");
+    if (!res.ok) {
+      alert(data.message || "حدث خطأ");
+      return;
     }
-  };
 
-  const deleteExpert = async (e) => {
+    alert("تم تعديل الخبير بنجاح");
+    resetForms();
+    fetchExperts();
+    setActiveForm("");
+  } catch (error) {
+    console.log(error);
+    alert("Server error");
+  }
+};
+
+const deleteExpert = async (e) => {
   e.preventDefault();
 
   try {
@@ -608,8 +613,8 @@ const deleteQuestion = async (e) => {
 };
 
 
-  
-  // ================= OPTIONS =================
+
+// ================= OPTIONS =================
 
 const addOption = async (e) => {
   e.preventDefault();
