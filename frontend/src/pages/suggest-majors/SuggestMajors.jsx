@@ -97,7 +97,7 @@ export default function SuggestMajors() {
         <div className="sm-feature-card mx-auto p-4">
           <div className="d-flex align-items-center gap-4">
             <div className="flex-grow-1 text-end">
-              <h5 className="sm-feature-title mb-3">اختصاصك الذكي</h5>
+              <h5 className="sm-feature-title mb-3">التخصصات المناسبة</h5>
               <ul className="list-unstyled sm-feature-list mb-0">
                 <li>◆ حل مناسب لمهاراتك وميولك المستقبلية.</li>
                 <li>◆ يساعدك في اختيار مسارك المهني.</li>
@@ -124,7 +124,7 @@ export default function SuggestMajors() {
           <div className="row g-4 justify-content-center">
             {recommendations.map((major, index) => (
               <div className="col-md-4" key={index}>
-                <div className="sm-card h-100 text-center position-relative">
+                <div className="card sm-card h-100 text-center position-relative">
                   معدل القبول
                   <span className="sm-badge">
                     {major.acceptanceGrade}%
@@ -138,25 +138,23 @@ export default function SuggestMajors() {
                       {major.majorName}
                     </h5>
 
-                    <p className="text-muted mb-3" style={{ fontSize: "14px" }}>
+                    <p className="sm-card-desc mb-3">
                       {major.reason}
                     </p>
 
                     {/* زر عرض التفاصيل */}
                     {major.isExternal ? (
-                      <a href={major.link} target="_blank" rel="noreferrer" className="sm-card-btn w-100 mt-2">
+                      <a href={major.link} target="_blank" rel="noreferrer" className="btn btn-primary sm-btn sm-btn-primary w-100 mt-2">
                         زيارة موقع الكلية
                       </a>
                     ) : (
-                      <Link to={`/majors/${major.majorID}`} className="sm-card-btn w-100 mt-2">
-                        عرض التفاصيل
-                      </Link>
+                      <Link to={`/majors/${major.majorID}`} className="btn btn-primary sm-btn sm-btn-primary w-100 mt-2" > عرض تفاصيل التخصص </Link>
                     )}
 
                     {/* إخفاء زر المفضلة لكلية هشام */}
                     {!major.isExternal && (
                       <button
-                        className="sm-card-btn w-100 mt-2"
+                        className="btn btn-primary sm-btn sm-btn-primary w-100 mt-2"
                         onClick={() => handleSaveMajor(major.majorID)}
                         disabled={savedMajors.includes(major.majorID)}
                       >
@@ -167,13 +165,7 @@ export default function SuggestMajors() {
                     )}
 
                     {saveMessages[major.majorID] && (
-                      <small
-                        className="d-block mt-2 text-center"
-                        style={{
-                          color: saveMessages[major.majorID].type === "success" ? "green" : "red",
-                          fontWeight: "bold"
-                        }}
-                      >
+                      <small className={`d-block mt-2 text-center ${saveMessages[major.majorID].type === "success" ? "sm-save-success" : "sm-save-error"}`} >
                         {saveMessages[major.majorID].text}
                       </small>
                     )}
