@@ -1,7 +1,7 @@
 import "./About.css";
 import aboutImg from "./imges/img8.png";
 import heroBg from "../../background-img/img3.png";
-import { Link, useNavigate } from "react-router-dom";
+import {useNavigate } from "react-router-dom";
 
 export default function AboutUs() {
   const navigate = useNavigate();

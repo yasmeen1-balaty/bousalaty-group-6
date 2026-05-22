@@ -1,13 +1,12 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import img1 from "./image/hero-bg.jpeg";
 
 const HomePage = () => {
   const navigate = useNavigate();
   const savedUser = JSON.parse(localStorage.getItem("user"));
   const studentID = savedUser?.id || savedUser?.studentID;
-
-  const isMobile = window.innerWidth <= 768;
+ const isMobile = window.innerWidth <= 768;
 
   const features = [{
 
