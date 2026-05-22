@@ -40,60 +40,54 @@ export default function SuggestMajors() {
   }, [location.state, studentID]);
 
   const handleSaveMajor = async (majorID) => {
+    const savedUser = JSON.parse(localStorage.getItem("user"));
+    const studentID = savedUser?.studentID || savedUser?.id || savedUser?.userID;
+
+    if (!studentID) {
+      alert("لازم تسجل دخول كطالب أولاً");
+      return;
+    }
+
     try {
       const res = await fetch(
         `${API_URL}/students/${studentID}/add-saved-major`,
         {
           method: "POST",
-          headers: { 
-            "Content-Type": "application/json" 
-          },
-          body: JSON.stringify({ studentID, majorID }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ majorID })
         }
       );
 
-      if (res.status === 409) {
-        setSaveMessages((prev) => ({
+      const data = await res.json();
+
+      if (!res.ok) {
+        setSaveMessages(prev => ({
           ...prev,
-          [majorID]: { text: "هذا التخصص محفوظ مسبقاً", type: "error" },
+          [majorID]: {
+            text: data.message || "حدث خطأ أثناء الحفظ",
+            type: "error"
+          }
         }));
-
-        setTimeout(() => {
-          setSaveMessages((prev) => {
-            const copy = { ...prev };
-            delete copy[majorID];
-            return copy;
-          });
-        }, 3000);
-
         return;
       }
 
-      if (res.ok) {
-        setSavedMajors((prev) => [...prev, majorID]);
+      setSavedMajors(prev => [...prev, majorID]);
 
-        setSaveMessages((prev) => ({
-          ...prev,
-          [majorID]: { text: "تم حفظ التخصص بنجاح", type: "success" },
-        }));
-
-        setTimeout(() => {
-          setSaveMessages((prev) => {
-            const copy = { ...prev };
-            delete copy[majorID];
-            return copy;
-          });
-        }, 3000);
-      } else {
-        setSaveMessages((prev) => ({
-          ...prev,
-          [majorID]: { text: "حدث خطأ أثناء الحفظ", type: "error" },
-        }));
-      }
-    } catch (error) {
-      setSaveMessages((prev) => ({
+      setSaveMessages(prev => ({
         ...prev,
-        [majorID]: { text: "خطأ في الاتصال بالسيرفر", type: "error" },
+        [majorID]: {
+          text: "تم حفظ التخصص بنجاح",
+          type: "success"
+        }
+      }));
+
+    } catch (error) {
+      setSaveMessages(prev => ({
+        ...prev,
+        [majorID]: {
+          text: "خطأ في الاتصال بالسيرفر",
+          type: "error"
+        }
       }));
     }
   };
@@ -202,11 +196,10 @@ export default function SuggestMajors() {
 
                     {saveMessages[major.majorID] && (
                       <small
-                        className={`d-block mt-2 text-center ${
-                          saveMessages[major.majorID].type === "success"
+                        className={`d-block mt-2 text-center ${saveMessages[major.majorID].type === "success"
                             ? "sm-save-success"
                             : "sm-save-error"
-                        }`}
+                          }`}
                       >
                         {saveMessages[major.majorID].text}
                       </small>
