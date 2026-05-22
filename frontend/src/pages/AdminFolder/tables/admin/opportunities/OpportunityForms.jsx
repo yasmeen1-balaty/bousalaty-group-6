@@ -1,6 +1,8 @@
 import MajorsTable from "../../MajorsTable";
 import OpportunitiesTable from "../../OpportunitiesTable";
 
+const API_URL = "https://bousalaty-group-6-ixn3.onrender.com";
+
 export default function OpportunityForms({
   activeForm,
   majors,
@@ -19,6 +21,25 @@ export default function OpportunityForms({
   updateOpportunity,
   deleteOpportunity,
 }) {
+  const handleOppoIDChange = async (e) => {
+    const id = e.target.value;
+    setOppoID(id);
+
+    if (id) {
+      try {
+        const res = await fetch(`${API_URL}/opportunities/${id}`);
+        const data = await res.json();
+
+        if (data) {
+          setOpportunityMajorID(data.majorID || "");
+          setOpportunity(data.opportunity || "");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
   return (
     <>
       {activeForm === "addOpportunity" && (
@@ -74,7 +95,7 @@ export default function OpportunityForms({
                   className="form-control mb-3"
                   placeholder="رقم الفرصة oppoID"
                   value={oppoID}
-                  onChange={(e) => setOppoID(e.target.value)}
+                  onChange={handleOppoIDChange}
                   required
                 />
 

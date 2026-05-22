@@ -1,7 +1,9 @@
 import FacultiesTable from "../../FacultiesTable";
 import MajorsTable from "../../MajorsTable";
 
-const BRANCHES = ["العلمي", "الادبي", "الصناعي", "التجاري", "الشرعي"]; // letter sensitive
+const API_URL = "https://bousalaty-group-6-ixn3.onrender.com";
+
+const BRANCHES = ["العلمي", "الادبي", "الصناعي", "التجاري", "الشرعي"];
 
 export default function MajorForms({
   activeForm,
@@ -17,10 +19,9 @@ export default function MajorForms({
   acceptedBranches, setAcceptedBranches,
   addMajor, updateMajor, deleteMajor,
 }) {
-
   const handleBranchChange = (branch) => {
     if (acceptedBranches.includes(branch)) {
-      setAcceptedBranches(acceptedBranches.filter(b => b !== branch));
+      setAcceptedBranches(acceptedBranches.filter((b) => b !== branch));
     } else {
       setAcceptedBranches([...acceptedBranches, branch]);
     }
@@ -30,7 +31,7 @@ export default function MajorForms({
     <div className="mb-3">
       <label className="form-label fw-bold">الفروع المقبولة:</label>
       <div className="d-flex flex-wrap gap-3">
-        {BRANCHES.map(branch => (
+        {BRANCHES.map((branch) => (
           <div key={branch} className="form-check">
             <input
               className="form-check-input"
@@ -45,6 +46,7 @@ export default function MajorForms({
           </div>
         ))}
       </div>
+
       {acceptedBranches.length === 0 && (
         <small className="text-danger">اختر فرع واحد على الأقل</small>
       )}
@@ -52,32 +54,33 @@ export default function MajorForms({
   );
 
   const handleMajorIDChange = async (e) => {
-  const id = e.target.value;
-  setMajorID(id);
+    const id = e.target.value;
+    setMajorID(id);
 
-  if (id) {
-    try {
-      const res = await fetch(`http://localhost:3001/majors/${id}`);
-      const data = await res.json();
+    if (id) {
+      try {
+        const res = await fetch(`${API_URL}/majors/${id}`);
+        const data = await res.json();
 
-      if (data) {
-        setMajorName(data.majorName || '');
-        setMajorFacultyID(data.facultyID || '');
-        setAcceptanceGrade(data.acceptanceGrade || '');
-        setCreditHours(data.creditHours || '');
-        setCostPerHour(data.costPerHour || '');
-        setStudyPlanURL(data.studyPlanURL || '');
-        setAcceptedBranches(
-          Array.isArray(data.acceptedBranches)
-            ? data.acceptedBranches
-            : JSON.parse(data.acceptedBranches || '[]')
-        );
+        if (data) {
+          setMajorName(data.majorName || "");
+          setMajorFacultyID(data.facultyID || "");
+          setAcceptanceGrade(data.acceptanceGrade || "");
+          setCreditHours(data.creditHours || "");
+          setCostPerHour(data.costPerHour || "");
+          setStudyPlanURL(data.studyPlanURL || "");
+
+          setAcceptedBranches(
+            Array.isArray(data.acceptedBranches)
+              ? data.acceptedBranches
+              : JSON.parse(data.acceptedBranches || "[]")
+          );
+        }
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
     }
-  }
-};
+  };
 
   return (
     <>

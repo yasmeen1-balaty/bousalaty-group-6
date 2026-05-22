@@ -1,5 +1,7 @@
 import FacultiesTable from "../../FacultiesTable";
 
+const API_URL = "https://bousalaty-group-6-ixn3.onrender.com";
+
 export default function FacultyForms({
   activeForm,
   faculties,
@@ -14,6 +16,25 @@ export default function FacultyForms({
   updateFaculty,
   deleteFaculty,
 }) {
+
+  const handleFacultyIDChange = async (e) => {
+    const id = e.target.value;
+    setFacultyID(id);
+
+    if (id) {
+      try {
+        const res = await fetch(`${API_URL}/faculties/${id}`);
+        const data = await res.json();
+
+        if (data) {
+          setFacultyName(data.facultyName || "");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
   return (
     <>
       {activeForm === "addFaculty" && (
@@ -57,7 +78,7 @@ export default function FacultyForms({
                   className="form-control mb-3"
                   placeholder="رقم الكلية facultyID"
                   value={facultyID}
-                  onChange={(e) => setFacultyID(e.target.value)}
+                  onChange={handleFacultyIDChange}
                   required
                 />
 
@@ -69,7 +90,9 @@ export default function FacultyForms({
                   required
                 />
 
-                <button className="btn btn-warning text-white">تعديل</button>
+                <button className="btn btn-warning text-white">
+                  تعديل
+                </button>
               </form>
             </div>
           </div>

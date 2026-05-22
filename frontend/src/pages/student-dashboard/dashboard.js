@@ -3,6 +3,8 @@ import { SavedMajors } from "./savedmajors";
 import { StudyTip } from "./tips";
 import { useState, useEffect } from "react";
 
+const API_URL = "https://bousalaty-group-6-ixn3.onrender.com";
+
 export function Dashboard() {
   const [myMajors, setMyMajors] = useState([]);
 
@@ -12,17 +14,15 @@ export function Dashboard() {
   const handleRemoveMajor = async (majorID) => {
     try {
       const response = await fetch(
-        `http://localhost:3001/students/${studentID}/remove-saved-major`,
+        `${API_URL}/students/${studentID}/remove-saved-major`,
         {
           method: "DELETE",
-
           headers: {
             "Content-Type": "application/json",
           },
-
           body: JSON.stringify({
-            majorID: majorID,
-            studentID: studentID,
+            majorID,
+            studentID,
           }),
         }
       );
@@ -31,38 +31,33 @@ export function Dashboard() {
         throw new Error("فشل حذف التخصص");
       }
 
-      // تحديث الواجهة مباشرة
       setMyMajors((prevMajors) =>
-        prevMajors.filter(
-          (major) => major.majorID !== majorID
-        )
+        prevMajors.filter((major) => major.majorID !== majorID)
       );
 
-
       const data = await response.json();
-
       console.log(data);
-
-
     } catch (error) {
       console.error(error);
     }
   };
 
   useEffect(() => {
-    fetch(`http://localhost:3001/students/${studentID}/saved-majors`)
+    if (!studentID) return;
+
+    fetch(`${API_URL}/students/${studentID}/saved-majors`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched saved majors:", data);
-        setMyMajors(data.savedMajors);
-      }) // data is an object, we are expecting an array, data.data is the array of majors
+        setMyMajors(data.savedMajors || []);
+      })
       .catch((err) => console.error("Error fetching saved majors:", err));
-  }, []);
+  }, [studentID]);
 
-  return <>
+  return (
     <div className="container">
       <div className="row">
-        <div className=" col-12 col-lg-8 mt-4">
+        <div className="col-12 col-lg-8 mt-4">
           <SavedMajors majors={myMajors} onRemove={handleRemoveMajor} />
           <StudyTip />
         </div>
@@ -72,5 +67,5 @@ export function Dashboard() {
         </div>
       </div>
     </div>
-  </>
+  );
 }

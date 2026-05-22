@@ -1,6 +1,8 @@
 import QuestionsTable from "../../QuestionsTable";
 import OptionsTable from "../../OptionsTable";
 
+const API_URL = "https://bousalaty-group-6-ixn3.onrender.com";
+
 export default function OptionForms({
   activeForm,
   questions,
@@ -19,6 +21,25 @@ export default function OptionForms({
   updateOption,
   deleteOption,
 }) {
+  const handleOptionIDChange = async (e) => {
+    const id = e.target.value;
+    setOptionID(id);
+
+    if (id) {
+      try {
+        const res = await fetch(`${API_URL}/options/${id}`);
+        const data = await res.json();
+
+        if (data) {
+          setOptionText(data.optionText || "");
+          setOptionQuestionID(data.questionID || "");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
   return (
     <>
       {activeForm === "addOption" && (
@@ -82,7 +103,7 @@ export default function OptionForms({
                   className="form-control mb-3"
                   placeholder="رقم الخيار optionID"
                   value={optionID}
-                  onChange={(e) => setOptionID(e.target.value)}
+                  onChange={handleOptionIDChange}
                   required
                 />
 

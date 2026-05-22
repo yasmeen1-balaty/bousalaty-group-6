@@ -1,5 +1,7 @@
 import QuestionsTable from "../../QuestionsTable";
 
+const API_URL = "https://bousalaty-group-6-ixn3.onrender.com";
+
 export default function QuestionForms({
   activeForm,
   questions,
@@ -14,6 +16,24 @@ export default function QuestionForms({
   updateQuestion,
   deleteQuestion,
 }) {
+  const handleQuestionIDChange = async (e) => {
+    const id = e.target.value;
+    setQuestionID(id);
+
+    if (id) {
+      try {
+        const res = await fetch(`${API_URL}/questions/${id}`);
+        const data = await res.json();
+
+        if (data) {
+          setQuestionText(data.questionText || "");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
   return (
     <>
       {activeForm === "addQuestion" && (
@@ -58,7 +78,7 @@ export default function QuestionForms({
                   className="form-control mb-3"
                   placeholder="رقم السؤال questionID"
                   value={questionID}
-                  onChange={(e) => setQuestionID(e.target.value)}
+                  onChange={handleQuestionIDChange}
                   required
                 />
 

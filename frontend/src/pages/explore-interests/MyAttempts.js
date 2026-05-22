@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+const API_URL = "https://bousalaty-group-6-ixn3.onrender.com";
+
 function MyAttempts() {
   const [submissions, setSubmissions] = useState([]);
   const [selectedSubmission, setSelectedSubmission] = useState(null);
@@ -10,7 +12,7 @@ function MyAttempts() {
   useEffect(() => {
     if (!studentID) return;
 
-    fetch(`http://localhost:3001/submissions/student/${studentID}`)
+    fetch(`${API_URL}/submissions/student/${studentID}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("submissions:", data);
@@ -27,6 +29,7 @@ function MyAttempts() {
       })
       .catch((err) => console.log(err));
   }, [studentID]);
+
   return (
     <div className="container mt-5" style={{ direction: "rtl" }}>
       <h2 className="mb-4">محاولاتي السابقة</h2>
@@ -41,8 +44,7 @@ function MyAttempts() {
                 <h5>المحاولة رقم: {submissions.length - index}</h5>
 
                 <p>
-                  التاريخ:{" "}
-                  {new Date(submission.createdAt).toLocaleString("ar")}
+                  التاريخ: {new Date(submission.createdAt).toLocaleString("ar")}
                 </p>
 
                 <p>الحالة: {submission.status}</p>
@@ -74,9 +76,7 @@ function MyAttempts() {
 
       {selectedSubmission && (
         <div className="card shadow-sm p-4 mt-4 mb-5" id="attempts">
-          <h4 className="mb-3">
-            تفاصيل المحاولة
-          </h4>
+          <h4 className="mb-3">تفاصيل المحاولة</h4>
 
           <p>
             <strong>تاريخ المحاولة:</strong>{" "}
@@ -97,8 +97,7 @@ function MyAttempts() {
               </p>
 
               <p>
-                <strong>إجابتك:</strong>{" "}
-                {response.option?.optionText}
+                <strong>إجابتك:</strong> {response.option?.optionText}
               </p>
             </div>
           ))}

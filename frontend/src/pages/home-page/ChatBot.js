@@ -1,15 +1,17 @@
-import React, { useState, useRef, useEffect } from 'react';
-import './Chatbot.css';
+import React, { useState, useRef, useEffect } from "react";
+import "./Chatbot.css";
+
+const API_URL = "https://bousalaty-group-6-ixn3.onrender.com";
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
   const sendMessage = async () => {
@@ -17,42 +19,37 @@ const Chatbot = () => {
 
     const userMessage = input;
 
-    setMessages(prev => [
-      ...prev,
-      { text: userMessage, user: true }
-    ]);
-
-    setInput('');
+    setMessages((prev) => [...prev, { text: userMessage, user: true }]);
+    setInput("");
     setLoading(true);
 
     try {
-      const res = await fetch('http://localhost:3001/chatbot', {
-        method: 'POST',
+      const res = await fetch(`${API_URL}/chatbot`, {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          message: userMessage
-        })
+          message: userMessage,
+        }),
       });
 
       const data = await res.json();
 
-      setMessages(prev => [
+      setMessages((prev) => [
         ...prev,
         {
-          text: data.reply || 'ما قدرت أفهم الرد.',
-          user: false
-        }
+          text: data.reply || "ما قدرت أفهم الرد.",
+          user: false,
+        },
       ]);
-
     } catch (error) {
-      setMessages(prev => [
+      setMessages((prev) => [
         ...prev,
         {
-          text: 'صار خطأ بالاتصال مع المساعد الذكي.',
-          user: false
-        }
+          text: "صار خطأ بالاتصال مع المساعد الذكي.",
+          user: false,
+        },
       ]);
     }
 
@@ -61,16 +58,16 @@ const Chatbot = () => {
 
   return (
     <>
-      <button 
+      <button
         className="chatbot-orb"
         onClick={() => setIsOpen(!isOpen)}
         title="الدردشة الذكية"
       >
-        <i className={`fas ${isOpen ? 'fa-times' : 'fa-comment-dots'}`}></i>
+        <i className={`fas ${isOpen ? "fa-times" : "fa-comment-dots"}`}></i>
       </button>
 
       {isOpen && (
-        <div className={`chat-window ${isOpen ? 'open' : ''}`}>
+        <div className={`chat-window ${isOpen ? "open" : ""}`}>
           <div className="chat-header">
             <div className="d-flex align-items-center">
               <i className="fas fa-robot text-primary me-2 fs-4"></i>
@@ -89,19 +86,12 @@ const Chatbot = () => {
             )}
 
             {messages.map((msg, idx) => (
-              <div 
-                key={idx} 
-                className={`message ${msg.user ? 'user' : 'bot'}`}
-              >
+              <div key={idx} className={`message ${msg.user ? "user" : "bot"}`}>
                 {msg.text}
               </div>
             ))}
 
-            {loading && (
-              <div className="message bot">
-                جاري التفكير...
-              </div>
-            )}
+            {loading && <div className="message bot">جاري التفكير...</div>}
 
             <div ref={messagesEndRef} />
           </div>
@@ -112,8 +102,8 @@ const Chatbot = () => {
                 className="form-control"
                 placeholder="اكتب رسالتك..."
                 value={input}
-                onChange={e => setInput(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && sendMessage()}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                 disabled={loading}
               />
 
@@ -131,9 +121,5 @@ const Chatbot = () => {
     </>
   );
 };
-
-
-
-
 
 export default Chatbot;

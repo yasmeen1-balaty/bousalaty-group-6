@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import "./SuggestMajors.css";
 import heroBg from "../../background-img/img3.png";
 import img1 from "./imges/img2.png";
 import { Link, useLocation } from "react-router-dom";
 
+const API_URL = "https://bousalaty-group-6-ixn3.onrender.com";
+
 export default function SuggestMajors() {
   const location = useLocation();
 
-  const [recommendations, setRecommendations] = useState(location.state?.recommendations || []);
-  const [loading, setLoading] = useState(!location.state?.recommendations);
+  const [recommendations, setRecommendations] = useState(
+    location.state?.recommendations || []
+  );
 
+  const [loading, setLoading] = useState(!location.state?.recommendations);
   const [savedMajors, setSavedMajors] = useState([]);
   const [saveMessages, setSaveMessages] = useState({});
 
@@ -23,9 +27,9 @@ export default function SuggestMajors() {
         return;
       }
 
-      fetch(`http://localhost:3001/submissions/student/${studentID}/latest`)
-        .then(res => res.json())
-        .then(data => {
+      fetch(`${API_URL}/submissions/student/${studentID}/latest`)
+        .then((res) => res.json())
+        .then((data) => {
           if (data.aiResult) {
             setRecommendations(data.aiResult);
           }
@@ -33,63 +37,85 @@ export default function SuggestMajors() {
         })
         .catch(() => setLoading(false));
     }
-  }, []);
+  }, [location.state, studentID]);
 
   const handleSaveMajor = async (majorID) => {
     try {
       const res = await fetch(
-        `http://localhost:3001/students/${studentID}/add-saved-major`,
+        `${API_URL}/students/${studentID}/add-saved-major`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ studentID, majorID })
+          headers: { 
+            "Content-Type": "application/json" 
+          },
+          body: JSON.stringify({ studentID, majorID }),
         }
       );
 
       if (res.status === 409) {
-        setSaveMessages(prev => ({
+        setSaveMessages((prev) => ({
           ...prev,
-          [majorID]: { text: "هذا التخصص محفوظ مسبقاً", type: "error" }
+          [majorID]: { text: "هذا التخصص محفوظ مسبقاً", type: "error" },
         }));
-        setTimeout(() => setSaveMessages(''), 3000);
+
+        setTimeout(() => {
+          setSaveMessages((prev) => {
+            const copy = { ...prev };
+            delete copy[majorID];
+            return copy;
+          });
+        }, 3000);
+
         return;
       }
 
       if (res.ok) {
-        setSavedMajors(prev => [...prev, majorID]);
-        setSaveMessages(prev => ({
+        setSavedMajors((prev) => [...prev, majorID]);
+
+        setSaveMessages((prev) => ({
           ...prev,
-          [majorID]: { text: "تم حفظ التخصص بنجاح", type: "success" }
+          [majorID]: { text: "تم حفظ التخصص بنجاح", type: "success" },
         }));
-        setTimeout(() => setSaveMessages(''), 3000);
+
+        setTimeout(() => {
+          setSaveMessages((prev) => {
+            const copy = { ...prev };
+            delete copy[majorID];
+            return copy;
+          });
+        }, 3000);
       } else {
-        setSaveMessages(prev => ({
+        setSaveMessages((prev) => ({
           ...prev,
-          [majorID]: { text: "حدث خطأ أثناء الحفظ", type: "error" }
+          [majorID]: { text: "حدث خطأ أثناء الحفظ", type: "error" },
         }));
       }
-
     } catch (error) {
-      setSaveMessages(prev => ({
+      setSaveMessages((prev) => ({
         ...prev,
-        [majorID]: { text: "خطأ في الاتصال بالسيرفر", type: "error" }
+        [majorID]: { text: "خطأ في الاتصال بالسيرفر", type: "error" },
       }));
     }
   };
 
-  if (loading) return <p className="text-center mt-5">جاري التحميل...</p>;
+  if (loading) {
+    return <p className="text-center mt-5">جاري التحميل...</p>;
+  }
 
   return (
     <div dir="rtl" className="sm-wrapper">
-
-      <section className="sm-hero text-center py-5 px-4" style={{
-        backgroundImage: `url(${heroBg})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}>
+      <section
+        className="sm-hero text-center py-5 px-4"
+        style={{
+          backgroundImage: `url(${heroBg})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
         <h1 className="sm-hero-title mb-2">أفضل تخصصات تناسب شخصيتك</h1>
         <div className="sm-gold-divider mx-auto mb-3" />
+
         <p className="sm-subtitle mb-5">
           تحليل ميولك ومهاراتك · اقتراح التخصصات المناسبة لك
         </p>
@@ -98,11 +124,13 @@ export default function SuggestMajors() {
           <div className="d-flex align-items-center gap-4">
             <div className="flex-grow-1 text-end">
               <h5 className="sm-feature-title mb-3">التخصصات المناسبة</h5>
+
               <ul className="list-unstyled sm-feature-list mb-0">
                 <li>◆ حل مناسب لمهاراتك وميولك المستقبلية.</li>
                 <li>◆ يساعدك في اختيار مسارك المهني.</li>
               </ul>
             </div>
+
             <div className="sm-feature-icon flex-shrink-0">
               <img src={img1} alt="" style={{ height: "162px" }} />
             </div>
@@ -126,6 +154,7 @@ export default function SuggestMajors() {
               <div className="col-md-4" key={index}>
                 <div className="card sm-card h-100 text-center position-relative">
                   معدل القبول
+
                   <span className="sm-badge">
                     {major.acceptanceGrade}%
                   </span>
@@ -133,7 +162,6 @@ export default function SuggestMajors() {
                   <div className="sm-card-topline" />
 
                   <div className="d-flex flex-column align-items-center p-4 pt-5">
-
                     <h5 className="sm-card-title mb-2">
                       {major.majorName}
                     </h5>
@@ -142,16 +170,24 @@ export default function SuggestMajors() {
                       {major.reason}
                     </p>
 
-                    {/* زر عرض التفاصيل */}
                     {major.isExternal ? (
-                      <a href={major.link} target="_blank" rel="noreferrer" className="btn btn-primary sm-btn sm-btn-primary w-100 mt-2">
+                      <a
+                        href={major.link}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn btn-primary sm-btn sm-btn-primary w-100 mt-2"
+                      >
                         زيارة موقع الكلية
                       </a>
                     ) : (
-                      <Link to={`/majors/${major.majorID}`} className="btn btn-primary sm-btn sm-btn-primary w-100 mt-2" > عرض تفاصيل التخصص </Link>
+                      <Link
+                        to={`/majors/${major.majorID}`}
+                        className="btn btn-primary sm-btn sm-btn-primary w-100 mt-2"
+                      >
+                        عرض تفاصيل التخصص
+                      </Link>
                     )}
 
-                    {/* إخفاء زر المفضلة لكلية هشام */}
                     {!major.isExternal && (
                       <button
                         className="btn btn-primary sm-btn sm-btn-primary w-100 mt-2"
@@ -165,11 +201,16 @@ export default function SuggestMajors() {
                     )}
 
                     {saveMessages[major.majorID] && (
-                      <small className={`d-block mt-2 text-center ${saveMessages[major.majorID].type === "success" ? "sm-save-success" : "sm-save-error"}`} >
+                      <small
+                        className={`d-block mt-2 text-center ${
+                          saveMessages[major.majorID].type === "success"
+                            ? "sm-save-success"
+                            : "sm-save-error"
+                        }`}
+                      >
                         {saveMessages[major.majorID].text}
                       </small>
                     )}
-
                   </div>
                 </div>
               </div>

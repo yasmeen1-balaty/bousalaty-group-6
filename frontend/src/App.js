@@ -1,42 +1,41 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
-import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Quiz from './pages/explore-interests/Quiz'
-import HomePage from './pages/home-page/HomePage';
-import ChatBot from './pages/home-page/ChatBot';
-import AuthPage from './pages/home-page/auth/AuthPage';
-import Navbar from './pages/Navbar';
-import SuggestMajors from './pages/suggest-majors/SuggestMajors';
-import About from './pages/suggest-majors/About';
-import MajorDetails from './pages/explore-major/Major';
-import { Dashboard } from './pages/student-dashboard/dashboard';
-import { useState, useEffect } from 'react';
-import AdminAuthPage from './pages/home-page/auth/adminLogin';
-import AdminPanel from './pages/AdminFolder/tables/adminpanel';
-import MyAttempts from './pages/explore-interests/MyAttempts';
-function App() {
-  const [items, setItems] = useState([]);
-  const [dataIsLoaded, setDataIsLoaded] = useState(false);
+import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
+import Quiz from "./pages/explore-interests/Quiz";
+import HomePage from "./pages/home-page/HomePage";
+import ChatBot from "./pages/home-page/ChatBot";
+import AuthPage from "./pages/home-page/auth/AuthPage";
+import Navbar from "./pages/Navbar";
+import SuggestMajors from "./pages/suggest-majors/SuggestMajors";
+import About from "./pages/suggest-majors/About";
+import MajorDetails from "./pages/explore-major/Major";
+import { Dashboard } from "./pages/student-dashboard/dashboard";
+import AdminAuthPage from "./pages/home-page/auth/adminLogin";
+import AdminPanel from "./pages/AdminFolder/tables/adminpanel";
+import MyAttempts from "./pages/explore-interests/MyAttempts";
+
+const API_URL = "https://bousalaty-group-6-ixn3.onrender.com";
+
+function App() {
+  const [dataIsLoaded, setDataIsLoaded] = useState(false);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:3001/faculties/1") // this is only to cxheck thaat we are connected to the data base
+    fetch(`${API_URL}/faculties/1`)
       .then((res) => res.json())
-      .then((data) => {
-        setItems(data);
-        setDataIsLoaded(true);
-      });
+      .then(() => setDataIsLoaded(true))
+      .catch(() => setDataIsLoaded(true));
   }, []);
 
- useEffect(() => {
+  useEffect(() => {
     const savedUser = localStorage.getItem("user");
+
     if (savedUser && savedUser !== "undefined") {
       setUser(JSON.parse(savedUser));
     }
   }, []);
- 
 
   function login(userData) {
     localStorage.setItem("user", JSON.stringify(userData));
@@ -58,18 +57,19 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<AuthPage login={login} />} />
-        <Route path='/adminLogin' element={ <AdminAuthPage login={login}/>} />
+        <Route path="/adminLogin" element={<AdminAuthPage login={login} />} />
         <Route path="/majors/:majorID" element={<MajorDetails />} />
         <Route path="/suggestions" element={<SuggestMajors />} />
         <Route path="/about" element={<About />} />
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/admin/adminpanel" element={<AdminPanel />} />
-        <Route path="/my-attempts" element={<MyAttempts />} /> 
+        <Route path="/my-attempts" element={<MyAttempts />} />
       </Routes>
 
       <ChatBot />
     </>
   );
 }
+
 export default App;

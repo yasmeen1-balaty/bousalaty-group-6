@@ -1,6 +1,8 @@
 import FacultiesTable from "../../FacultiesTable";
 import ExpertsTable from "../../ExpertsTable";
 
+const API_URL = "https://bousalaty-group-6-ixn3.onrender.com";
+
 export default function ExpertForms({
   activeForm,
   faculties,
@@ -24,29 +26,28 @@ export default function ExpertForms({
   addExpert,
   updateExpert,
   deleteExpert,
-}) 
-{
-
+}) {
   const handleExpertIDChange = async (e) => {
-  const id = e.target.value;
-  setExpertID(id);
+    const id = e.target.value;
+    setExpertID(id);
 
-  if (id) {
-    try {
-      const res = await fetch(`http://localhost:3001/experts/${id}`);
-      const data = await res.json();
+    if (id) {
+      try {
+        const res = await fetch(`${API_URL}/experts/${id}`);
+        const data = await res.json();
 
-      if (data) {
-        setFirstName(data.firstName || '');
-        setLastName(data.lastName || '');
-        setExpertEmail(data.email || '');
-        setExpertFacultyID(data.facultyID || '');
+        if (data) {
+          setFirstName(data.firstName || "");
+          setLastName(data.lastName || "");
+          setExpertEmail(data.email || "");
+          setExpertFacultyID(data.facultyID || "");
+        }
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
     }
-  }
-};
+  };
+
   return (
     <>
       {activeForm === "addExpert" && (

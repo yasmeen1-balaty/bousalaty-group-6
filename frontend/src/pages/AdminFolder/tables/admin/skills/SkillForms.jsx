@@ -1,6 +1,8 @@
 import MajorsTable from "../../MajorsTable";
 import SkillsTable from "../../SkillsTable";
 
+const API_URL = "https://bousalaty-group-6-ixn3.onrender.com";
+
 export default function SkillForms({
   activeForm,
   majors,
@@ -19,6 +21,26 @@ export default function SkillForms({
   updateSkill,
   deleteSkill,
 }) {
+
+  const handleSkillIDChange = async (e) => {
+    const id = e.target.value;
+    setSkillID(id);
+
+    if (id) {
+      try {
+        const res = await fetch(`${API_URL}/skills/${id}`);
+        const data = await res.json();
+
+        if (data) {
+          setSkillMajorID(data.majorID || "");
+          setSkill(data.skill || "");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
   return (
     <>
       {activeForm === "addSkill" && (
@@ -74,7 +96,7 @@ export default function SkillForms({
                   className="form-control mb-3"
                   placeholder="رقم المهارة skillID"
                   value={skillID}
-                  onChange={(e) => setSkillID(e.target.value)}
+                  onChange={handleSkillIDChange}
                   required
                 />
 
@@ -94,7 +116,9 @@ export default function SkillForms({
                   required
                 />
 
-                <button className="btn btn-warning text-white">تعديل</button>
+                <button className="btn btn-warning text-white">
+                  تعديل
+                </button>
               </form>
             </div>
           </div>
