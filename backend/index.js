@@ -1,14 +1,12 @@
-/*require('dotenv').config();
+require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
 
 const app = express();
 
-const db = require('./models');
-
 app.use(cors({
-    origin: '*',
+    origin: 'http://localhost:3000',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -28,6 +26,7 @@ const submissionRoutes = require('./routes/submissionRoutes');
 const skillRoutes = require('./routes/skillRoutes');
 const chatbotRoutes = require('./routes/chatbotRoutes');
 
+
 app.use('/students', studentRoutes);
 app.use('/', authRoutes);
 app.use('/faculties', facultyRoutes);
@@ -39,19 +38,15 @@ app.use('/questions', questionRoutes);
 app.use('/responses', responseRoutes);
 app.use('/submissions', submissionRoutes);
 app.use('/skills', skillRoutes);
+app.use('/submissions' , submissionRoutes)
 app.use('/chatbot', chatbotRoutes);
 
-const PORT = process.env.PORT || 3001;
-
-db.sequelize.sync().then(() => {
-    app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
-    });
-}).catch((error) => {
-    console.error('Database sync failed:', error);
+app.listen(3001, () => {
+    console.log('Server running on http://localhost:3001');
 });
-*/
 
+/*
+const db = require('./models');
 const bcrypt = require('bcrypt');
 const Admin = db.admin;
 
@@ -92,3 +87,5 @@ const createAdminUser = async () => {
 };
 
 createAdminUser();
+*/
+
