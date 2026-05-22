@@ -19,7 +19,7 @@ const analyzeAndSuggestMajors = async (req, res) => {
       return res.status(404).json({ message: 'No responses found' });
     }
 
-    // تحققي من المعدل أقل من 60
+    // تحقق من المعدل أقل من 60
     const gradeResponse = responses.find(r =>
       r.option.optionText.includes('أقل من 60')
     );
@@ -41,7 +41,7 @@ const analyzeAndSuggestMajors = async (req, res) => {
       return res.json({ recommendations: result });
     }
 
-    // استخرجي فرع الطالب
+    // استخرج فرع الطالب
     const streamResponse = responses.find(r =>
       r.question.questionText.includes('فرعك') ||
       r.question.questionText.includes('التوجيهي')
@@ -50,10 +50,10 @@ const analyzeAndSuggestMajors = async (req, res) => {
     const optionText = streamResponse?.option?.optionText || '';
     console.log("Student stream:", optionText);
 
-    // جيبي كل التخصصات
+    // جيب كل التخصصات
     const allMajors = await db.major.findAll();
 
-    // فلتري حسب فرع الطالب
+    // فلتر حسب فرع الطالب
     const filteredMajors = allMajors.filter(m => {
       try {
         const stream = Array.isArray(m.acceptedBranches)

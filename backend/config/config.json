@@ -1,7 +1,7 @@
 {
   "development": {
     "username": "root",
-    "password": "6kmnMYSQL!!!!",
+    "password": "newproject123",
     "database": "bousalaty",
     "host": "127.0.0.1",
     "dialect": "mysql"
@@ -14,10 +14,13 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "use_env_variable": "DATABASE_URL",
+    "dialect": "mysql",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    }
   }
 }
