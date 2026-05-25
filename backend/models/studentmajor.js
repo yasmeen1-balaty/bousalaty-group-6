@@ -18,19 +18,15 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   studentMajor.init({
-    studentMajorID: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
-    },
     majorID: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      primaryKey:true
     },
     studentID: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      primaryKey:true
     }
   }, {
     sequelize,

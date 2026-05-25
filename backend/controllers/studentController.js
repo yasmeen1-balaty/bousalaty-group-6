@@ -96,8 +96,7 @@ const addToSavedMajors = async (req, res) => {
 
     return res.status(201).json({
       message: "Saved successfully",
-      studentMajorID: record.studentMajorID,
-      studentID: record.studentID,
+      studenID: record.studentID,
       majorID: record.majorID,
     });
   } catch (error) {

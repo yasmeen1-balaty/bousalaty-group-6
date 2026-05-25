@@ -8,12 +8,14 @@ module.exports = (sequelize, DataTypes) => {
 
       student.belongsToMany(models.major, {
         through: 'studentMajors',
-        foreignKey: 'studentID'
+        foreignKey: 'studentID',
+        otherKey: 'majorID'
       });
 
       models.major.belongsToMany(student, {
         through: 'studentMajors',
-        foreignKey: 'majorID'
+        foreignKey: 'majorID',
+        otherKey: 'studentID'
       }); 
 
       student.hasMany(models.submission, {
