@@ -78,10 +78,13 @@ const getSavedMajors = async (req, res) => {
 
 const addToSavedMajors = async (req, res) => {
   try {
-    const { studentID, majorID } = req.body;
+    const studentID = req.params.studentID; // ← من الـ URL
+    const { majorID } = req.body;           // ← من الـ body
+
     if (!studentID || !majorID) {
       return res.status(400).json({ error: 'studentID and majorID are required' });
     }
+
     const [record, created] = await db.studentMajor.findOrCreate({
       where: { studentID, majorID },
       defaults: { studentID, majorID }
@@ -97,7 +100,6 @@ const addToSavedMajors = async (req, res) => {
     return res.status(500).json({ error: error.message || 'Server error' });
   }
 };
-
 const removeFromSavedMajors = async (req, res) => {
   try {
     const { studentID, majorID } = req.body;
