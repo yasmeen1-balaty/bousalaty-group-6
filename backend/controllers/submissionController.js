@@ -101,8 +101,28 @@ const getStudentSubmissions = async (req, res) => {
   }
 
 };
+
+const getSubmissionById = async (req, res) => {
+  try {
+    const { submissionID } = req.params;
+
+    const submission = await db.submission.findByPk(submissionID);
+
+    if (!submission) {
+      return res.status(404).json({ message: "Submission not found" });
+    }
+
+    return res.json(submission);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+
+  
 module.exports = {
   createSubmission,
   getLatestSubmission,
-  getStudentSubmissions
+  getStudentSubmissions,
+  getSubmissionById
 };

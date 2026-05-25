@@ -7,5 +7,6 @@ router.post('/', submissionController.createSubmission);
 router.get('/student/:studentID/latest', submissionController.getLatestSubmission);
 router.get('/student/:studentID', submissionController.getStudentSubmissions);
 router.post('/:submissionID/analyze', analyzeAndSuggestMajors); // AI api
+router.get('/:submissionID', submissionController.getSubmissionById);
 
 module.exports = router;

@@ -28,20 +28,31 @@ export default function SuggestMajors() {
         return;
       }
 
-      const res = await fetch(`${API_URL}/ai/analyze/${submissionID}`, {
+      // 1) جيب المحاولة
+      const savedRes = await fetch(`${API_URL}/submissions/${submissionID}`);
+      const savedData = await savedRes.json();
+
+      if (savedRes.ok && savedData.aiResult && savedData.status === "completed") {
+        setMajors((savedData.aiResult || []).slice(0, 3));
+        setLoading(false);
+        return;
+      }
+
+      // 2) إذا ما في نتيجة محفوظة، شغل AI مرة واحدة فقط
+      const aiRes = await fetch(`${API_URL}/ai/analyze/${submissionID}`, {
         method: "POST",
       });
 
-      const data = await res.json();
+      const aiData = await aiRes.json();
 
-      if (!res.ok) {
-        setMessage(data.message || "حدث خطأ أثناء تحليل التخصصات");
+      if (!aiRes.ok) {
+        setMessage(aiData.message || "حدث خطأ أثناء تحليل التخصصات");
         setMessageType("danger");
         setLoading(false);
         return;
       }
 
-      setMajors((data.recommendations || []).slice(0, 3));
+      setMajors((aiData.recommendations || []).slice(0, 3));
       setLoading(false);
     } catch (error) {
       console.log(error);
