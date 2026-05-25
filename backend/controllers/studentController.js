@@ -101,8 +101,11 @@ const addToSavedMajors = async (req, res) => {
       majorID: record.majorID,
     });
   } catch (error) {
-    console.error("addToSavedMajors error:", error);
-    return res.status(500).json({ error: error.message || "Server error" });
+    console.error("ADD SAVED MAJOR ERROR:", error);
+    return res.status(500).json({
+      message: "Server error",
+      error: error.message
+    });
   }
 };
 
