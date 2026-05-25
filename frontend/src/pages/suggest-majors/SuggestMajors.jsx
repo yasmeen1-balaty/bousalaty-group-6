@@ -60,6 +60,16 @@ export default function SuggestMajors() {
 
       const data = await res.json();
 
+      // ✅ محفوظ مسبقاً — مش error
+      if (res.status === 409) {
+        setSavedMajors(prev => [...prev, majorID]);
+        setSaveMessages(prev => ({
+          ...prev,
+          [majorID]: { text: "التخصص محفوظ مسبقاً ✓", type: "success" }
+        }));
+        return;
+      }
+
       if (!res.ok) {
         setSaveMessages(prev => ({
           ...prev,
@@ -72,22 +82,15 @@ export default function SuggestMajors() {
       }
 
       setSavedMajors(prev => [...prev, majorID]);
-
       setSaveMessages(prev => ({
         ...prev,
-        [majorID]: {
-          text: "تم حفظ التخصص بنجاح",
-          type: "success"
-        }
+        [majorID]: { text: "تم حفظ التخصص بنجاح ✓", type: "success" }
       }));
 
     } catch (error) {
       setSaveMessages(prev => ({
         ...prev,
-        [majorID]: {
-          text: "خطأ في الاتصال بالسيرفر",
-          type: "error"
-        }
+        [majorID]: { text: "خطأ في الاتصال بالسيرفر", type: "error" }
       }));
     }
   };
@@ -197,8 +200,8 @@ export default function SuggestMajors() {
                     {saveMessages[major.majorID] && (
                       <small
                         className={`d-block mt-2 text-center ${saveMessages[major.majorID].type === "success"
-                            ? "sm-save-success"
-                            : "sm-save-error"
+                          ? "sm-save-success"
+                          : "sm-save-error"
                           }`}
                       >
                         {saveMessages[major.majorID].text}
