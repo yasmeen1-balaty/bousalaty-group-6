@@ -113,21 +113,29 @@ export default function SuggestMajors() {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <h1 className="sm-hero-title mb-2">أفضل تخصصات تناسب شخصيتك</h1>
+        <h1 className="sm-hero-title mb-2">
+          أفضل تخصصات تناسب شخصيتك
+        </h1>
+
         <div className="sm-gold-divider mx-auto mb-3" />
+
         <p className="sm-subtitle mb-5">
           تحليل ميولك ومهاراتك · اقتراح التخصصات المناسبة لك
         </p>
 
         <div className="sm-feature-card mx-auto p-4">
-          <div className="d-flex align-items-center gap-4">
+          <div className="d-flex align-items-center gap-4 flex-wrap">
             <div className="flex-grow-1 text-end">
-              <h5 className="sm-feature-title mb-3">اختصاصك الذكي</h5>
+              <h5 className="sm-feature-title mb-3">
+                اختصاصك الذكي
+              </h5>
+
               <ul className="list-unstyled sm-feature-list mb-0">
                 <li>
                   <span className="sm-bullet">◆</span>
                   هذه النتائج مبنية على تحليل إجاباتك في الاختبار.
                 </li>
+
                 <li>
                   <span className="sm-bullet">◆</span>
                   تم اختيار أفضل 3 تخصصات مناسبة لك بواسطة الذكاء الاصطناعي.
@@ -136,7 +144,11 @@ export default function SuggestMajors() {
             </div>
 
             <div className="sm-feature-icon flex-shrink-0">
-              <img src={img1} alt="" style={{ height: "162px" }} />
+              <img
+                src={img1}
+                alt=""
+                style={{ height: "170px" }}
+              />
             </div>
           </div>
         </div>
@@ -147,62 +159,82 @@ export default function SuggestMajors() {
           <h2 className="sm-section-title mb-2">
             التخصصات التي تناسب شخصيتك :
           </h2>
+
           <div className="sm-gold-divider mx-auto" />
         </div>
 
         {message && (
-          <p className={`text-center fw-bold text-${messageType}`}>
+          <div
+            className={`alert alert-${messageType} text-center fw-bold`}
+          >
             {message}
-          </p>
+          </div>
         )}
 
         {loading && (
-          <p className="text-center fw-bold">جاري تحليل التخصصات...</p>
+          <p className="text-center fw-bold">
+            جاري تحليل التخصصات...
+          </p>
         )}
 
         <div className="row g-4">
-          {majors.map((major) => (
-            <div className="col-md-4" key={major.majorID}>
-              <div className="sm-card h-100 position-relative text-center">
-                <span className="sm-badge">
-                  {major.acceptanceGrade || "AI"}
-                </span>
+          {majors.map((major, index) => (
+            <div
+              className="col-lg-4 col-md-6"
+              key={major.majorID}
+            >
+              <div className="sm-card h-100 position-relative text-center p-4">
 
                 <div className="sm-card-topline" />
 
-                <div className="d-flex flex-column align-items-center p-4 pt-5">
-                  <div className="sm-card-emoji mb-3">🎓</div>
+                <div className="sm-rank-badge">
+                  #{index + 1}
+                </div>
 
-                  <h5 className="sm-card-title mb-2">
-                    {major.majorName}
-                  </h5>
+                <span className="sm-badge">
+                  {major.acceptanceGrade
+                    ? `${major.acceptanceGrade}%`
+                    : "AI"}
+                </span>
 
-                  <p className="sm-card-desc flex-grow-1">
-                    {major.description || "تخصص مناسب بناءً على إجاباتك في الاختبار."}
-                  </p>
+                <div className="sm-card-icon mx-auto mb-3">
+                  🎓
+                </div>
 
-                  <div className="text-end bg-light rounded-3 p-3 mt-3 w-100">
-                    <h6 className="fw-bold mb-2">
-                      لماذا هذا التخصص مناسب لك؟
-                    </h6>
-                    <p className="mb-0 small text-muted">
-                      {major.reason || "تم اختياره بناءً على تحليل إجاباتك."}
-                    </p>
+                <h4 className="sm-card-title mb-2">
+                  {major.majorName}
+                </h4>
+
+                <p className="sm-card-desc mb-3">
+                  {major.description ||
+                    "تخصص مناسب بناءً على إجاباتك في الاختبار."}
+                </p>
+
+                <div className="sm-reason-box text-end w-100 mb-4">
+                  <div className="sm-reason-title">
+                    لماذا هذا التخصص مناسب لك؟
                   </div>
 
+                  <p className="sm-reason-text">
+                    {major.reason ||
+                      "تم اختياره بناءً على تحليل إجاباتك."}
+                  </p>
+                </div>
+
+                <div className="sm-card-actions mt-auto w-100">
                   {major.isExternal ? (
                     <a
                       href={major.link}
                       target="_blank"
                       rel="noreferrer"
-                      className="sm-card-btn w-100 mt-3"
+                      className="sm-card-btn w-100"
                     >
                       زيارة الرابط
                     </a>
                   ) : (
                     <Link
                       to={`/majors/${major.majorID}`}
-                      className="sm-card-btn w-100 mt-3"
+                      className="sm-card-btn w-100"
                       onClick={() => setSelectedMajor(major)}
                     >
                       عرض التفاصيل
@@ -211,11 +243,10 @@ export default function SuggestMajors() {
 
                   {!major.isExternal && (
                     <button
-                      className="btn btn-outline-primary mt-3"
-                      style={{ width: "100%" }}
+                      className="sm-save-btn w-100 mt-3"
                       onClick={() => addToFavorite(major)}
                     >
-                      إضافة الى التخصصات المحفوظة
+                      إضافة إلى التخصصات المحفوظة
                     </button>
                   )}
                 </div>
@@ -245,11 +276,15 @@ export default function SuggestMajors() {
               </button>
 
               <div className="d-flex align-items-center gap-3 mb-3">
-                <span className="sm-modal-emoji">🎓</span>
+                <span className="sm-modal-emoji">
+                  🎓
+                </span>
+
                 <div>
                   <h4 className="sm-modal-title mb-1">
                     {selectedMajor.majorName}
                   </h4>
+
                   <span className="sm-modal-match-badge">
                     AI Recommendation
                   </span>
@@ -262,15 +297,21 @@ export default function SuggestMajors() {
                 <h6 className="sm-modal-label mb-2">
                   ⭐ لماذا هذا التخصص مناسب لك؟
                 </h6>
+
                 <p className="sm-modal-text">
-                  {selectedMajor.reason || "تم اختياره بناءً على إجاباتك."}
+                  {selectedMajor.reason ||
+                    "تم اختياره بناءً على إجاباتك."}
                 </p>
               </div>
 
               <div className="mb-3">
-                <h6 className="sm-modal-label mb-2">📋 عن التخصص</h6>
+                <h6 className="sm-modal-label mb-2">
+                  📋 عن التخصص
+                </h6>
+
                 <p className="sm-modal-text">
-                  {selectedMajor.description || "لا يوجد وصف متوفر حاليًا."}
+                  {selectedMajor.description ||
+                    "لا يوجد وصف متوفر حاليًا."}
                 </p>
               </div>
 
@@ -278,14 +319,22 @@ export default function SuggestMajors() {
                 <div className="col-6">
                   <div className="sm-info-box">
                     <span>📊 معدل القبول</span>
-                    <strong>{selectedMajor.acceptanceGrade || "غير محدد"}</strong>
+
+                    <strong>
+                      {selectedMajor.acceptanceGrade ||
+                        "غير محدد"}
+                    </strong>
                   </div>
                 </div>
 
                 <div className="col-6">
                   <div className="sm-info-box">
                     <span>💳 الساعات</span>
-                    <strong>{selectedMajor.creditHours || "غير محدد"}</strong>
+
+                    <strong>
+                      {selectedMajor.creditHours ||
+                        "غير محدد"}
+                    </strong>
                   </div>
                 </div>
               </div>
