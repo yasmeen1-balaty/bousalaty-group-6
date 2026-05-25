@@ -78,7 +78,7 @@ function Quiz() {
         alert(submissionData.message || "صار خطأ أثناء إنشاء المحاولة");
         return;
       }
-
+      localStorage.setItem("submissionID", submissionData.submissionID);
       const submissionID = submissionData.submissionID;
 
       const responses = Object.entries(answers).map(([questionID, optionID]) => ({
