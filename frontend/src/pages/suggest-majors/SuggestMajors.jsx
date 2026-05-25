@@ -1,48 +1,79 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-
+import { useState } from "react";
 import "./SuggestMajors.css";
 import heroBg from "../../background-img/img3.png";
 import img1 from "./imges/img2.png";
+import { Link } from "react-router-dom";
 
 const API_URL = "https://bousalaty-group-6-ixn3.onrender.com";
 
+const majors = [
+  {
+    id: 1,
+    majorID: 1,
+    title: "علوم الحاسوب",
+    match: 87,
+    emoji: "🖥️",
+    about: "يُعنى هذا التخصص بتصميم وتطوير البرمجيات وتحليل البيانات وبناء الأنظمة الذكية والشبكات.",
+    skills: ["التفكير المنطقي", "حل المشكلات", "البرمجة", "الرياضيات", "الإبداع التقني"],
+    jobs: ["مطور برمجيات", "محلل بيانات", "مهندس ذكاء اصطناعي", "أمن المعلومات", "مدير أنظمة"],
+    duration: "4 سنوات",
+    salary: "3,000 - 8,000 شيكل شهرياً",
+    desc: "مجال مناسب لمن يحب التقنية وتحليل المشاكل وتطوير البرمجيات والأنظمة.",
+  },
+  {
+    id: 2,
+    majorID: 2,
+    title: "إدارة أعمال",
+    match: 82,
+    emoji: "📊",
+    about: "يُركز على تطوير مهارات القيادة والتخطيط الاستراتيجي وإدارة الموارد البشرية والمالية.",
+    skills: ["القيادة", "التواصل", "التحليل المالي", "التفاوض", "إدارة الوقت"],
+    jobs: ["مدير تنفيذي", "محلل أعمال", "مستشار إداري", "رائد أعمال", "مدير مشاريع"],
+    duration: "4 سنوات",
+    salary: "2,000 - 6,000 شيكل شهرياً",
+    desc: "تخصص يجمع بين التخطيط والتنفيذ لمن يحب قيادة الفرق وبناء الأعمال.",
+  },
+  {
+    id: 3,
+    majorID: 3,
+    title: "تمريض",
+    match: 78,
+    emoji: "🩺",
+    about: "يجمع بين العلوم الطبية والرعاية الإنسانية لتقديم الدعم الصحي للمرضى في مختلف البيئات الطبية.",
+    skills: ["التعاطف", "الدقة", "العمل تحت الضغط", "التواصل", "المعرفة الطبية"],
+    jobs: ["ممرض مستشفى", "ممرض طوارئ", "ممرض منزلي", "مشرف تمريض", "معلم صحي"],
+    duration: "4 سنوات",
+    salary: "3,000 - 5,000 شيكل شهرياً",
+    desc: "إذا كنت تهتم بمساعدة الآخرين وتحب مجال الرعاية الصحية فهذا هو تخصصك.",
+  },
+  {
+    id: 4,
+    majorID: 4,
+    title: "هندسه الحاسوب",
+    match: 90,
+    emoji: "🖥️",
+    about: "يُعنى هذا التخصص بتصميم وتطوير البرمجيات وتحليل البيانات وبناء الأنظمة الذكية والشبكات.",
+    skills: ["التفكير المنطقي", "حل المشكلات", "البرمجة", "الرياضيات", "الإبداع التقني"],
+    jobs: ["مطور برمجيات", "محلل بيانات", "مهندس ذكاء اصطناعي", "أمن المعلومات", "مدير أنظمة"],
+    duration: "5 سنوات",
+    salary: "5,000 - 8,000 شيكل شهرياً",
+    desc: "مجال مناسب لمن يحب التقنية وتحليل المشاكل وتطوير البرمجيات والأنظمة.",
+  },
+];
+
 export default function SuggestMajors() {
-  const [majors, setMajors] = useState([]);
   const [selectedMajor, setSelectedMajor] = useState(null);
   const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    fetchMajors();
-  }, []);
-
-  const fetchMajors = async () => {
-    try {
-      const res = await fetch(`${API_URL}/majors`);
-      const data = await res.json();
-
-      if (!res.ok) {
-        setMessage("حدث خطأ أثناء تحميل التخصصات");
-        return;
-      }
-
-      setMajors(data);
-    } catch (error) {
-      console.log(error);
-      setMessage("حدث خطأ أثناء الاتصال بالسيرفر");
-    }
-  };
-
-  const addToFavorite = async (majorID) => {
+  const addToFavorite = async (major) => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
+      const studentID = user?.studentID || user?.id;
 
-      if (!user) {
+      if (!studentID) {
         setMessage("يجب تسجيل الدخول أولًا");
         return;
       }
-
-      const studentID = user.studentID || user.id;
 
       const res = await fetch(
         `${API_URL}/students/${studentID}/add-saved-major`,
@@ -51,7 +82,7 @@ export default function SuggestMajors() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ majorID }),
+          body: JSON.stringify({ majorID: major.majorID }),
         }
       );
 
@@ -63,14 +94,14 @@ export default function SuggestMajors() {
       }
 
       if (!res.ok) {
-        setMessage(data.message || "حدث خطأ أثناء الحفظ");
+        setMessage(data.error || data.message || "حدث خطأ أثناء الحفظ");
         return;
       }
 
-      setMessage("تمت الإضافة للمفضلة");
+      setMessage("تمت الإضافة إلى المفضلة");
     } catch (error) {
       console.log(error);
-      setMessage("حدث خطأ أثناء الاتصال بالسيرفر");
+      setMessage("حدث خطأ أثناء الحفظ");
     }
   };
 
@@ -106,7 +137,6 @@ export default function SuggestMajors() {
                 </li>
               </ul>
             </div>
-
             <div className="sm-feature-icon flex-shrink-0">
               <img src={img1} alt="" style={{ height: "162px" }} />
             </div>
@@ -123,33 +153,28 @@ export default function SuggestMajors() {
         </div>
 
         {message && (
-          <p className="text-center fw-bold text-success">{message}</p>
+          <p className="text-center fw-bold text-danger">{message}</p>
         )}
 
         <div className="row g-4">
           {majors.map((major) => (
-            <div className="col-md-3" key={major.majorID}>
+            <div className="col-md-3" key={major.id}>
               <div className="sm-card h-100 position-relative text-center">
-                <span className="sm-badge">
-                  {major.match || major.acceptanceGrade || 65}%
-                </span>
+                <span className="sm-badge">{major.match}%</span>
 
                 <div className="sm-card-topline" />
 
                 <div className="d-flex flex-column align-items-center p-4 pt-5">
-                  <div className="sm-card-emoji mb-3">🎓</div>
+                  <div className="sm-card-emoji mb-3">{major.emoji}</div>
 
-                  <h5 className="sm-card-title mb-2">
-                    {major.majorName}
-                  </h5>
+                  <h5 className="sm-card-title mb-2">{major.title}</h5>
 
-                  <p className="sm-card-desc flex-grow-1">
-                    {major.description || "تخصص مناسب حسب معدلك وميولك."}
-                  </p>
+                  <p className="sm-card-desc flex-grow-1">{major.desc}</p>
 
                   <Link
-                    to={`/majors/${major.majorID}`}
+                    to="/details"
                     className="sm-card-btn w-100 mt-3"
+                    onClick={() => setSelectedMajor(major)}
                   >
                     عرض التفاصيل
                   </Link>
@@ -157,9 +182,9 @@ export default function SuggestMajors() {
                   <button
                     className="btn btn-outline-primary mt-3"
                     style={{ width: "100%" }}
-                    onClick={() => addToFavorite(major.majorID)}
+                    onClick={() => addToFavorite(major)}
                   >
-                    إضافة إلى التخصصات المحفوظة
+                    إضافة الى التخصصات المحفوظة
                   </button>
                 </div>
               </div>
@@ -167,6 +192,92 @@ export default function SuggestMajors() {
           ))}
         </div>
       </section>
+
+      {selectedMajor && (
+        <div
+          className="sm-overlay d-flex align-items-center justify-content-center"
+          onClick={() => setSelectedMajor(null)}
+        >
+          <div
+            className="sm-modal position-relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="sm-modal-topbar" />
+
+            <div className="p-4">
+              <button
+                className="sm-modal-close position-absolute"
+                onClick={() => setSelectedMajor(null)}
+              >
+                ✕
+              </button>
+
+              <div className="d-flex align-items-center gap-3 mb-3">
+                <span className="sm-modal-emoji">{selectedMajor.emoji}</span>
+                <div>
+                  <h4 className="sm-modal-title mb-1">
+                    {selectedMajor.title}
+                  </h4>
+                  <span className="sm-modal-match-badge">
+                    {selectedMajor.match}% تطابق
+                  </span>
+                </div>
+              </div>
+
+              <div className="sm-gold-divider mb-4" />
+
+              <div className="mb-3">
+                <h6 className="sm-modal-label mb-2">📋 عن التخصص</h6>
+                <p className="sm-modal-text">{selectedMajor.about}</p>
+              </div>
+
+              <div className="mb-3">
+                <h6 className="sm-modal-label mb-2">✦ المهارات المطلوبة</h6>
+                <div className="d-flex flex-wrap gap-2">
+                  {selectedMajor.skills.map((s, i) => (
+                    <span key={i} className="sm-tag">
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mb-3">
+                <h6 className="sm-modal-label mb-2">🎓 فرص العمل</h6>
+                <div className="d-flex flex-wrap gap-2">
+                  {selectedMajor.jobs.map((j, i) => (
+                    <span key={i} className="sm-tag">
+                      {j}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="row g-3 mb-4">
+                <div className="col-6">
+                  <div className="sm-info-box">
+                    <span>⏱️ مدة الدراسة</span>
+                    <strong>{selectedMajor.duration}</strong>
+                  </div>
+                </div>
+                <div className="col-6">
+                  <div className="sm-info-box">
+                    <span>💰 متوسط الراتب</span>
+                    <strong>{selectedMajor.salary}</strong>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                className="sm-modal-close-btn w-100"
+                onClick={() => setSelectedMajor(null)}
+              >
+                إغلاق
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
