@@ -78,8 +78,8 @@ const getSavedMajors = async (req, res) => {
 
 const addToSavedMajors = async (req, res) => {
   try {
-    const studentID = req.params.studentID; // ← من الـ URL
-    const { majorID } = req.body;           // ← من الـ body
+    const studentID = req.params.studentID;
+    const { majorID } = req.body;
 
     if (!studentID || !majorID) {
       return res.status(400).json({ error: 'studentID and majorID are required' });
@@ -94,7 +94,13 @@ const addToSavedMajors = async (req, res) => {
       return res.status(409).json({ message: "Already saved" });
     }
 
-    return res.status(201).json(record);
+    // ✅ ارجعي plain object بدل Sequelize instance
+    return res.status(201).json({
+      message: "Saved successfully",
+      studentMajorID: record.studentMajorID,
+      studentID: record.studentID,
+      majorID: record.majorID
+    });
 
   } catch (error) {
     return res.status(500).json({ error: error.message || 'Server error' });
