@@ -7,13 +7,13 @@ const app = express();
 
 // CORS
 app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    'http://localhost:5173',
-    'https://bousalaty.netlify.app'
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+    origin: [
+        'http://localhost:3000',
+        'http://localhost:5173',
+        'https://bousalaty.netlify.app'
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json());
@@ -31,6 +31,7 @@ const responseRoutes = require('./routes/responseRoutes');
 const submissionRoutes = require('./routes/submissionRoutes');
 const skillRoutes = require('./routes/skillRoutes');
 const chatbotRoutes = require('./routes/chatbotRoutes');
+const aiRoutes = require('./routes/aiRoutes');
 
 // APIs
 app.use('/students', studentRoutes);
@@ -45,17 +46,18 @@ app.use('/responses', responseRoutes);
 app.use('/submissions', submissionRoutes);
 app.use('/skills', skillRoutes);
 app.use('/chatbot', chatbotRoutes);
+app.use('/ai', aiRoutes);
 
 // Test route
 app.get('/', (req, res) => {
-  res.send('Backend is running');
+    res.send('Backend is running');
 });
 
 // Server
 const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
 /*
 const db = require('./models');

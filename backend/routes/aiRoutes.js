@@ -2,9 +2,9 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  recommendMajors,
+  analyzeAndSuggestMajors,
 } = require("../controllers/aiController");
 
-router.post("/recommend-majors", recommendMajors);
+router.post("/analyze/:submissionID", analyzeAndSuggestMajors);
 
 module.exports = router;
