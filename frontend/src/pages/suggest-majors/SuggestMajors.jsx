@@ -1,103 +1,78 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+
 import "./SuggestMajors.css";
 import heroBg from "../../background-img/img3.png";
 import img1 from "./imges/img2.png";
-import { Link, useLocation } from "react-router-dom";
 
 const API_URL = "https://bousalaty-group-6-ixn3.onrender.com";
 
 export default function SuggestMajors() {
-  const location = useLocation();
-
-  const [recommendations, setRecommendations] = useState(
-    location.state?.recommendations || []
-  );
-
-  const [loading, setLoading] = useState(!location.state?.recommendations);
-  const [savedMajors, setSavedMajors] = useState([]);
-  const [saveMessages, setSaveMessages] = useState({});
-
-  const savedUser = JSON.parse(localStorage.getItem("user"));
-  const studentID = savedUser?.studentID || savedUser?.id || savedUser?.userID;
+  const [majors, setMajors] = useState([]);
+  const [selectedMajor, setSelectedMajor] = useState(null);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (!location.state?.recommendations) {
-      if (!studentID) {
-        setLoading(false);
+    fetchMajors();
+  }, []);
+
+  const fetchMajors = async () => {
+    try {
+      const res = await fetch(`${API_URL}/majors`);
+      const data = await res.json();
+
+      if (!res.ok) {
+        setMessage("حدث خطأ أثناء تحميل التخصصات");
         return;
       }
 
-      fetch(`${API_URL}/submissions/student/${studentID}/latest`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.aiResult) {
-            setRecommendations(data.aiResult);
-          }
-          setLoading(false);
-        })
-        .catch(() => setLoading(false));
+      setMajors(data);
+    } catch (error) {
+      console.log(error);
+      setMessage("حدث خطأ أثناء الاتصال بالسيرفر");
     }
-  }, [location.state, studentID]);
+  };
 
-  const handleSaveMajor = async (majorID) => {
-    const savedUser = JSON.parse(localStorage.getItem("user"));
-    const studentID = savedUser?.studentID || savedUser?.id || savedUser?.userID;
-
-    if (!studentID) {
-      alert("لازم تسجل دخول كطالب أولاً");
-      return;
-    }
-
+  const addToFavorite = async (majorID) => {
     try {
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      if (!user) {
+        setMessage("يجب تسجيل الدخول أولًا");
+        return;
+      }
+
+      const studentID = user.studentID || user.id;
+
       const res = await fetch(
         `${API_URL}/students/${studentID}/add-saved-major`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ majorID })
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ majorID }),
         }
       );
 
       const data = await res.json();
 
-      // ✅ محفوظ مسبقاً — مش error
       if (res.status === 409) {
-        setSavedMajors(prev => [...prev, majorID]);
-        setSaveMessages(prev => ({
-          ...prev,
-          [majorID]: { text: "التخصص محفوظ مسبقاً ✓", type: "success" }
-        }));
+        setMessage("هذا التخصص محفوظ مسبقًا");
         return;
       }
 
       if (!res.ok) {
-        setSaveMessages(prev => ({
-          ...prev,
-          [majorID]: {
-            text: data.message || "حدث خطأ أثناء الحفظ",
-            type: "error"
-          }
-        }));
+        setMessage(data.message || "حدث خطأ أثناء الحفظ");
         return;
       }
 
-      setSavedMajors(prev => [...prev, majorID]);
-      setSaveMessages(prev => ({
-        ...prev,
-        [majorID]: { text: "تم حفظ التخصص بنجاح ✓", type: "success" }
-      }));
-
+      setMessage("تمت الإضافة للمفضلة");
     } catch (error) {
-      setSaveMessages(prev => ({
-        ...prev,
-        [majorID]: { text: "خطأ في الاتصال بالسيرفر", type: "error" }
-      }));
+      console.log(error);
+      setMessage("حدث خطأ أثناء الاتصال بالسيرفر");
     }
   };
-
-  if (loading) {
-    return <p className="text-center mt-5">جاري التحميل...</p>;
-  }
 
   return (
     <div dir="rtl" className="sm-wrapper">
@@ -112,7 +87,6 @@ export default function SuggestMajors() {
       >
         <h1 className="sm-hero-title mb-2">أفضل تخصصات تناسب شخصيتك</h1>
         <div className="sm-gold-divider mx-auto mb-3" />
-
         <p className="sm-subtitle mb-5">
           تحليل ميولك ومهاراتك · اقتراح التخصصات المناسبة لك
         </p>
@@ -120,11 +94,16 @@ export default function SuggestMajors() {
         <div className="sm-feature-card mx-auto p-4">
           <div className="d-flex align-items-center gap-4">
             <div className="flex-grow-1 text-end">
-              <h5 className="sm-feature-title mb-3">التخصصات المناسبة</h5>
-
+              <h5 className="sm-feature-title mb-3">اختصاصك الذكي</h5>
               <ul className="list-unstyled sm-feature-list mb-0">
-                <li>◆ حل مناسب لمهاراتك وميولك المستقبلية.</li>
-                <li>◆ يساعدك في اختيار مسارك المهني.</li>
+                <li>
+                  <span className="sm-bullet">◆</span>
+                  حل مناسب لمهاراتك وميولك المستقبلية بخطوات رئيسية واضحة.
+                </li>
+                <li>
+                  <span className="sm-bullet">◆</span>
+                  بفضل هذه الأدوات ستتمكن من حل مشكلاتك المهنية.
+                </li>
               </ul>
             </div>
 
@@ -138,81 +117,55 @@ export default function SuggestMajors() {
       <section className="container py-5">
         <div className="text-center mb-5">
           <h2 className="sm-section-title mb-2">
-            التخصصات التي تناسب شخصيتك:
+            التخصصات التي تناسب شخصيتك :
           </h2>
           <div className="sm-gold-divider mx-auto" />
         </div>
 
-        {recommendations.length === 0 ? (
-          <p className="text-center">لا توجد توصيات، يرجى إعادة الاختبار.</p>
-        ) : (
-          <div className="row g-4 justify-content-center">
-            {recommendations.map((major, index) => (
-              <div className="col-md-4" key={index}>
-                <div className="card sm-card h-100 text-center position-relative">
-                  معدل القبول
+        {message && (
+          <p className="text-center fw-bold text-success">{message}</p>
+        )}
 
-                  <span className="sm-badge">
-                    {major.acceptanceGrade}%
-                  </span>
+        <div className="row g-4">
+          {majors.map((major) => (
+            <div className="col-md-3" key={major.majorID}>
+              <div className="sm-card h-100 position-relative text-center">
+                <span className="sm-badge">
+                  {major.match || major.acceptanceGrade || 65}%
+                </span>
 
-                  <div className="sm-card-topline" />
+                <div className="sm-card-topline" />
 
-                  <div className="d-flex flex-column align-items-center p-4 pt-5">
-                    <h5 className="sm-card-title mb-2">
-                      {major.majorName}
-                    </h5>
+                <div className="d-flex flex-column align-items-center p-4 pt-5">
+                  <div className="sm-card-emoji mb-3">🎓</div>
 
-                    <p className="sm-card-desc mb-3">
-                      {major.reason}
-                    </p>
+                  <h5 className="sm-card-title mb-2">
+                    {major.majorName}
+                  </h5>
 
-                    {major.isExternal ? (
-                      <a
-                        href={major.link}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="btn btn-primary sm-btn sm-btn-primary w-100 mt-2"
-                      >
-                        زيارة موقع الكلية
-                      </a>
-                    ) : (
-                      <Link
-                        to={`/majors/${major.majorID}`}
-                        className="btn btn-primary sm-btn sm-btn-primary w-100 mt-2"
-                      >
-                        عرض تفاصيل التخصص
-                      </Link>
-                    )}
+                  <p className="sm-card-desc flex-grow-1">
+                    {major.description || "تخصص مناسب حسب معدلك وميولك."}
+                  </p>
 
-                    {!major.isExternal && (
-                      <button
-                        className="btn btn-primary sm-btn sm-btn-primary w-100 mt-2"
-                        onClick={() => handleSaveMajor(major.majorID)}
-                        disabled={savedMajors.includes(major.majorID)}
-                      >
-                        {savedMajors.includes(major.majorID)
-                          ? "تم الحفظ"
-                          : "إضافة للمفضلة"}
-                      </button>
-                    )}
+                  <Link
+                    to={`/majors/${major.majorID}`}
+                    className="sm-card-btn w-100 mt-3"
+                  >
+                    عرض التفاصيل
+                  </Link>
 
-                    {saveMessages[major.majorID] && (
-                      <small
-                        className={`d-block mt-2 text-center ${saveMessages[major.majorID].type === "success"
-                          ? "sm-save-success"
-                          : "sm-save-error"
-                          }`}
-                      >
-                        {saveMessages[major.majorID].text}
-                      </small>
-                    )}
-                  </div>
+                  <button
+                    className="btn btn-outline-primary mt-3"
+                    style={{ width: "100%" }}
+                    onClick={() => addToFavorite(major.majorID)}
+                  >
+                    إضافة إلى التخصصات المحفوظة
+                  </button>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
+            </div>
+          ))}
+        </div>
       </section>
     </div>
   );
