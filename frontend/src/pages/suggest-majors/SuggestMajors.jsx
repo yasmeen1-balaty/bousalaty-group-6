@@ -193,7 +193,7 @@ export default function SuggestMajors() {
 
                 <span className="sm-badge">
                   {major.acceptanceGrade
-                    ? `${major.acceptanceGrade}%`
+                    ? `${major.acceptanceGrade}% معدل القبول`
                     : "AI"}
                 </span>
 
