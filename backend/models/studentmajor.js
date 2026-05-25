@@ -26,15 +26,16 @@ module.exports = (sequelize, DataTypes) => {
     },
     majorID: {
       type: DataTypes.INTEGER,
-      allowNull : false
+      allowNull: false
     },
     studentID: {
       type: DataTypes.INTEGER,
-      allowNull : false
+      allowNull: false
     }
   }, {
     sequelize,
     modelName: 'studentMajor',
+    tableName: 'studentMajors',
   });
   return studentMajor;
 };
